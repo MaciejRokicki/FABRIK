@@ -26,11 +26,7 @@ void Transform::Translate(Vector2 position) {
 }
 
 void Transform::Translate(Vector3 position) {
-    //Vector3 tmp_vector{ matrix_[12], matrix_[13], matrix_[14] };
-
-    //Translate(!tmp_vector);
     matrix_.Translate(position.x, position.y, position.z);
-    //Translate(tmp_vector);
 }
 
 void Transform::Scale(Vector2 scale) {

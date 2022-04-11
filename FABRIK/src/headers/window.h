@@ -31,7 +31,7 @@ private:
 
     ModelProgram model_program_;
 
-    clock_t last_time_;
+    //clock_t last_time_;
 
     Mat4 view_matrix_;
     Mat4 projection_matrix_;

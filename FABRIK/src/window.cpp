@@ -9,33 +9,23 @@
 #include "headers/mat4.h"
 #include "headers/joint.h"
 #include "headers/transform.h"
+#include "headers/list.h"
+#include "headers/tree.h"
 
 const char* kVertexShader = "shaders/SimpleShader.vertex.glsl";
 const char* kFragmentShader = "shaders/SimpleShader.fragment.glsl";
 const int s = 70;
 
+Transform* selectedJoint = NULL;
 
-const int joints_size = 7;
-
-Transform *selectedJoint = NULL;
-
-Joint joints[joints_size] {
-    Joint(),
-    Joint({ 0.0f, 4.0f }),
-    Joint({ 3.0f, 3.0f }),
-    Joint({ 5.0f, 1.0f }),
-    Joint({ 7.0f, 6.0f }),
-    Joint({ -3.0f, 5.0f }),
-    Joint({ -5.0f, -3.0f }),
-};
-
-Segment segments[joints_size - 1];
+Tree<Joint>* tree = new Tree<Joint>();
+List<Segment>* segments = new List<Segment>();
 
 Window::Window(const char* title, int width, int height) {
     title_ = title;
     width_ = width;
     height_ = height;
-    last_time_ = 0;
+    //last_time_ = 0;
 }
 
 void Window::Init(int major_gl_version, int minor_gl_version) {
@@ -44,11 +34,19 @@ void Window::Init(int major_gl_version, int minor_gl_version) {
 
     std::cout << "OpenGL initialized: OpenGL version: " << glGetString(GL_VERSION) << " GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
-    for (int i = 1; i < joints_size; i++) {
-        segments[i - 1] = Segment({ (joints[i - 1].GetPosition().x + joints[i].GetPosition().x) / 2, (joints[i - 1].GetPosition().y + joints[i].GetPosition().y) / 2 },
-            { 0.2f, Vector2::Distance(joints[i - 1].GetPosition(), joints[i].GetPosition()) + 0.25f });
+    tree->At(0).Push(Joint());
+    tree->At(0).Push(Joint({ 0.0f, 4.0f }));
+    tree->At(0).Push(Joint({ 3.0f, 3.0f }));
+    tree->At(0).Push(Joint({ 5.0f, 1.0f }));
+    tree->At(0).Push(Joint({ 7.0f, 6.0f }));
+    tree->At(0).Push(Joint({ -3.0f, 5.0f }));
+    tree->At(0).Push(Joint({ -5.0f, -3.0f }));
 
-        segments[i - 1].LookAt(joints[i]);
+    for (int i = 1; i < tree->At(0).Size(); i++) {
+        segments->Push(Segment({ (tree->At(0, i - 1).GetPosition() + tree->At(0, i).GetPosition()) / 2 },
+            { 0.2f, Vector2::Distance(tree->At(0, i - 1).GetPosition(), tree->At(0, i).GetPosition()) + 0.25f }));
+
+        segments->At(i - 1).LookAt(tree->At(0, i));
     }
 
     InitModels();
@@ -122,16 +120,16 @@ void Window::InitGlewOrDie() {
 
 void Window::InitModels() {
     std::cout << "JOINTS" << std::endl;
-    for (int i = 0; i < joints_size; i++) {
-        joints[i].Init();
-        std::cout << joints[i].GetPosition() << " | " << joints[i].GetScale() << std::endl;
+    for (int i = 0; i < tree->At(0).Size(); i++) {
+        tree->At(0, i).Init();
+        std::cout << tree->At(0, i).GetPosition() << " | " << tree->At(0, i).GetScale() << std::endl;
     }
 
     std::cout << "SEGMENTS" << std::endl;
 
-    for (int i = 0; i < joints_size - 1; i++) {
-        segments[i].Init();
-        std::cout << segments[i].GetPosition() << " | " << segments[i].GetScale() << std::endl;
+    for (int i = 0; i < tree->At(0).Size() - 1; i++) {
+        segments->At(i).Init();
+        std::cout << segments->At(i).GetPosition() << " | " << segments->At(i).GetScale() << std::endl;
     }
 }
 
@@ -185,7 +183,7 @@ void Window::KeyEvent(int key, int /*scancode*/, int action, int /*mods*/) {
                 break;
 
             case GLFW_KEY_SPACE:
-                segments[0].SetColor({ 0.5f, 0.5f, 0.5f });
+                segments->At(0).SetColor({ 0.5f, 0.5f, 0.5f });
                 break;
 
             default:
@@ -233,20 +231,18 @@ void Window::MouseButtonEvent(int button, int action, int mods) {
 
                 Vector2 space_pos = MousePositionToSpacePosition(x_pos, y_pos);
 
-                std::cout << space_pos << std::endl;
-
-                for (int i = 0; i < joints_size; i++) {
-                    Vector2 position = joints[i].GetPosition();
-                    Vector2 scale = joints[i].GetScale();
+                for (int i = 0; i < tree->At(0).Size(); i++) {
+                    Vector2 position = tree->At(0, i).GetPosition();
+                    Vector2 scale = tree->At(0, i).GetScale();
 
                     if (space_pos <= position + scale / 2 &&
                         space_pos >= position - scale / 2) {
 
-                        if (selectedJoint != NULL && selectedJoint->GetPosition() != joints[i].GetPosition()) {
+                        if (selectedJoint != NULL && selectedJoint->GetPosition() != tree->At(0, i).GetPosition()) {
                             selectedJoint->SetColor({ 1.0f, 0.0f, 0.0f });
                         }
 
-                        selectedJoint = &joints[i];
+                        selectedJoint = &tree->At(0, i);
                         selectedJoint->SetColor({ 0.0f, 1.0f, 0.0f });
                     }
                 }
@@ -264,8 +260,6 @@ void Window::MouseButtonEvent(int button, int action, int mods) {
                 glfwGetCursorPos(window_, &x_pos, &y_pos);
 
                 Vector2 space_pos = MousePositionToSpacePosition(x_pos, y_pos);
-
-                std::cout << space_pos << std::endl;
 
                 if (selectedJoint != NULL) {
                     selectedJoint->Translate(space_pos);
@@ -292,35 +286,39 @@ Vector2 Window::MousePositionToSpacePosition(double x, double y) {
     y -= (double)height_ / s / 2;
     y *= -2;
 
+    x -= view_matrix_[12];
+    y -= view_matrix_[13];
+
     return { roundf(x * 10.0f) / 10.0f, roundf(y * 10.0f) / 10.0f };
 }
 
 void Window::ConnectJoints() {
-    for (int i = 1; i < joints_size; i++) {
-        segments[i - 1].Translate(Vector2 { (joints[i - 1].GetPosition().x + joints[i].GetPosition().x) / 2, (joints[i - 1].GetPosition().y + joints[i].GetPosition().y) / 2 });
-        segments[i - 1].Scale({ 0.2f, Vector2::Distance(joints[i - 1].GetPosition(), joints[i].GetPosition()) + 0.25f });
+    //TODO: zamiast aktualizowac wszystkie polaczenia joint'ow to aktualizowac tylko te polaczenia, ktore sa zwiazane ze zmienionym joint'em
+    for (int i = 1; i < tree->At(0).Size(); i++) {
+        segments->At(i - 1).Translate(Vector2 { (tree->At(0, i - 1).GetPosition() + tree->At(0, i).GetPosition()) / 2 });
+        segments->At(i - 1).Scale({ 0.2f, Vector2::Distance(tree->At(0, i - 1).GetPosition(), tree->At(0, i).GetPosition()) + 0.25f });
 
-        segments[i - 1].LookAt(joints[i]);
+        segments->At(i - 1).LookAt(tree->At(0, i));
     }
 }
 
 void Window::Run(void) {
     while (!glfwWindowShouldClose(window_)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        clock_t now = clock();
+        //clock_t now = clock();
 
-        if (last_time_ == 0) {
-            last_time_ = now;
+        //if (last_time_ == 0) {
+        //    last_time_ = now;
+        //}
+
+        //last_time_ = now;
+
+        for (int i = 0; i < tree->At(0).Size(); i++) {
+            tree->At(0, i).Draw(model_program_);
         }
 
-        last_time_ = now;
-
-        for (int i = 0; i < joints_size; i++) {
-            joints[i].Draw(model_program_);
-        }
-
-        for (int i = 0; i < joints_size - 1; i++) {
-            segments[i].Draw(model_program_);
+        for (int i = 0; i < tree->At(0).Size() - 1; i++) {
+            segments->At(i).Draw(model_program_);
         }
 
         glfwSwapBuffers(window_);
