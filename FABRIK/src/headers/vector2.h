@@ -11,6 +11,8 @@ struct Vector2 {
 	static float Distance(Vector2 vec1, Vector2 vec2);
 
 	bool InRange(const Vector2& vec);
+	float Magnitude();
+	Vector2 Normalize();
 
 	Vector2 operator !();
 	bool operator ==(const Vector2& vec);

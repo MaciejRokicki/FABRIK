@@ -13,6 +13,15 @@ bool Vector2::InRange(const Vector2& vec) {
 	return *this >= vec && *this <= vec;
 }
 
+float Vector2::Magnitude() {
+	return sqrtf(x * x + y * y);
+}
+
+Vector2 Vector2::Normalize() {
+	float length = Magnitude();
+	return Vector2({ x / length, y / length});
+}
+
 Vector2 Vector2::operator!() {
 	return Vector2{ -this->x, -this->y };
 }

@@ -16,7 +16,8 @@ public:
 	Vector2 GetPosition() const { return { matrix_[12], matrix_[13] }; };
 	Vector2 GetScale() const { return { matrix_[0], matrix_[5] }; };
 	Transform(Vector2 positon, Vector2 scale);
-	void SetColor(Color color);
+	void SetDefaultColor();
+	void SetColor(Color color, bool isDefaultColor = false);
 	void Translate(Vector2 position);
 	void Translate(Vector3 position);
 	void Scale(Vector2 scale);

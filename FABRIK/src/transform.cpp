@@ -12,7 +12,15 @@ Transform::Transform(Vector2 position, Vector2 scale) : Model::Model() {
     Translate(position);
 }
 
-void Transform::SetColor(Color color) {
+void Transform::SetDefaultColor() {
+    SetColor(default_color);
+}
+
+void Transform::SetColor(Color color, bool isDefaultColor) {
+    if (isDefaultColor) {
+        Model::default_color = color;
+    }
+
     Model::color = color;
 
     Model::Init();

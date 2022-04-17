@@ -1,7 +1,9 @@
 #include "headers/model.h"
 #include "headers/color.h"
 
-Model::Model() { }
+Model::Model() { 
+    default_color = color;
+}
 
 void Model::Init() {
     //const Vertex kVertices[4] = {

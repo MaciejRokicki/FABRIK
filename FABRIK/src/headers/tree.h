@@ -14,6 +14,10 @@ public:
 		nodes->Push(List<T>());
 	}
 
+	int Size() {
+		return nodes->Size();
+	}
+
 	List<T>& At(int list_index) {
 		if (0 < nodes->Size() && list_index >= nodes->Size()) {
 			throw std::out_of_range("");

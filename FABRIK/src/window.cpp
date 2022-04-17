@@ -11,6 +11,7 @@
 #include "headers/transform.h"
 #include "headers/list.h"
 #include "headers/tree.h"
+#include "headers/fabrik2D.h"
 
 const char* kVertexShader = "shaders/SimpleShader.vertex.glsl";
 const char* kFragmentShader = "shaders/SimpleShader.fragment.glsl";
@@ -18,8 +19,8 @@ const int s = 70;
 
 Transform* selectedJoint = NULL;
 
-Tree<Joint>* tree = new Tree<Joint>();
-List<Segment>* segments = new List<Segment>();
+List<Joint>* joints = new List<Joint>();
+Fabrik2D* fabrik2d = new Fabrik2D();
 
 Window::Window(const char* title, int width, int height) {
     title_ = title;
@@ -34,20 +35,15 @@ void Window::Init(int major_gl_version, int minor_gl_version) {
 
     std::cout << "OpenGL initialized: OpenGL version: " << glGetString(GL_VERSION) << " GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
-    tree->At(0).Push(Joint());
-    tree->At(0).Push(Joint({ 0.0f, 4.0f }));
-    tree->At(0).Push(Joint({ 3.0f, 3.0f }));
-    tree->At(0).Push(Joint({ 5.0f, 1.0f }));
-    tree->At(0).Push(Joint({ 7.0f, 6.0f }));
-    tree->At(0).Push(Joint({ -3.0f, 5.0f }));
-    tree->At(0).Push(Joint({ -5.0f, -3.0f }));
+    joints->Push(Joint(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
+    joints->Push(Joint({ 0.0f, 1.0f }));
+    joints->Push(Joint({ 1.0f, 2.0f }));
+    joints->Push(Joint({ 2.0f, 3.0f }));
+    joints->Push(Joint({ 3.0f, 4.0f }));
+    joints->Push(Joint({ 4.0f, 5.0f }));
+    joints->Push(Joint({ 5.0f, 6.0f }));
 
-    for (int i = 1; i < tree->At(0).Size(); i++) {
-        segments->Push(Segment({ (tree->At(0, i - 1).GetPosition() + tree->At(0, i).GetPosition()) / 2 },
-            { 0.2f, Vector2::Distance(tree->At(0, i - 1).GetPosition(), tree->At(0, i).GetPosition()) + 0.25f }));
-
-        segments->At(i - 1).LookAt(tree->At(0, i));
-    }
+    fabrik2d->SetJoints(*joints);
 
     InitModels();
     InitPrograms();
@@ -119,18 +115,7 @@ void Window::InitGlewOrDie() {
 }
 
 void Window::InitModels() {
-    std::cout << "JOINTS" << std::endl;
-    for (int i = 0; i < tree->At(0).Size(); i++) {
-        tree->At(0, i).Init();
-        std::cout << tree->At(0, i).GetPosition() << " | " << tree->At(0, i).GetScale() << std::endl;
-    }
-
-    std::cout << "SEGMENTS" << std::endl;
-
-    for (int i = 0; i < tree->At(0).Size() - 1; i++) {
-        segments->At(i).Init();
-        std::cout << segments->At(i).GetPosition() << " | " << segments->At(i).GetScale() << std::endl;
-    }
+    fabrik2d->Init();
 }
 
 void Window::InitPrograms() {
@@ -183,7 +168,7 @@ void Window::KeyEvent(int key, int /*scancode*/, int action, int /*mods*/) {
                 break;
 
             case GLFW_KEY_SPACE:
-                segments->At(0).SetColor({ 0.5f, 0.5f, 0.5f });
+                fabrik2d->Solve();
                 break;
 
             default:
@@ -219,32 +204,18 @@ void Window::KeyEvent(int key, int /*scancode*/, int action, int /*mods*/) {
 }
 
 void Window::MouseButtonEvent(int button, int action, int mods) {
-    bool isLeftButtonPressed = false;
-
     if (action == GLFW_PRESS) {
         switch (button) {
             case GLFW_MOUSE_BUTTON_1:
-                isLeftButtonPressed = true;
-
                 double x_pos, y_pos;
                 glfwGetCursorPos(window_, &x_pos, &y_pos);
 
                 Vector2 space_pos = MousePositionToSpacePosition(x_pos, y_pos);
 
-                for (int i = 0; i < tree->At(0).Size(); i++) {
-                    Vector2 position = tree->At(0, i).GetPosition();
-                    Vector2 scale = tree->At(0, i).GetScale();
+                selectedJoint = fabrik2d->SelectJointByMouseButtonPressCallback(space_pos);
 
-                    if (space_pos <= position + scale / 2 &&
-                        space_pos >= position - scale / 2) {
-
-                        if (selectedJoint != NULL && selectedJoint->GetPosition() != tree->At(0, i).GetPosition()) {
-                            selectedJoint->SetColor({ 1.0f, 0.0f, 0.0f });
-                        }
-
-                        selectedJoint = &tree->At(0, i);
-                        selectedJoint->SetColor({ 0.0f, 1.0f, 0.0f });
-                    }
+                if (selectedJoint != NULL) {
+                    selectedJoint->SetColor({ 0.0f, 1.0f, 0.0f });
                 }
 
                 break;
@@ -263,12 +234,10 @@ void Window::MouseButtonEvent(int button, int action, int mods) {
 
                 if (selectedJoint != NULL) {
                     selectedJoint->Translate(space_pos);
-                    selectedJoint->SetColor({ 1.0f, 0.0f, 0.0f });
+                    selectedJoint->SetDefaultColor();
                     selectedJoint = NULL;
-                    ConnectJoints();
+                    fabrik2d->ConnectJoints();
                 }
-
-                isLeftButtonPressed = false;
             break;
 
         default:
@@ -292,16 +261,6 @@ Vector2 Window::MousePositionToSpacePosition(double x, double y) {
     return { roundf(x * 10.0f) / 10.0f, roundf(y * 10.0f) / 10.0f };
 }
 
-void Window::ConnectJoints() {
-    //TODO: zamiast aktualizowac wszystkie polaczenia joint'ow to aktualizowac tylko te polaczenia, ktore sa zwiazane ze zmienionym joint'em
-    for (int i = 1; i < tree->At(0).Size(); i++) {
-        segments->At(i - 1).Translate(Vector2 { (tree->At(0, i - 1).GetPosition() + tree->At(0, i).GetPosition()) / 2 });
-        segments->At(i - 1).Scale({ 0.2f, Vector2::Distance(tree->At(0, i - 1).GetPosition(), tree->At(0, i).GetPosition()) + 0.25f });
-
-        segments->At(i - 1).LookAt(tree->At(0, i));
-    }
-}
-
 void Window::Run(void) {
     while (!glfwWindowShouldClose(window_)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -313,13 +272,7 @@ void Window::Run(void) {
 
         //last_time_ = now;
 
-        for (int i = 0; i < tree->At(0).Size(); i++) {
-            tree->At(0, i).Draw(model_program_);
-        }
-
-        for (int i = 0; i < tree->At(0).Size() - 1; i++) {
-            segments->At(i).Draw(model_program_);
-        }
+        fabrik2d->Draw(model_program_);
 
         glfwSwapBuffers(window_);
         glfwPollEvents();

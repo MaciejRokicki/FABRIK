@@ -20,7 +20,6 @@ public:
     void KeyEvent(int key, int scancode, int action, int mods);
     void MouseButtonEvent(int button, int action, int mods);
     Vector2 MousePositionToSpacePosition(double x, double y);
-    void ConnectJoints();
     void Run(void);
     operator GLFWwindow* () { return window_; }
 private:
