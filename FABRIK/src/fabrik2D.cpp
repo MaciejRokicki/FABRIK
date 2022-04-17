@@ -48,8 +48,6 @@ bool Fabrik2D::IsReachable() {
 		total_joints_distance += DistanceBetweenJoints(i);
 	}
 
-	std::cout << root_target_distance << "->" << total_joints_distance << std::endl;
-
 	return root_target_distance <= total_joints_distance;
 }
 

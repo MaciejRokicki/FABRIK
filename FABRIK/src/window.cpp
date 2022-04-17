@@ -36,12 +36,10 @@ void Window::Init(int major_gl_version, int minor_gl_version) {
     std::cout << "OpenGL initialized: OpenGL version: " << glGetString(GL_VERSION) << " GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
     joints->Push(Joint(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
-    joints->Push(Joint({ 0.0f, 1.0f }));
-    joints->Push(Joint({ 1.0f, 2.0f }));
-    joints->Push(Joint({ 2.0f, 3.0f }));
-    joints->Push(Joint({ 3.0f, 4.0f }));
-    joints->Push(Joint({ 4.0f, 5.0f }));
-    joints->Push(Joint({ 5.0f, 6.0f }));
+
+    for (int i = 1; i <= 50; i++) {
+        joints->Push(Joint({ 0.0f, i * 0.75f }, { 0.35f, 0.35f }));
+    }
 
     fabrik2d->SetJoints(*joints);
 
