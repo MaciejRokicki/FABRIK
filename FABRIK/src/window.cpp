@@ -246,17 +246,17 @@ void Window::MouseButtonEvent(int button, int action, int mods) {
 
 Vector2 Window::MousePositionToSpacePosition(double x, double y) {
     x /= s;
-    x -= (double)width_ / s / 2;
+    x -= (double)width_ / s / 2.0;
     x *= 2;
 
     y /= s;
-    y -= (double)height_ / s / 2;
+    y -= (double)height_ / s / 2.0;
     y *= -2;
 
     x -= view_matrix_[12];
     y -= view_matrix_[13];
 
-    return { roundf(x * 10.0f) / 10.0f, roundf(y * 10.0f) / 10.0f };
+    return { (float)(round(x * 10.0) / 10.0), (float)(round(y * 10.0) / 10.0) };
 }
 
 void Window::Run(void) {

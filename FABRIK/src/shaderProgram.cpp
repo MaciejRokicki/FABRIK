@@ -4,7 +4,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "headers/shaderProgram.h";
+#include "headers/shaderProgram.h"
 
 using namespace std;
 
@@ -25,7 +25,7 @@ GLuint ShaderProgram::LoadAndCompileShaderOrDie(const char* source_file, GLenum 
     ifstream file(source_file, ios::in | ios::ate | ios::binary);
 
     if (file.is_open()) {
-        file_size = file.tellg();
+        file_size = (int)file.tellg();
         shader_code = new char[file_size + 1];
         file.seekg(0, ios::beg);
         file.read(shader_code, file_size);

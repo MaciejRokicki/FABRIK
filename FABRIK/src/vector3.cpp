@@ -1,4 +1,4 @@
-#include "headers/vector3.h";
+#include "headers/vector3.h"
 
 Vector3 Vector3::zero { 0.0f, 0.0f, 0.0f };
 Vector3 Vector3::one { 1.0f, 1.0f, 1.0f };
