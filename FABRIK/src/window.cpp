@@ -37,7 +37,7 @@ void Window::Init(int major_gl_version, int minor_gl_version) {
 
     joints->Push(Joint(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
 
-    for (int i = 1; i <= 50; i++) {
+    for (int i = 1; i <= 10; i++) {
         joints->Push(Joint({ 0.0f, i * 0.75f }, { 0.35f, 0.35f }));
     }
 

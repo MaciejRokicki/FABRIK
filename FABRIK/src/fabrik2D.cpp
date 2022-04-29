@@ -125,11 +125,10 @@ void Fabrik2D::Solve() {
 
 	if (!IsReachable()) {
 		new_vectors.Push(joints->At(0).GetPosition());
+		Vector2 direction = (target_vector - new_vectors.At(0)).Normalize();
 
 		for (int i = 1; i < joints->Size(); i++) {
 			Vector2 previous_joint_vector = new_vectors.At(i - 1);
-
-			Vector2 direction = (target_vector - new_vectors.At(0)).Normalize();
 			float joints_distance = DistanceBetweenJoints(i - 1);
 
 			Vector2 new_vector = previous_joint_vector + direction * joints_distance;
