@@ -9,8 +9,6 @@
 #include "headers/mat4.h"
 #include "headers/joint.h"
 #include "headers/transform.h"
-#include "headers/list.h"
-#include "headers/tree.h"
 #include "headers/fabrik2D.h"
 
 const char* kVertexShader = "shaders/SimpleShader.vertex.glsl";
@@ -19,7 +17,7 @@ const int s = 70;
 
 Transform* selectedJoint = NULL;
 
-List<Joint>* joints = new List<Joint>();
+std::vector<Joint*>* joints = new std::vector<Joint*>();
 Fabrik2D* fabrik2d = new Fabrik2D();
 
 Window::Window(const char* title, int width, int height) {
@@ -35,13 +33,13 @@ void Window::Init(int major_gl_version, int minor_gl_version) {
 
     std::cout << "OpenGL initialized: OpenGL version: " << glGetString(GL_VERSION) << " GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
-    joints->Push(Joint(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
+    joints->push_back(new Joint(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
 
     for (int i = 1; i <= 10; i++) {
-        joints->Push(Joint({ 0.0f, i * 0.75f }, { 0.35f, 0.35f }));
+        joints->push_back(new Joint({ 0.0f, i * 0.75f }, { 0.35f, 0.35f }));
     }
 
-    fabrik2d->SetJoints(*joints);
+    fabrik2d->SetJoints(joints);
 
     InitModels();
     InitPrograms();

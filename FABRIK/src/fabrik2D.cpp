@@ -4,186 +4,118 @@
 
 Fabrik2D::Fabrik2D() {
 	this->tolerance = 0.4f;
-	this->joints = new List<Joint>();
-	this->segments = new List<Segment>();
+	this->joints = new std::vector<Joint*>();
+	this->segments = new std::vector<Segment*>();
 	this->target = new Joint(Vector2::one * 5.0f, { 0.5f, 0.5f }, { 0.0f, 0.0f, 1.0f, 1.0f });
 }
 
 void Fabrik2D::Init() {
-	joints->At(0).Init();
+	joints->at(0)->Init();
 
-	for (int i = 1; i < joints->Size(); i++) {
-		joints->At(i).Init();
+	for (int i = 1; i < joints->size(); i++) {
+		joints->at(i)->Init();
 
-		segments->At(i - 1).Init();
+		segments->at(i - 1)->Init();
 	}
 
 	target->Init();
 }
 
 void Fabrik2D::Draw(const ModelProgram& program) const {
-	joints->At(0).Draw(program);
+	joints->at(0)->Draw(program);
 
-	for (int i = 1; i < joints->Size(); i++) {
-		joints->At(i).Draw(program);
+	for (int i = 1; i < joints->size(); i++) {
+		joints->at(i)->Draw(program);
 
-		segments->At(i - 1).Draw(program);
+		segments->at(i - 1)->Draw(program);
 	}
 
 	target->Draw(program);
 }
 
-void Fabrik2D::SetJoints(List<Joint>& joints) {
-	this->joints = &joints;
-	this->joints->At(this->joints->Size() - 1).SetColor({ 1.0f, 1.0f, 0.0f, 1.0f }, true);
+void Fabrik2D::SetJoints(std::vector<Joint*>* joints) {
+	this->joints = joints;
+	this->joints->at(this->joints->size() - 1)->SetColor({ 1.0f, 1.0f, 0.0f, 1.0f }, true);
 		
 	CreateSegmentsAndConnectJoints();
 }
 
 bool Fabrik2D::IsReachable() {
-	float root_target_distance = Vector2::Distance(joints->At(0).GetPosition(), target->GetPosition());
+	float root_target_distance = Vector2::Distance(joints->at(0)->GetPosition(), target->GetPosition());
 	float total_joints_distance = 0.0f;
 
-	for (int i = 0; i < joints->Size() - 1; i++) {
+	for (int i = 0; i < joints->size() - 1; i++) {
 		total_joints_distance += DistanceBetweenJoints(i);
 	}
 
 	return root_target_distance <= total_joints_distance;
 }
 
-//void Fabrik2D::Iterate() {
-//	float tol = 0.5f;
-//	List<Vector2> new_vectors = List<Vector2>();
-//	Vector2 target_vector = target->GetPosition();
-//
-//	if (!IsReachable()) {
-//		new_vectors.Push(joints->At(0).GetPosition());
-//
-//		for (int i = 1; i < joints->Size(); i++) {
-//			Vector2 previous_joint_vector = joints->At(i - 1).GetPosition();
-//
-//			float r = Vector2::Distance(target_vector, previous_joint_vector);
-//			float lambda = DistanceBetweenJoints(i-1) / r;
-//
-//			Vector2 new_vector = previous_joint_vector * (1 - lambda) + target_vector * lambda;
-//
-//			new_vectors.Push(new_vector);
-//		}
-//	}
-//	else {
-//		Vector2 base = joints->At(0).GetPosition();
-//
-//		for (int i = 0; i < joints->Size(); i++) {
-//			new_vectors.Push(joints->At(i).GetPosition());
-//		}
-//
-//		float diff = Vector2::Distance(joints->At(joints->Size() - 1).GetPosition(), target_vector);
-//
-//		while (diff > tol) {
-//			new_vectors.At(joints->Size() - 1) = target_vector;
-//
-//			for (int i = joints->Size() - 2; i >= 0; i--) {
-//				Vector2 current_joint_vector = joints->At(i).GetPosition();	
-//				Vector2 next_joint_vector = joints->At(i + 1).GetPosition();
-//				
-//				float r = Vector2::Distance(next_joint_vector, current_joint_vector);
-//				float lambda = DistanceBetweenJoints(i) / r;
-//
-//				Vector2 new_vector = { next_joint_vector * (1 - lambda) + current_joint_vector * lambda };
-//
-//				new_vectors.At(i) = new_vector;
-//			}
-//
-//			new_vectors.At(0) = base;
-//
-//			for (int i = 1; i < joints->Size() - 1; i++) {
-//				Vector2 current_joint_vector = joints->At(i).GetPosition();
-//				Vector2 next_joint_vector = joints->At(i + 1).GetPosition();
-//				
-//				float r = Vector2::Distance(next_joint_vector, current_joint_vector);
-//				float lambda = DistanceBetweenJoints(i) / r;
-//
-//				Vector2 new_vector = { current_joint_vector * (1 - lambda) + next_joint_vector * lambda };
-//
-//				new_vectors.At(i + 1) = new_vector;
-//			}
-//
-//			diff = Vector2::Distance(new_vectors.At(new_vectors.Size() - 1), target_vector);
-//		}
-//	}
-//
-//	for (int i = 0; i < new_vectors.Size(); i++) {
-//		joints->At(i).Translate(new_vectors.At(i));
-//	}
-//
-//	ConnectJoints();
-//}
-
 void Fabrik2D::Solve() {
-	List<Vector2> new_vectors = List<Vector2>();
+	std::vector<Vector2> new_vectors = std::vector<Vector2>();
 	Vector2 target_vector = target->GetPosition();
 
 	if (!IsReachable()) {
-		new_vectors.Push(joints->At(0).GetPosition());
-		Vector2 direction = (target_vector - new_vectors.At(0)).Normalize();
+		new_vectors.push_back(joints->at(0)->GetPosition());
+		Vector2 direction = (target_vector - new_vectors.at(0)).Normalize();
 
-		for (int i = 1; i < joints->Size(); i++) {
-			Vector2 previous_joint_vector = new_vectors.At(i - 1);
+		for (int i = 1; i < joints->size(); i++) {
+			Vector2 previous_joint_vector = new_vectors.at(i - 1);
 			float joints_distance = DistanceBetweenJoints(i - 1);
 
 			Vector2 new_vector = previous_joint_vector + direction * joints_distance;
 
-			new_vectors.Push(new_vector);
+			new_vectors.push_back(new_vector);
 		}
 	}
 	else {
-		for (int i = 0; i < joints->Size(); i++) {
-			new_vectors.Push(joints->At(i).GetPosition());
+		for (int i = 0; i < joints->size(); i++) {
+			new_vectors.push_back(joints->at(i)->GetPosition());
 		}
 
-		float diff = Vector2::Distance(new_vectors.At(new_vectors.Size() - 1), target_vector);
+		float diff = Vector2::Distance(new_vectors.at(new_vectors.size() - 1), target_vector);
 
 		while (diff > tolerance) {
-			new_vectors.At(joints->Size() - 1) = target_vector;
+			new_vectors.at(joints->size() - 1) = target_vector;
 
-			for (int i = joints->Size() - 2; i > 0; i--) {
-				Vector2 current_joint_vector = new_vectors.At(i);
-				Vector2 next_joint_vector = new_vectors.At(i + 1);
+			for (int i = joints->size() - 2; i > 0; i--) {
+				Vector2 current_joint_vector = new_vectors.at(i);
+				Vector2 next_joint_vector = new_vectors.at(i + 1);
 				
 				float joints_distance = DistanceBetweenJoints(i);
 
-				new_vectors.At(i) = next_joint_vector + (current_joint_vector - next_joint_vector).Normalize() * joints_distance;
+				new_vectors.at(i) = next_joint_vector + (current_joint_vector - next_joint_vector).Normalize() * joints_distance;
 			}
 
-			for (int i = 1; i < joints->Size(); i++) {
-				Vector2 current_joint_vector = new_vectors.At(i);
-				Vector2 previous_joint_vector = new_vectors.At(i - 1);
+			for (int i = 1; i < joints->size(); i++) {
+				Vector2 current_joint_vector = new_vectors.at(i);
+				Vector2 previous_joint_vector = new_vectors.at(i - 1);
 				
 				float joints_distance = DistanceBetweenJoints(i - 1);
 
-				new_vectors.At(i) = previous_joint_vector + (current_joint_vector - previous_joint_vector).Normalize() * joints_distance;
+				new_vectors.at(i) = previous_joint_vector + (current_joint_vector - previous_joint_vector).Normalize() * joints_distance;
 			}
 
-			diff = Vector2::Distance(new_vectors.At(new_vectors.Size() - 1), target_vector);
+			diff = Vector2::Distance(new_vectors.at(new_vectors.size() - 1), target_vector);
 		}
 	}
 
-	for (int i = 0; i < new_vectors.Size(); i++) {
-		joints->At(i).Translate(new_vectors.At(i));
+	for (int i = 0; i < new_vectors.size(); i++) {
+		joints->at(i)->Translate(new_vectors.at(i));
 	}
 
 	ConnectJoints();
 }
 
 Joint* Fabrik2D::SelectJointByMouseButtonPressCallback(Vector2 space_pos) {
-	for (int i = 0; i < joints->Size(); i++) {
-		Vector2 position = joints->At(i).GetPosition();
-		Vector2 scale = joints->At(i).GetScale();
+	for (int i = 0; i < joints->size(); i++) {
+		Vector2 position = joints->at(i)->GetPosition();
+		Vector2 scale = joints->at(i)->GetScale();
 
 		if (space_pos <= position + scale / 2 &&
 			space_pos >= position - scale / 2) {
 
-			return &joints->At(i);
+			return joints->at(i);
 		}
 	}
 
@@ -197,27 +129,27 @@ Joint* Fabrik2D::SelectJointByMouseButtonPressCallback(Vector2 space_pos) {
 }
 
 void Fabrik2D::CreateSegmentsAndConnectJoints() {
-	for (int i = 1; i < joints->Size(); i++) {
-		segments->Push(Segment({ (joints->At(i - 1).GetPosition() + joints->At(i).GetPosition()) / 2 },
-			{ 0.2f, Vector2::Distance(joints->At(i - 1).GetPosition(), joints->At(i).GetPosition()) + 0.25f }));
+	for (int i = 1; i < joints->size(); i++) {
+		segments->push_back(new Segment({ (joints->at(i - 1)->GetPosition() + joints->at(i)->GetPosition()) / 2 },
+			{ 0.2f, Vector2::Distance(joints->at(i - 1)->GetPosition(), joints->at(i)->GetPosition()) + 0.25f }));
 
-		segments->At(i - 1).LookAt(joints->At(i));
+		segments->at(i - 1)->LookAt(*joints->at(i));
 	}
 }
 
 float Fabrik2D::DistanceBetweenJoints(int i) {
 	float distance = 0.0f;
 
-	distance += Vector2::Distance(joints->At(i).GetPosition(), joints->At(i + 1).GetPosition());
+	distance += Vector2::Distance(joints->at(i)->GetPosition(), joints->at(i + 1)->GetPosition());
 
 	return distance;
 }
 
 void Fabrik2D::ConnectJoints() {	
-	for (int i = 1; i < joints->Size(); i++) {
-		segments->At(i - 1).Translate(Vector2{ (joints->At(i - 1).GetPosition() + joints->At(i).GetPosition()) / 2 });
-		segments->At(i - 1).Scale({ 0.2f, Vector2::Distance(joints->At(i - 1).GetPosition(), joints->At(i).GetPosition()) + 0.25f });
+	for (int i = 1; i < joints->size(); i++) {
+		segments->at(i - 1)->Translate(Vector2{ (joints->at(i - 1)->GetPosition() + joints->at(i)->GetPosition()) / 2 });
+		segments->at(i - 1)->Scale({ 0.2f, Vector2::Distance(joints->at(i - 1)->GetPosition(), joints->at(i)->GetPosition()) + 0.25f });
 
-		segments->At(i - 1).LookAt(joints->At(i));
+		segments->at(i - 1)->LookAt(*joints->at(i));
 	}
 }

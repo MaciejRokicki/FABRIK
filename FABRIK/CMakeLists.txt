@@ -41,9 +41,6 @@ add_executable (
 	"src/headers/color.h"
 	"src/headers/model.h"
 	"src/model.cpp" 
-	"src/headers/tree.h" 
-	"src/headers/list.h" 
-	"src/headers/listElement.h"
 	"src/headers/fabrik2D.h" 
 	"src/fabrik2D.cpp")
 
