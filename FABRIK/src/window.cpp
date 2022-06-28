@@ -10,6 +10,10 @@
 #include "headers/joint.h"
 #include "headers/transform.h"
 #include "headers/fabrik2D.h"
+#include "headers/node.h"
+#include "node.cpp"
+#include "headers/tree.h"
+#include "tree.cpp"
 
 const char* kVertexShader = "shaders/SimpleShader.vertex.glsl";
 const char* kFragmentShader = "shaders/SimpleShader.fragment.glsl";
@@ -17,7 +21,7 @@ const int s = 70;
 
 Transform* selectedJoint = NULL;
 
-std::vector<Joint*>* joints = new std::vector<Joint*>();
+//std::vector<Joint*>* joints = new std::vector<Joint*>();
 Fabrik2D* fabrik2d = new Fabrik2D();
 
 Window::Window(const char* title, int width, int height) {
@@ -33,13 +37,31 @@ void Window::Init(int major_gl_version, int minor_gl_version) {
 
     std::cout << "OpenGL initialized: OpenGL version: " << glGetString(GL_VERSION) << " GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
-    joints->push_back(new Joint(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
+    //joints->push_back(new Joint(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
 
-    for (int i = 1; i <= 10; i++) {
-        joints->push_back(new Joint({ 0.0f, i * 0.75f }, { 0.35f, 0.35f }));
-    }
+    //for (int i = 1; i <= 10; i++) {
+    //    joints->push_back(new Joint({ 0.0f, i * 0.75f }, { 0.35f, 0.35f }));
+    //}
 
-    fabrik2d->SetJoints(joints);
+    //fabrik2d->SetJoints(joints);
+
+    Node<Joint>* root = new Node<Joint>(Joint(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
+    root->next(Joint({ 0.0f, 0.75f }, { 0.35f, 0.35f }));
+    root->child[0]->next(Joint({ 0.0f, 1.5f }, { 0.35f, 0.35f }));
+    root->child[0]->child[0]->next(Joint({ -1.0f, 2.25f }, { 0.35f, 0.35f }));
+    root->child[0]->child[0]->next(Joint({ 1.0f, 2.25f }, { 0.35f, 0.35f }));
+
+    root->child[0]->child[0]->child[0]->next(Joint({ -1.5f, 3.0f }, { 0.35f, 0.35f }));
+    root->child[0]->child[0]->child[0]->child[0]->next(Joint({ -2.0f, 3.75f }, { 0.35f, 0.35f }));
+    root->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint({ -2.0f, 4.5f }, { 0.35f, 0.35f }));
+
+    root->child[0]->child[0]->child[1]->next(Joint({ 1.5f, 3.0f }, { 0.35f, 0.35f }));
+    root->child[0]->child[0]->child[1]->child[0]->next(Joint({ 1.5f, 3.75f }, { 0.35f, 0.35f }));
+
+
+    Tree<Joint>* tree = new Tree<Joint>(root);
+
+    fabrik2d->tree = tree;
 
     InitModels();
     InitPrograms();
@@ -203,16 +225,16 @@ void Window::MouseButtonEvent(int button, int action, int mods) {
     if (action == GLFW_PRESS) {
         switch (button) {
             case GLFW_MOUSE_BUTTON_1:
-                double x_pos, y_pos;
-                glfwGetCursorPos(window_, &x_pos, &y_pos);
+                //double x_pos, y_pos;
+                //glfwGetCursorPos(window_, &x_pos, &y_pos);
 
-                Vector2 space_pos = MousePositionToSpacePosition(x_pos, y_pos);
+                //Vector2 space_pos = MousePositionToSpacePosition(x_pos, y_pos);
 
-                selectedJoint = fabrik2d->SelectJointByMouseButtonPressCallback(space_pos);
+                //selectedJoint = fabrik2d->SelectJointByMouseButtonPressCallback(space_pos);
 
-                if (selectedJoint != NULL) {
-                    selectedJoint->SetColor({ 0.0f, 1.0f, 0.0f });
-                }
+                //if (selectedJoint != NULL) {
+                //    selectedJoint->SetColor({ 0.0f, 1.0f, 0.0f });
+                //}
 
                 break;
 
@@ -223,17 +245,17 @@ void Window::MouseButtonEvent(int button, int action, int mods) {
     else if (action == GLFW_RELEASE) {
         switch (button) {
             case GLFW_MOUSE_BUTTON_1:
-                double x_pos, y_pos;
-                glfwGetCursorPos(window_, &x_pos, &y_pos);
+                //double x_pos, y_pos;
+                //glfwGetCursorPos(window_, &x_pos, &y_pos);
 
-                Vector2 space_pos = MousePositionToSpacePosition(x_pos, y_pos);
+                //Vector2 space_pos = MousePositionToSpacePosition(x_pos, y_pos);
 
-                if (selectedJoint != NULL) {
-                    selectedJoint->Translate(space_pos);
-                    selectedJoint->SetDefaultColor();
-                    selectedJoint = NULL;
-                    fabrik2d->ConnectJoints();
-                }
+                //if (selectedJoint != NULL) {
+                //    selectedJoint->Translate(space_pos);
+                //    selectedJoint->SetDefaultColor();
+                //    selectedJoint = NULL;
+                //    fabrik2d->ConnectJoints();
+                //}
             break;
 
         default:
