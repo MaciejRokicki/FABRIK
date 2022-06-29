@@ -7,7 +7,8 @@
 #include "headers/mat4.h"
 
 Joint::Joint(Vector2 position, Vector2 scale, Color color) : Transform(position, scale) { 
-	this->IsSubBase = false;
 	Model::color = color;
 	Model::default_color = color;
+	this->IsSubBase = false;
+	this->segment = new Segment(Vector2::zero, Vector2::zero);
 }

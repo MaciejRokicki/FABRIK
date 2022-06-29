@@ -19,10 +19,9 @@ const char* kVertexShader = "shaders/SimpleShader.vertex.glsl";
 const char* kFragmentShader = "shaders/SimpleShader.fragment.glsl";
 const int s = 70;
 
-Transform* selectedJoint = NULL;
+Transform* selectedTransform = NULL;
 
-//std::vector<Joint*>* joints = new std::vector<Joint*>();
-Fabrik2D* fabrik2d = new Fabrik2D();
+Fabrik2D* fabrik2d = NULL;
 
 Window::Window(const char* title, int width, int height) {
     title_ = title;
@@ -36,14 +35,6 @@ void Window::Init(int major_gl_version, int minor_gl_version) {
     InitGlewOrDie();
 
     std::cout << "OpenGL initialized: OpenGL version: " << glGetString(GL_VERSION) << " GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
-
-    //joints->push_back(new Joint(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
-
-    //for (int i = 1; i <= 10; i++) {
-    //    joints->push_back(new Joint({ 0.0f, i * 0.75f }, { 0.35f, 0.35f }));
-    //}
-
-    //fabrik2d->SetJoints(joints);
 
     Node<Joint>* root = new Node<Joint>(Joint(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
     root->next(Joint({ 0.0f, 0.75f }, { 0.35f, 0.35f }));
@@ -61,7 +52,7 @@ void Window::Init(int major_gl_version, int minor_gl_version) {
 
     Tree<Joint>* tree = new Tree<Joint>(root);
 
-    fabrik2d->tree = tree;
+    fabrik2d = new Fabrik2D(tree);
 
     InitModels();
     InitPrograms();
@@ -225,16 +216,16 @@ void Window::MouseButtonEvent(int button, int action, int mods) {
     if (action == GLFW_PRESS) {
         switch (button) {
             case GLFW_MOUSE_BUTTON_1:
-                //double x_pos, y_pos;
-                //glfwGetCursorPos(window_, &x_pos, &y_pos);
+                double x_pos, y_pos;
+                glfwGetCursorPos(window_, &x_pos, &y_pos);
 
-                //Vector2 space_pos = MousePositionToSpacePosition(x_pos, y_pos);
+                Vector2 space_pos = MousePositionToSpacePosition(x_pos, y_pos);
 
-                //selectedJoint = fabrik2d->SelectJointByMouseButtonPressCallback(space_pos);
+                selectedTransform = fabrik2d->SelectTargetByMouseButtonPressCallback(space_pos);
 
-                //if (selectedJoint != NULL) {
-                //    selectedJoint->SetColor({ 0.0f, 1.0f, 0.0f });
-                //}
+                if (selectedTransform != NULL) {
+                    selectedTransform->SetColor({ 0.0f, 1.0f, 0.0f });
+                }
 
                 break;
 
@@ -245,17 +236,16 @@ void Window::MouseButtonEvent(int button, int action, int mods) {
     else if (action == GLFW_RELEASE) {
         switch (button) {
             case GLFW_MOUSE_BUTTON_1:
-                //double x_pos, y_pos;
-                //glfwGetCursorPos(window_, &x_pos, &y_pos);
+                double x_pos, y_pos;
+                glfwGetCursorPos(window_, &x_pos, &y_pos);
 
-                //Vector2 space_pos = MousePositionToSpacePosition(x_pos, y_pos);
+                Vector2 space_pos = MousePositionToSpacePosition(x_pos, y_pos);
 
-                //if (selectedJoint != NULL) {
-                //    selectedJoint->Translate(space_pos);
-                //    selectedJoint->SetDefaultColor();
-                //    selectedJoint = NULL;
-                //    fabrik2d->ConnectJoints();
-                //}
+                if (selectedTransform != NULL) {
+                    selectedTransform->Translate(space_pos);
+                    selectedTransform->SetDefaultColor();
+                    selectedTransform = NULL;
+                }
             break;
 
         default:

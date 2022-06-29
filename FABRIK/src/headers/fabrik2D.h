@@ -7,25 +7,23 @@
 #include "joint.h"
 #include "segment.h"
 #include "cameraProgram.h"
+#include "target.h"
 
 class Fabrik2D {
 private:
-	float tolerance;
-	//std::vector<Joint*>* joints;
-	std::vector<Segment*>* segments;
-	Joint* target;
-	void CreateSegmentsAndConnectJoints();
-	//bool IsReachable();
-	//float DistanceBetweenJoints(int i);
-public:
 	Tree<Joint>* tree;
-	Fabrik2D();
+	std::vector<Target*>* targets;
+	float tolerance;
+	void CreateSegmentsAndConnectJoints();
+	bool IsReachable(Node<Joint>* root, Target* target);
+	float DistanceBetweenJoints(Node<Joint>* nodeJoint);
+public:
+	Fabrik2D(Tree<Joint>* tree);
 	void Init();
 	void Draw(const ModelProgram& program) const;
-	void ConnectJoints();
-	//void SetJoints(std::vector<Joint*>* joints);
+	void ConnectJoints(Node<Joint>* nodeJoint);
 	void Solve();
-	//Joint* SelectJointByMouseButtonPressCallback(Vector2 space_pos);
+	Target* SelectTargetByMouseButtonPressCallback(Vector2 space_pos);
 };
 
 #endif

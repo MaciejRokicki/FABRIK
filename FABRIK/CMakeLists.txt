@@ -44,7 +44,7 @@ add_executable (
 	"src/headers/fabrik2D.h" 
 	"src/fabrik2D.cpp"
 	"src/headers/node.h"
-	"src/node.cpp" "src/headers/tree.h")
+	"src/node.cpp" "src/headers/tree.h" "src/headers/target.h")
 
 target_link_libraries(FABRIK OpenGL::GL glew glfw)
 
