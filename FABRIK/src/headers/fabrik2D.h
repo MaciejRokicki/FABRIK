@@ -13,6 +13,7 @@ class Fabrik2D {
 private:
 	Tree<Joint>* tree;
 	std::vector<Target*>* targets;
+	std::vector<Node<Joint>*>* bases;
 	float tolerance;
 	void CreateSegmentsAndConnectJoints();
 	bool IsReachable(Node<Joint>* root, Target* target);

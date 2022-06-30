@@ -40,15 +40,14 @@ void Window::Init(int major_gl_version, int minor_gl_version) {
     root->next(Joint({ 0.0f, 0.75f }, { 0.35f, 0.35f }));
     root->child[0]->next(Joint({ 0.0f, 1.5f }, { 0.35f, 0.35f }));
     root->child[0]->child[0]->next(Joint({ -1.0f, 2.25f }, { 0.35f, 0.35f }));
-    root->child[0]->child[0]->next(Joint({ 1.0f, 2.25f }, { 0.35f, 0.35f }));
+    //root->child[0]->child[0]->next(Joint({ 1.0f, 2.25f }, { 0.35f, 0.35f }));
 
     root->child[0]->child[0]->child[0]->next(Joint({ -1.5f, 3.0f }, { 0.35f, 0.35f }));
     root->child[0]->child[0]->child[0]->child[0]->next(Joint({ -2.0f, 3.75f }, { 0.35f, 0.35f }));
     root->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint({ -2.0f, 4.5f }, { 0.35f, 0.35f }));
 
-    root->child[0]->child[0]->child[1]->next(Joint({ 1.5f, 3.0f }, { 0.35f, 0.35f }));
-    root->child[0]->child[0]->child[1]->child[0]->next(Joint({ 1.5f, 3.75f }, { 0.35f, 0.35f }));
-
+    //root->child[0]->child[0]->child[1]->next(Joint({ 1.5f, 3.0f }, { 0.35f, 0.35f }));
+    //root->child[0]->child[0]->child[1]->child[0]->next(Joint({ 1.5f, 3.75f }, { 0.35f, 0.35f }));
 
     Tree<Joint>* tree = new Tree<Joint>(root);
 
