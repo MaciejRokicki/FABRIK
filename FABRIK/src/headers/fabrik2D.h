@@ -15,14 +15,16 @@ private:
 	std::vector<Target*>* targets;
 	std::vector<Node<Joint>*>* bases;
 	float tolerance;
-	void CreateSegmentsAndConnectJoints();
 	bool IsReachable(Node<Joint>* root, Target* target);
 	float DistanceBetweenJoints(Node<Joint>* nodeJoint);
+	void ConnectJoints(Node<Joint>* nodeJoint);
+	void UpdatePosition();
+	void Forward(Target* target);
+	void Backward();
 public:
 	Fabrik2D(Tree<Joint>* tree);
 	void Init();
 	void Draw(const ModelProgram& program) const;
-	void ConnectJoints(Node<Joint>* nodeJoint);
 	void Solve();
 	Target* SelectTargetByMouseButtonPressCallback(Vector2 space_pos);
 };
