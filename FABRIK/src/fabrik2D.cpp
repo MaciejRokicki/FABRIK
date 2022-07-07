@@ -1,4 +1,6 @@
+#include <iostream>
 #include <functional>
+#include <time.h>
 
 #include "headers/fabrik2D.h"
 #include "headers/target.h"
@@ -6,17 +8,22 @@
 #include "headers/tree.h"
 #include "target.cpp"
 #include "tree.cpp"
-#include <iostream>
 
 Fabrik2D::Fabrik2D(Tree<Joint>* tree) {
 	this->tree = tree;
 	this->targets = new std::vector<Target*>();
-	this->bases = new std::vector<Node<Joint>*>();
 	this->tolerance = 0.4f;
+
+	srand((unsigned)time(NULL));
 
 	tree->Preorder([&](Node<Joint>* nodeJoint) {
 		if (nodeJoint->child.size() == 0) {
-			Target* target = new Target(nodeJoint, nodeJoint->value.GetPosition() + Vector2{ 0.0f, 1.0f });
+			float r = (rand() % 10 + 1) / 10.0f;
+			float g = (rand() % 10 + 1) / 10.0f;
+			float b = (rand() % 10 + 1) / 10.0f;
+
+			nodeJoint->value.SetColor({ r, g, b, 1.0f });
+			Target* target = new Target(nodeJoint, nodeJoint->value.GetPosition() + Vector2{ 0.0f, 1.0f }, Vector2::one / 2, { r/2, g/2, b/2, 1.0f });
 
 			this->targets->push_back(target);
 		}
@@ -24,12 +31,9 @@ Fabrik2D::Fabrik2D(Tree<Joint>* tree) {
 }
 
 void Fabrik2D::Init() {
-	bases->push_back(tree->root);
-
 	tree->Preorder([&](Node<Joint>* nodeJoint) {
 		if (nodeJoint->child.size() > 1) {
 			nodeJoint->value.IsSubBase = true;
-			bases->push_back(nodeJoint);
 		}
 
 		nodeJoint->value.Init();
@@ -61,29 +65,8 @@ void Fabrik2D::Draw(const ModelProgram& program) const {
 }
 
 void Fabrik2D::Solve() {
-	for (Target* target : *targets) {
-		if (!IsReachable(tree->root, target)) {
-			Vector2 direction = (target->GetPosition() - tree->root->value.GetPosition()).Normalize();
-
-			tree->Preorder(tree->root->child[0], [&](Node<Joint>* nodeJoint) {
-				float joints_distance = DistanceBetweenJoints(nodeJoint);
-
-				Vector2 new_vector = nodeJoint->parent->value.Position + direction * joints_distance;
-
-				nodeJoint->value.Position = new_vector;
-			});
-		}
-		else {
-			float diff = Vector2::Distance(target->endEffector->value.Position, target->GetPosition());
-
-			while (diff > tolerance) {
-				Forward(target);
-				Backward();
-
-				diff = Vector2::Distance(target->endEffector->value.Position, target->GetPosition());
-			}
-		}
-	}
+	Forward();
+	Backward();
 
 	UpdatePosition();
 }
@@ -137,28 +120,37 @@ void Fabrik2D::UpdatePosition() {
 	});
 }
 
-void Fabrik2D::Forward(Target* target) {
-	target->endEffector->value.Position = target->GetPosition();
+void Fabrik2D::Forward() {
+	int i = 0;
 
-	for (Node<Joint>* nodeJoint = target->endEffector->parent; nodeJoint->parent != NULL; nodeJoint = nodeJoint->parent) {
-		Vector2 current_joint_vector = nodeJoint->value.Position;
-		Vector2 next_joint_vector = nodeJoint->child.at(0)->value.Position;
-		Vector2 direction = (current_joint_vector - next_joint_vector).Normalize();
+	tree->Inorder([&](Node<Joint>* nodeJoint) {
+		if (nodeJoint->child.size() == 0) {
+			nodeJoint->value.Position = targets->at(i)->GetPosition();
+			i++;
+		}
 
-		float joints_distance = DistanceBetweenJoints(nodeJoint->child.at(0));
+		if (nodeJoint->parent != tree->root && nodeJoint != tree->root) {
+			Vector2 previous_joint_vector = nodeJoint->parent->value.Position;
+			Vector2 current_joint_vector = nodeJoint->value.Position;
+			Vector2 direction = (previous_joint_vector - current_joint_vector).Normalize();
 
-		nodeJoint->value.Position = next_joint_vector + direction * joints_distance;
-	}
+			float joints_distance = DistanceBetweenJoints(nodeJoint);
+
+			nodeJoint->parent->value.Position = current_joint_vector + direction * joints_distance;
+		}
+		});
 }
 
 void Fabrik2D::Backward() {
-	tree->Preorder(tree->root->child.at(0), [&](Node<Joint>* nodeJoint) {
-		Vector2 current_joint_vector = nodeJoint->value.Position;
-		Vector2 previous_joint_vector = nodeJoint->parent->value.Position;
-		Vector2 direction = (current_joint_vector - previous_joint_vector).Normalize();
+	for (int i = 0; i < tree->root->child.size(); i++) {
+		tree->Preorder(tree->root->child.at(i), [&](Node<Joint>* nodeJoint) {
+			Vector2 current_joint_vector = nodeJoint->value.Position;
+			Vector2 previous_joint_vector = nodeJoint->parent->value.Position;
+			Vector2 direction = (current_joint_vector - previous_joint_vector).Normalize();
 
-		float joints_distance = DistanceBetweenJoints(nodeJoint);
+			float joints_distance = DistanceBetweenJoints(nodeJoint);
 
-		nodeJoint->value.Position = previous_joint_vector + direction * joints_distance;
-	});
+			nodeJoint->value.Position = previous_joint_vector + direction * joints_distance;
+		});
+	}
 }

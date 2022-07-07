@@ -37,17 +37,17 @@ void Window::Init(int major_gl_version, int minor_gl_version) {
     std::cout << "OpenGL initialized: OpenGL version: " << glGetString(GL_VERSION) << " GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
     Node<Joint>* root = new Node<Joint>(Joint(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
-    root->next(Joint({ 0.0f, 0.75f }, { 0.35f, 0.35f }));
-    root->child[0]->next(Joint({ 0.0f, 1.5f }, { 0.35f, 0.35f }));
-    root->child[0]->child[0]->next(Joint({ -1.0f, 2.25f }, { 0.35f, 0.35f }));
-    //root->child[0]->child[0]->next(Joint({ 1.0f, 2.25f }, { 0.35f, 0.35f }));
+    root->next(Joint({ 0.0f, 3.00f }, { 0.35f, 0.35f }));                       //tulow - 0
+    root->child[0]->next(Joint({0.0f, 4.00f}, {0.35f, 0.35f}));                 //szyja - 0
+    root->child[0]->next(Joint({-1.0f, 2.50f}, {0.35f, 0.35f}));                //lewe ramie - 1
+    root->child[0]->child[1]->next(Joint({-1.0f, 1.00f}, {0.35f, 0.35f}));      //lewe przedramie
+    root->child[0]->next(Joint({1.0f, 2.50f}, {0.35f, 0.35f}));                 //prawe ramie - 2
+    root->child[0]->child[2]->next(Joint({1.0f, 1.00f}, {0.35f, 0.35f}));       //prawe przedramie
 
-    root->child[0]->child[0]->child[0]->next(Joint({ -1.5f, 3.0f }, { 0.35f, 0.35f }));
-    root->child[0]->child[0]->child[0]->child[0]->next(Joint({ -2.0f, 3.75f }, { 0.35f, 0.35f }));
-    root->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint({ -2.0f, 4.5f }, { 0.35f, 0.35f }));
-
-    //root->child[0]->child[0]->child[1]->next(Joint({ 1.5f, 3.0f }, { 0.35f, 0.35f }));
-    //root->child[0]->child[0]->child[1]->child[0]->next(Joint({ 1.5f, 3.75f }, { 0.35f, 0.35f }));
+    root->next(Joint({ -1.0f, -1.00f }, { 0.35f, 0.35f }));                     //lewe udo - 1
+    root->child[1]->next(Joint({-1.0f, -3.00f}, {0.35f, 0.35f}));               //lewy piszczel
+    root->next(Joint({ 1.0f, -1.00f }, { 0.35f, 0.35f }));                      //prawe udo - 2
+    root->child[2]->next(Joint({1.0f, -3.00f}, {0.35f, 0.35f}));                //prawy piszczel
 
     Tree<Joint>* tree = new Tree<Joint>(root);
 

@@ -13,13 +13,12 @@ class Fabrik2D {
 private:
 	Tree<Joint>* tree;
 	std::vector<Target*>* targets;
-	std::vector<Node<Joint>*>* bases;
 	float tolerance;
 	bool IsReachable(Node<Joint>* root, Target* target);
 	float DistanceBetweenJoints(Node<Joint>* nodeJoint);
 	void ConnectJoints(Node<Joint>* nodeJoint);
 	void UpdatePosition();
-	void Forward(Target* target);
+	void Forward();
 	void Backward();
 public:
 	Fabrik2D(Tree<Joint>* tree);
