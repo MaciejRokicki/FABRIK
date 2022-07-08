@@ -1,6 +1,8 @@
 #include <iostream>
 #include <functional>
 #include <time.h>
+#include <chrono>
+#include <iomanip>
 
 #include "headers/fabrik2D.h"
 #include "headers/target.h"
@@ -12,7 +14,7 @@
 Fabrik2D::Fabrik2D(Tree<Joint>* tree) {
 	this->tree = tree;
 	this->targets = new std::vector<Target*>();
-	this->tolerance = 0.4f;
+	this->tolerance = 0.04f;
 
 	srand((unsigned)time(NULL));
 
@@ -65,10 +67,40 @@ void Fabrik2D::Draw(const ModelProgram& program) const {
 }
 
 void Fabrik2D::Solve() {
-	Forward();
-	Backward();
+	auto begin = std::chrono::high_resolution_clock::now();
+	int iterations = 0;
 
-	UpdatePosition();
+
+	float diff = 0.0f;
+
+	do {
+		iterations++;
+		diff = 0.0f;
+		int counter = 0;
+
+		for (int i = 0; i < targets->size(); i++) {
+			Node<Joint>* subbase = targets->at(i)->endEffector->parent;
+
+			for (subbase; !subbase->value.IsSubBase && subbase->parent != NULL; subbase = subbase->parent) { }
+
+			if (IsReachable(subbase, targets->at(i))) {
+				diff += Vector2::Distance(targets->at(i)->endEffector->value.GetPosition(), targets->at(i)->GetPosition());
+				counter++;
+			}
+		}
+
+		diff /= counter;
+
+		Forward();
+		Backward();
+
+		UpdatePosition();
+	} while (diff > tolerance);
+
+	auto end = std::chrono::high_resolution_clock::now();
+	auto elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
+
+	std::cout << "Iterations: " << iterations << " Execution time: " << elapsedTime.count() * 1e-3 << "ms" << std::endl;
 }
 
 Target* Fabrik2D::SelectTargetByMouseButtonPressCallback(Vector2 space_pos) {
@@ -92,8 +124,6 @@ bool Fabrik2D::IsReachable(Node<Joint>* root, Target* target) {
 	for (Node<Joint>* nodeJoint = target->endEffector; nodeJoint != root; nodeJoint = nodeJoint->parent) {
 		total_joints_distance += DistanceBetweenJoints(nodeJoint);
 	}
-
-	std::cout << total_joints_distance << std::endl;
 
 	return root_target_distance <= total_joints_distance;
 }
