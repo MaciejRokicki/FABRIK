@@ -122,6 +122,7 @@ void Fabrik2D::UpdatePosition() {
 
 void Fabrik2D::Forward() {
 	int i = 0;
+	Node<Joint>* subbase = NULL;
 
 	tree->Inorder([&](Node<Joint>* nodeJoint) {
 		if (nodeJoint->child.size() == 0) {
@@ -129,16 +130,27 @@ void Fabrik2D::Forward() {
 			i++;
 		}
 
+		//Krok niepotrzebny, suma wekorow nowych pozycji subbase'a z kazdego lanucucha wystarczy do wyznaczenia kierunku, a dlugosc miedzy stawami i tak jest zachowana
+		if (nodeJoint == subbase) {
+			subbase->value.Position = subbase->value.Position / subbase->child.size();
+		}
+
 		if (nodeJoint->parent != tree->root && nodeJoint != tree->root) {
 			Vector2 previous_joint_vector = nodeJoint->parent->value.Position;
 			Vector2 current_joint_vector = nodeJoint->value.Position;
 			Vector2 direction = (previous_joint_vector - current_joint_vector).Normalize();
 
-			float joints_distance = DistanceBetweenJoints(nodeJoint);
+			float joints_distance = DistanceBetweenJoints(nodeJoint);	
 
-			nodeJoint->parent->value.Position = current_joint_vector + direction * joints_distance;
+			if (nodeJoint->parent->value.IsSubBase) {
+				subbase = nodeJoint->parent;
+				nodeJoint->parent->value.Position = nodeJoint->parent->value.Position + current_joint_vector + direction * joints_distance;
+			}
+			else {
+				nodeJoint->parent->value.Position = current_joint_vector + direction * joints_distance;
+			}
 		}
-		});
+	});
 }
 
 void Fabrik2D::Backward() {
