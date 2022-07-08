@@ -70,13 +70,13 @@ void Fabrik2D::Solve() {
 	auto begin = std::chrono::high_resolution_clock::now();
 	int iterations = 0;
 
-
-	float diff = 0.0f;
+	float accuracy;
 
 	do {
 		iterations++;
-		diff = 0.0f;
-		int counter = 0;
+
+		accuracy = 0.0f;
+		int reachableTargetsCounter = 0;
 
 		for (int i = 0; i < targets->size(); i++) {
 			Node<Joint>* subbase = targets->at(i)->endEffector->parent;
@@ -84,18 +84,18 @@ void Fabrik2D::Solve() {
 			for (subbase; !subbase->value.IsSubBase && subbase->parent != NULL; subbase = subbase->parent) { }
 
 			if (IsReachable(subbase, targets->at(i))) {
-				diff += Vector2::Distance(targets->at(i)->endEffector->value.GetPosition(), targets->at(i)->GetPosition());
-				counter++;
+				accuracy += Vector2::Distance(targets->at(i)->endEffector->value.GetPosition(), targets->at(i)->GetPosition());
+				reachableTargetsCounter++;
 			}
 		}
 
-		diff /= counter;
+		accuracy /= reachableTargetsCounter;
 
 		Forward();
 		Backward();
 
 		UpdatePosition();
-	} while (diff > tolerance);
+	} while (accuracy > tolerance);
 
 	auto end = std::chrono::high_resolution_clock::now();
 	auto elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
