@@ -10,7 +10,7 @@
 #include "modelProgram.h"
 #include "shaderProgram.h"
 #include "mat4.h"
-#include "segment.h"
+#include "vector2.h"
 
 class Window {
 public:

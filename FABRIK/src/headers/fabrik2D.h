@@ -4,28 +4,29 @@
 #include <vector>
 
 #include "tree.h"
-#include "joint.h"
+#include "joint2D.h"
 #include "segment.h"
 #include "cameraProgram.h"
-#include "target.h"
+#include "target2D.h"
 
 class Fabrik2D {
 private:
-	Tree<Joint>* tree;
-	std::vector<Target*>* targets;
+	Tree<Joint2D>* tree;
+	std::vector<Target2D*>* targets;
 	float tolerance;
-	bool IsReachable(Node<Joint>* root, Target* target);
-	float DistanceBetweenJoints(Node<Joint>* nodeJoint);
-	void ConnectJoints(Node<Joint>* nodeJoint);
+	int iterations_limit = 100;
+	bool IsReachable(Node<Joint2D>* root, Target2D* target);
+	float DistanceBetweenJoints(Node<Joint2D>* nodeJoint);
+	void ConnectJoints(Node<Joint2D>* nodeJoint);
 	void UpdatePosition();
 	void Forward();
 	void Backward();
 public:
-	Fabrik2D(Tree<Joint>* tree);
+	Fabrik2D(Tree<Joint2D>* tree);
 	void Init();
 	void Draw(const ModelProgram& program) const;
 	void Solve();
-	Target* SelectTargetByMouseButtonPressCallback(Vector2 space_pos);
+	Target2D* SelectTargetByMouseButtonPressCallback(Vector2 space_pos);
 };
 
 #endif

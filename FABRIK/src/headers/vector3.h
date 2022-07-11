@@ -12,7 +12,26 @@ struct Vector3 {
 	static Vector3 one;
 	static float Distance(Vector3 vec1, Vector3 vec2);
 
+	bool InRange(const Vector3& vec);
+	float Magnitude();
+	Vector3 Normalize();
+
 	Vector3 operator !();
+
+	bool operator ==(const Vector3& vec);
+	bool operator !=(const Vector3& vec);
+	bool operator >(const Vector3& vec);
+	bool operator <(const Vector3& vec);
+	bool operator >=(const Vector3& vec);
+	bool operator <=(const Vector3& vec);
+
+	Vector3 operator +(const Vector3& vec);
+	Vector3 operator -(const Vector3& vec);
+	Vector3 operator *(const Vector3& vec);
+	Vector3 operator *(const float f);
+	Vector3 operator /(const Vector3& vec);
+	Vector3 operator /(const float f);
+
 	friend std::ostream& operator<<(std::ostream& os, const Vector3& vec);
 };
 

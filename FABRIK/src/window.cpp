@@ -7,7 +7,7 @@
 
 #include "headers/window.h"
 #include "headers/mat4.h"
-#include "headers/joint.h"
+#include "headers/joint2D.h"
 #include "headers/transform.h"
 #include "headers/fabrik2D.h"
 #include "headers/node.h"
@@ -19,7 +19,7 @@ const char* kVertexShader = "shaders/SimpleShader.vertex.glsl";
 const char* kFragmentShader = "shaders/SimpleShader.fragment.glsl";
 const int s = 70;
 
-Transform* selectedTransform = NULL;
+Object* selectedObject = NULL;
 
 Fabrik2D* fabrik2d = NULL;
 
@@ -36,32 +36,32 @@ void Window::Init(int major_gl_version, int minor_gl_version) {
 
     std::cout << "OpenGL initialized: OpenGL version: " << glGetString(GL_VERSION) << " GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
-    Node<Joint>* root = new Node<Joint>(Joint(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
-    root->next(Joint({ 0.0f, 3.00f }, { 0.35f, 0.35f }));                       //tulow - 0
-    root->child[0]->next(Joint({0.0f, 4.00f}, {0.35f, 0.35f}));                 //szyja - 0
-    root->child[0]->next(Joint({-1.0f, 2.50f}, {0.35f, 0.35f}));                //lewe ramie - 1
-    root->child[0]->child[1]->next(Joint({-1.0f, 1.00f}, {0.35f, 0.35f}));      //lewe przedramie
-    root->child[0]->next(Joint({1.0f, 2.50f}, {0.35f, 0.35f}));                 //prawe ramie - 2
-    root->child[0]->child[2]->next(Joint({1.0f, 1.00f}, {0.35f, 0.35f}));       //prawe przedramie
+    Node<Joint2D>* root = new Node<Joint2D>(Joint2D(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
+    root->next(Joint2D({ 0.0f, 3.00f }, { 0.35f, 0.35f }));                       //tulow - 0
+    root->child[0]->next(Joint2D({0.0f, 4.00f}, {0.35f, 0.35f}));                 //szyja - 0
+    root->child[0]->next(Joint2D({-1.0f, 2.50f}, {0.35f, 0.35f}));                //lewe ramie - 1
+    root->child[0]->child[1]->next(Joint2D({-1.0f, 1.00f}, {0.35f, 0.35f}));      //lewe przedramie
+    root->child[0]->next(Joint2D({1.0f, 2.50f}, {0.35f, 0.35f}));                 //prawe ramie - 2
+    root->child[0]->child[2]->next(Joint2D({1.0f, 1.00f}, {0.35f, 0.35f}));       //prawe przedramie
 
-    root->next(Joint({ -1.0f, -1.00f }, { 0.35f, 0.35f }));                     //lewe udo - 1
-    root->child[1]->next(Joint({-1.0f, -3.00f}, {0.35f, 0.35f}));               //lewy piszczel
-    root->next(Joint({ 1.0f, -1.00f }, { 0.35f, 0.35f }));                      //prawe udo - 2
-    root->child[2]->next(Joint({1.0f, -3.00f}, {0.35f, 0.35f}));                //prawy piszczel
+    root->next(Joint2D({ -1.0f, -1.00f }, { 0.35f, 0.35f }));                     //lewe udo - 1
+    root->child[1]->next(Joint2D({-1.0f, -3.00f}, {0.35f, 0.35f}));               //lewy piszczel
+    root->next(Joint2D({ 1.0f, -1.00f }, { 0.35f, 0.35f }));                      //prawe udo - 2
+    root->child[2]->next(Joint2D({1.0f, -3.00f}, {0.35f, 0.35f}));                //prawy piszczel
 
-    Tree<Joint>* tree = new Tree<Joint>(root);
+    Tree<Joint2D>* tree = new Tree<Joint2D>(root);
 
     fabrik2d = new Fabrik2D(tree);
 
     InitModels();
     InitPrograms();
 
-    //view_matrix_.Translate(0.0f, 0.0f, -10.0f);
-    //view_matrix_.RotateY(45.0f);
+    //view_matrix_.Translate(0.0f, 0.0f, -10.0f); //3D
+    //view_matrix_.RotateY(45.0f);                //3D
     SetViewMatrix();
 
-    //projection_matrix_ = Mat4::CreatePerspectiveProjectionMatrix(60, (float)width_ / (float)height_, 0.1f, 1000.0f);
-    projection_matrix_ = Mat4::CreateOrthographicProjectionMatrix(-(float)width_ / s, (float)width_ / s, -(float)height_ / s, (float)height_ / s, 0.1f, 100.0f);
+    //projection_matrix_ = Mat4::CreatePerspectiveProjectionMatrix(60, (float)width_ / (float)height_, 0.1f, 1000.0f); //3D
+    projection_matrix_ = Mat4::CreateOrthographicProjectionMatrix(-(float)width_ / s, (float)width_ / s, -(float)height_ / s, (float)height_ / s, 0.1f, 100.0f); //2D
     SetProjectionMatrix();
 
     glEnable(GL_DEPTH_TEST);
@@ -220,10 +220,10 @@ void Window::MouseButtonEvent(int button, int action, int mods) {
 
                 Vector2 space_pos = MousePositionToSpacePosition(x_pos, y_pos);
 
-                selectedTransform = fabrik2d->SelectTargetByMouseButtonPressCallback(space_pos);
+                selectedObject = fabrik2d->SelectTargetByMouseButtonPressCallback(space_pos);
 
-                if (selectedTransform != NULL) {
-                    selectedTransform->SetColor({ 0.0f, 1.0f, 0.0f });
+                if (selectedObject != NULL) {
+                    selectedObject->SetColor({ 0.0f, 1.0f, 0.0f });
                 }
 
                 break;
@@ -240,10 +240,10 @@ void Window::MouseButtonEvent(int button, int action, int mods) {
 
                 Vector2 space_pos = MousePositionToSpacePosition(x_pos, y_pos);
 
-                if (selectedTransform != NULL) {
-                    selectedTransform->Translate(space_pos);
-                    selectedTransform->SetDefaultColor();
-                    selectedTransform = NULL;
+                if (selectedObject != NULL) {
+                    selectedObject->Translate({ space_pos.x, space_pos.y, 0.0f });
+                    selectedObject->SetDefaultColor();
+                    selectedObject = NULL;
                 }
             break;
 

@@ -27,11 +27,11 @@ add_executable (
 	"src/cameraProgram.cpp" 
 	"src/headers/modelProgram.h" 
 	"src/cameraModelProgram.cpp"
-	"src/headers/segment.h"
-	"src/segment.cpp"
+	"src/headers/segment2D.h"
+	"src/segment2D.cpp"
 	"src/headers/vertex.h"
-	"src/headers/joint.h"
-	"src/joint.cpp" 
+	"src/headers/joint2D.h"
+	"src/joint2D.cpp" 
 	"src/headers/transform.h"
 	"src/headers/vector2.h" 
 	"src/vector2.cpp"
@@ -39,12 +39,14 @@ add_executable (
 	"src/vector3.cpp"
 	"src/transform.cpp" 
 	"src/headers/color.h"
-	"src/headers/model.h"
-	"src/model.cpp" 
+	"src/headers/object2D.h"
+	"src/object2D.cpp" 
 	"src/headers/fabrik2D.h" 
 	"src/fabrik2D.cpp"
 	"src/headers/node.h"
-	"src/node.cpp" "src/headers/tree.h" "src/headers/target.h" "src/headers/chain2D.h")
+	"src/node.cpp" 
+	"src/headers/tree.h" 
+	"src/headers/target2D.h"  "src/headers/object.h" "src/object.cpp"  )
 
 target_link_libraries(FABRIK OpenGL::GL glew glfw)
 

@@ -3,6 +3,8 @@
 
 #include <ostream>
 
+#include "vector3.h"
+
 struct Vector2 {
 	float x;
 	float y;
@@ -15,18 +17,23 @@ struct Vector2 {
 	Vector2 Normalize();
 
 	Vector2 operator !();
+
 	bool operator ==(const Vector2& vec);
 	bool operator !=(const Vector2& vec);
+	bool operator >(const Vector2& vec);
+	bool operator <(const Vector2& vec);
+	bool operator >=(const Vector2& vec);
+	bool operator <=(const Vector2& vec);
+
 	Vector2 operator +(const Vector2& vec);
 	Vector2 operator -(const Vector2& vec);
 	Vector2 operator *(const Vector2& vec);
 	Vector2 operator *(const float f);
 	Vector2 operator /(const Vector2& vec);
 	Vector2 operator /(const float f);
-	bool operator >(const Vector2& vec);
-	bool operator <(const Vector2& vec);
-	bool operator >=(const Vector2& vec);
-	bool operator <=(const Vector2& vec);
+
+	operator Vector3();
+
 	friend std::ostream& operator<<(std::ostream& os, const Vector2& vec);
 };
 

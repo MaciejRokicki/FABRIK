@@ -5,27 +5,27 @@
 #include <iomanip>
 
 #include "headers/fabrik2D.h"
-#include "headers/target.h"
+#include "headers/target2D.h"
 #include "headers/node.h"
 #include "headers/tree.h"
-#include "target.cpp"
+#include "target2D.cpp"
 #include "tree.cpp"
 
-Fabrik2D::Fabrik2D(Tree<Joint>* tree) {
+Fabrik2D::Fabrik2D(Tree<Joint2D>* tree) {
 	this->tree = tree;
-	this->targets = new std::vector<Target*>();
+	this->targets = new std::vector<Target2D*>();
 	this->tolerance = 0.04f;
 
 	srand((unsigned)time(NULL));
 
-	tree->Preorder([&](Node<Joint>* nodeJoint) {
+	tree->Preorder([&](Node<Joint2D>* nodeJoint) {
 		if (nodeJoint->child.size() == 0) {
 			float r = (rand() % 10 + 1) / 10.0f;
 			float g = (rand() % 10 + 1) / 10.0f;
 			float b = (rand() % 10 + 1) / 10.0f;
 
 			nodeJoint->value.SetColor({ r, g, b, 1.0f });
-			Target* target = new Target(nodeJoint, nodeJoint->value.GetPosition() + Vector2{ 0.0f, 1.0f }, Vector2::one / 2, { r/2, g/2, b/2, 1.0f });
+			Target2D* target = new Target2D(nodeJoint, Vector2{ 0.0f, 1.0f } + nodeJoint->value.GetPosition(), Vector2::one / 2, { r/2, g/2, b/2, 1.0f });
 
 			this->targets->push_back(target);
 		}
@@ -33,7 +33,7 @@ Fabrik2D::Fabrik2D(Tree<Joint>* tree) {
 }
 
 void Fabrik2D::Init() {
-	tree->Preorder([&](Node<Joint>* nodeJoint) {
+	tree->Preorder([&](Node<Joint2D>* nodeJoint) {
 		if (nodeJoint->child.size() > 1) {
 			nodeJoint->value.IsSubBase = true;
 		}
@@ -53,7 +53,7 @@ void Fabrik2D::Init() {
 }
 
 void Fabrik2D::Draw(const ModelProgram& program) const {
-	tree->Preorder([program](Node<Joint>* nodeJoint) {
+	tree->Preorder([program](Node<Joint2D>* nodeJoint) {
 		nodeJoint->value.Draw(program);
 
 		if (nodeJoint->value.segment) {
@@ -71,15 +71,16 @@ void Fabrik2D::Solve() {
 	int iterations = 0;
 
 	float accuracy;
+	int reachableTargetsCounter;
 
 	do {
 		iterations++;
 
 		accuracy = 0.0f;
-		int reachableTargetsCounter = 0;
+		reachableTargetsCounter = 0;
 
 		for (int i = 0; i < targets->size(); i++) {
-			Node<Joint>* subbase = targets->at(i)->endEffector->parent;
+			Node<Joint2D>* subbase = targets->at(i)->endEffector->parent;
 
 			for (subbase; !subbase->value.IsSubBase && subbase->parent != NULL; subbase = subbase->parent) { }
 
@@ -95,17 +96,17 @@ void Fabrik2D::Solve() {
 		Backward();
 
 		UpdatePosition();
-	} while (accuracy > tolerance);
+	} while (accuracy > tolerance && iterations < iterations_limit);
 
 	auto end = std::chrono::high_resolution_clock::now();
 	auto elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
 
-	std::cout << "Iterations: " << iterations << " Execution time: " << elapsedTime.count() * 1e-3 << "ms" << std::endl;
+	std::cout << "Iterations: " << iterations << " Execution time: " << elapsedTime.count() * 1e-3 << "ms" << " Reachable targets: " << reachableTargetsCounter << " Accuracy: " << (1 - accuracy) * 1e2 << std::endl;
 }
 
-Target* Fabrik2D::SelectTargetByMouseButtonPressCallback(Vector2 space_pos) {
+Target2D* Fabrik2D::SelectTargetByMouseButtonPressCallback(Vector2 space_pos) {
 	for (int i = 0; i < targets->size(); i++) {
-		Target* target = targets->at(i);
+		Target2D* target = targets->at(i);
 
 		if (space_pos <= target->GetPosition() + target->GetScale() / 2 &&
 			space_pos >= target->GetPosition() - target->GetScale() / 2) {
@@ -117,26 +118,26 @@ Target* Fabrik2D::SelectTargetByMouseButtonPressCallback(Vector2 space_pos) {
 	return NULL;
 }
 
-bool Fabrik2D::IsReachable(Node<Joint>* root, Target* target) {
+bool Fabrik2D::IsReachable(Node<Joint2D>* root, Target2D* target) {
 	float root_target_distance = Vector2::Distance(root->value.GetPosition(), target->GetPosition());
 	float total_joints_distance = 0.0f;
 
-	for (Node<Joint>* nodeJoint = target->endEffector; nodeJoint != root; nodeJoint = nodeJoint->parent) {
+	for (Node<Joint2D>* nodeJoint = target->endEffector; nodeJoint != root; nodeJoint = nodeJoint->parent) {
 		total_joints_distance += DistanceBetweenJoints(nodeJoint);
 	}
 
 	return root_target_distance <= total_joints_distance;
 }
 
-float Fabrik2D::DistanceBetweenJoints(Node<Joint>* nodeJoint) {
+float Fabrik2D::DistanceBetweenJoints(Node<Joint2D>* nodeJoint) {
 	float distance = Vector2::Distance(nodeJoint->parent->value.GetPosition(), nodeJoint->value.GetPosition());
 
 	return distance;
 }
 
-void Fabrik2D::ConnectJoints(Node<Joint>* nodeJoint) {
+void Fabrik2D::ConnectJoints(Node<Joint2D>* nodeJoint) {
 	if (nodeJoint->parent) {
-		nodeJoint->value.segment->Translate(Vector2{ (nodeJoint->value.GetPosition() + nodeJoint->parent->value.GetPosition()) / 2 });
+		nodeJoint->value.segment->Translate({ (nodeJoint->value.Transform::GetPosition() + nodeJoint->parent->value.Transform::GetPosition()) / 2.0f });
 		nodeJoint->value.segment->Scale({ 0.2f, Vector2::Distance(nodeJoint->value.GetPosition(), nodeJoint->parent->value.GetPosition()) + 0.25f });
 
 		nodeJoint->value.segment->LookAt(nodeJoint->parent->value);
@@ -144,40 +145,40 @@ void Fabrik2D::ConnectJoints(Node<Joint>* nodeJoint) {
 }
 
 void Fabrik2D::UpdatePosition() {
-	tree->Preorder([&](Node<Joint>* nodeJoint) {
-		nodeJoint->value.Translate(nodeJoint->value.Position);
+	tree->Preorder([&](Node<Joint2D>* nodeJoint) {
+		nodeJoint->value.Translate(nodeJoint->value.PositionTmp);
 		ConnectJoints(nodeJoint);
 	});
 }
 
 void Fabrik2D::Forward() {
 	int i = 0;
-	Node<Joint>* subbase = NULL;
+	Node<Joint2D>* subbase = NULL;
 
-	tree->Inorder([&](Node<Joint>* nodeJoint) {
+	tree->Inorder([&](Node<Joint2D>* nodeJoint) {
 		if (nodeJoint->child.size() == 0) {
-			nodeJoint->value.Position = targets->at(i)->GetPosition();
+			nodeJoint->value.PositionTmp = targets->at(i)->GetPosition();
 			i++;
 		}
 
 		//Krok niepotrzebny, suma wekorow nowych pozycji subbase'a z kazdego lanucucha wystarczy do wyznaczenia kierunku, a dlugosc miedzy stawami i tak jest zachowana
 		if (nodeJoint == subbase) {
-			subbase->value.Position = subbase->value.Position / subbase->child.size();
+			subbase->value.PositionTmp = subbase->value.PositionTmp / subbase->child.size();
 		}
 
 		if (nodeJoint->parent != tree->root && nodeJoint != tree->root) {
-			Vector2 previous_joint_vector = nodeJoint->parent->value.Position;
-			Vector2 current_joint_vector = nodeJoint->value.Position;
+			Vector2 previous_joint_vector = nodeJoint->parent->value.PositionTmp;
+			Vector2 current_joint_vector = nodeJoint->value.PositionTmp;
 			Vector2 direction = (previous_joint_vector - current_joint_vector).Normalize();
 
 			float joints_distance = DistanceBetweenJoints(nodeJoint);	
 
 			if (nodeJoint->parent->value.IsSubBase) {
 				subbase = nodeJoint->parent;
-				nodeJoint->parent->value.Position = nodeJoint->parent->value.Position + current_joint_vector + direction * joints_distance;
+				nodeJoint->parent->value.PositionTmp = nodeJoint->parent->value.PositionTmp + current_joint_vector + direction * joints_distance;
 			}
 			else {
-				nodeJoint->parent->value.Position = current_joint_vector + direction * joints_distance;
+				nodeJoint->parent->value.PositionTmp = current_joint_vector + direction * joints_distance;
 			}
 		}
 	});
@@ -185,14 +186,14 @@ void Fabrik2D::Forward() {
 
 void Fabrik2D::Backward() {
 	for (int i = 0; i < tree->root->child.size(); i++) {
-		tree->Preorder(tree->root->child.at(i), [&](Node<Joint>* nodeJoint) {
-			Vector2 current_joint_vector = nodeJoint->value.Position;
-			Vector2 previous_joint_vector = nodeJoint->parent->value.Position;
+		tree->Preorder(tree->root->child.at(i), [&](Node<Joint2D>* nodeJoint) {
+			Vector2 current_joint_vector = nodeJoint->value.PositionTmp;
+			Vector2 previous_joint_vector = nodeJoint->parent->value.PositionTmp;
 			Vector2 direction = (current_joint_vector - previous_joint_vector).Normalize();
 
 			float joints_distance = DistanceBetweenJoints(nodeJoint);
 
-			nodeJoint->value.Position = previous_joint_vector + direction * joints_distance;
+			nodeJoint->value.PositionTmp = previous_joint_vector + direction * joints_distance;
 		});
 	}
 }
