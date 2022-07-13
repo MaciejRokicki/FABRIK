@@ -21,8 +21,10 @@ public:
 protected:
 	Color default_color;
 	Color color = Color({ 0.9f, 0.9f, 0.9f, 1.0f });
-	Vertex* _vertices = NULL;
-	GLuint* _indices = NULL;
+	int _vertices_size = 0;
+	int _indices_size = 0;
+	Vertex* _vertices;
+	GLuint* _indices;
 private:
 	GLuint _vao = NULL;
 	GLuint _vertex_buffer = NULL;

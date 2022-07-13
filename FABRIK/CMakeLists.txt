@@ -46,7 +46,19 @@ add_executable (
 	"src/headers/node.h"
 	"src/node.cpp" 
 	"src/headers/tree.h" 
-	"src/headers/target2D.h"  "src/headers/object.h" "src/object.cpp"  )
+	"src/headers/target2D.h" 
+	"src/headers/object.h"
+	"src/object.cpp" 
+	"src/headers/object3D.h"
+	"src/object3D.cpp"
+	"src/headers/joint3D.h"
+	"src/headers/segment3D.h"
+	"src/joint3D.cpp" 
+	"src/segment3D.cpp"
+	"src/headers/target3D.h"
+	"src/target3D.cpp"
+	"src/headers/fabrik3D.h" 
+	"src/fabrik3D.cpp")
 
 target_link_libraries(FABRIK OpenGL::GL glew glfw)
 

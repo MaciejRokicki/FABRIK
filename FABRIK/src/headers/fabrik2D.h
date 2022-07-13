@@ -1,11 +1,10 @@
-#ifndef FABRIK2_H
-#define FABRIK2_H
+#ifndef FABRIK2D_H
+#define FABRIK2D_H
 
 #include <vector>
 
 #include "tree.h"
 #include "joint2D.h"
-#include "segment.h"
 #include "cameraProgram.h"
 #include "target2D.h"
 
@@ -29,4 +28,4 @@ public:
 	Target2D* SelectTargetByMouseButtonPressCallback(Vector2 space_pos);
 };
 
-#endif
+#endif // !FABRIK2D_H

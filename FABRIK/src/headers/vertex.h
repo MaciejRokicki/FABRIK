@@ -4,7 +4,7 @@
 #include "color.h"
 
 struct Vertex {
-	float postion[4];
+	float position[4];
 	Color color;
 };
 

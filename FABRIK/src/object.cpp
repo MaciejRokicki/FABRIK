@@ -11,40 +11,22 @@ Object::Object(Vector3 position, Vector3 scale, Color default_color) : Transform
 }
 
 void Object::Init() {
-    //const Vertex kVertices[4] = {
-    //    { { -0.1f, 0.0f,  0.0f, 1.0f }, color },
-    //    { { -0.1f, 2.0f,  0.0f, 1.0f }, color },
-    //    { {  0.1f, 2.0f,  0.0f, 1.0f }, color },
-    //    { {  0.1f, 0.0f,  0.0f, 1.0f }, color },
-    //};
-
-    const Vertex kVertices[4] = {
-        { { -0.5f, -0.5f,  0.0f, 1.0f }, color },
-        { { -0.5f,  0.5f,  0.0f, 1.0f }, color },
-        { {  0.5f, -0.5f,  0.0f, 1.0f }, color },
-        { {  0.5f,  0.5f,  0.0f, 1.0f }, color },
-    };
-
-    const GLuint kIndices[6] = {
-        0,1,2,  2,1,3
-    };
-
     glGenVertexArrays(1, &_vao);
     glBindVertexArray(_vao);
 
     glGenBuffers(1, &_vertex_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, _vertex_buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(kVertices), kVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(_vertices[0]) * _vertices_size, _vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(kVertices[0]), (GLvoid*)0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(_vertices[0]), (GLvoid*)0);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(kVertices[0]), (GLvoid*)sizeof(kVertices[0].postion));
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(_vertices[0]), (GLvoid*)sizeof(_vertices[0].position));
     glEnableVertexAttribArray(1);
 
     glGenBuffers(1, &_index_buffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _index_buffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(kIndices), kIndices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(_indices[0]) * _indices_size, _indices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -56,7 +38,7 @@ void Object::Draw(const ModelProgram& program) const {
 
     program.SetModelMatrix(_matrix);
 
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, _indices_size, GL_UNSIGNED_INT, 0);
 
     glBindVertexArray(0);
     glUseProgram(0);
@@ -73,6 +55,11 @@ void Object::SetColor(Color color, bool isDefaultColor) {
 
     this->color = color;
 
+    for (int i = 0; i < _vertices_size; i++) {
+        _vertices[i] = { {_vertices[i].position[0], _vertices[i].position[1], _vertices[i].position[2], _vertices[i].position[3] }, this->color };
+    }
+
+    this->~Object();
     Init();
 }
 

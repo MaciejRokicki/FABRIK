@@ -80,8 +80,8 @@ void Mat4::RotateX(float degrees)
 	float cosine = (float)cos(radians);
 
 	rotation.matrix_[5] = cosine;
-	rotation.matrix_[6] = sine;
-	rotation.matrix_[9] = -sine;
+	rotation.matrix_[6] = -sine;
+	rotation.matrix_[9] = sine;
 	rotation.matrix_[10] = cosine;
 
 	MultiplyBy(rotation);
@@ -95,8 +95,8 @@ void Mat4::RotateY(float degrees)
 	float cosine = (float)cos(radians);
 
 	rotation.matrix_[0] = cosine;
-	rotation.matrix_[2] = -sine;
-	rotation.matrix_[8] = sine;
+	rotation.matrix_[2] = sine;
+	rotation.matrix_[8] = -sine;
 	rotation.matrix_[10] = cosine;
 
 	MultiplyBy(rotation);
@@ -110,8 +110,8 @@ void Mat4::RotateZ(float degrees)
 	float cosine = (float)cos(radians);
 
 	rotation.matrix_[0] = cosine;
-	rotation.matrix_[1] = sine;
-	rotation.matrix_[4] = -sine;
+	rotation.matrix_[1] = -sine;
+	rotation.matrix_[4] = sine;
 	rotation.matrix_[5] = cosine;
 
 	MultiplyBy(rotation);

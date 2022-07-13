@@ -10,7 +10,7 @@
 Transform::Transform() { }
 
 Transform::Transform(Vector3 position, Vector3 scale) {
-    Scale(scale);
+    SetScale(scale);
     Translate(position);
 }
 
@@ -21,11 +21,11 @@ void Transform::Translate(Vector3 position) {
     _matrix.Translate(position.x, position.y, position.z);
 }
 
-void Transform::Scale(Vector3 scale) {
+void Transform::SetScale(Vector3 scale) {
     Vector3 tmp_vector{ _matrix[12], _matrix[13], _matrix[14] };
 
     Translate(!tmp_vector);
-    _matrix.Scale(scale.x, scale.y, 0.0f);
+    _matrix.Scale(scale.x, scale.y, scale.z);
     Translate(tmp_vector);
 }
 
@@ -44,5 +44,5 @@ void Transform::Rotate(Vector3 angle) {
 void Transform::LookAt(Transform& transform) {
     float angle = (180 / M_PI) * atan2(transform._matrix[12] - _matrix[12], transform._matrix[13] - _matrix[13]);
 
-    Rotate(Vector3{ 0.0f, 0.0f, -angle });
+    Rotate(Vector3{ 0.0f, 0.0f, angle });
 }

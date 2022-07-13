@@ -14,7 +14,7 @@ public:
 	Vector2 PositionTmp;
 	bool IsSubBase = false;
 	Segment2D* segment;
-	Joint2D(Vector2 position = Vector2::zero, Vector2 scale = { 0.5f, 0.5f }, Color default_color = { 1.0f, 0.0f, 0.0f, 1.0f });
+	Joint2D(Vector2 position = Vector2::zero, Vector2 scale = Vector2::one / 2, Color default_color = { 1.0f, 0.0f, 0.0f, 1.0f });
 };
 
 #endif // !JOINT2D_H

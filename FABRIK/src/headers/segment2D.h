@@ -9,7 +9,7 @@
 
 class Segment2D : public Object2D {
 public:
-	Segment2D(Vector2 position = Vector2::zero, Vector2 scale = { 0.5f, 0.5f }, Color color = { 0.9f, 0.9f, 0.9f, 1.0f });
+	Segment2D(Vector2 position = Vector2::zero, Vector2 scale = Vector2::one / 2, Color color = { 0.9f, 0.9f, 0.9f, 1.0f });
 };
 
 #endif // !SEGMENT2D_H
