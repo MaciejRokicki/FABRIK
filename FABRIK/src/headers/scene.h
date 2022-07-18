@@ -6,17 +6,18 @@
 
 #include "fabrik.h"
 #include "object.h"
-#include "modelProgram.h"
 #include "vector2.h"
 
 class Scene {
 private:
+	Camera* camera;
 	Fabrik* fabrik;
 	std::vector<Object*>* objects;
 	Object* selectedObject = NULL;
 
 	static Scene* BuildScene1();
 	static Scene* BuildScene2();
+	static Scene* BuildScene3();
 public:
 	static std::vector<Scene*>* scenes;
 
@@ -26,10 +27,12 @@ public:
 
 	static void BuildScenes();
 
-	Scene(Fabrik* fabrik);
-	Scene(Fabrik* fabrik, std::vector<Object*>* objects);
+	Scene(Camera* camera, Fabrik* fabrik);
+	Scene(Camera* camera, Fabrik* fabrik, std::vector<Object*>* objects);
+	Camera* GetCamera();
 	void Init();
-	void Draw(const ModelProgram& program);
+	void Draw(const Camera& camera);
+	void Unload();
 };
 
 #endif // SCENE_H

@@ -8,36 +8,36 @@
 
 using namespace std;
 
-void ShaderProgram::Init(const char* vertex_shader_file, const char* fragment_shader_file) {
-	vertex_shader_ = LoadAndCompileShaderOrDie(vertex_shader_file, GL_VERTEX_SHADER);
-	fragment_shader_ = LoadAndCompileShaderOrDie(fragment_shader_file, GL_FRAGMENT_SHADER);
+ShaderProgram::ShaderProgram() {
+	vertexShader = LoadAndCompileShaderOrDie(kVertexShader, GL_VERTEX_SHADER);
+	fragmentShader = LoadAndCompileShaderOrDie(kFragmentShader, GL_FRAGMENT_SHADER);
 
-	shader_program_ = AttachShadersOrDie(vertex_shader_, fragment_shader_);
+	shaderProgram = AttachShadersOrDie(vertexShader, fragmentShader);
 
-	glUseProgram(shader_program_);
+	glUseProgram(shaderProgram);
 	glUseProgram(0);
 }
 
-GLuint ShaderProgram::LoadAndCompileShaderOrDie(const char* source_file, GLenum type) {
-    int file_size;
-    char* shader_code;
+GLuint ShaderProgram::LoadAndCompileShaderOrDie(const char* sourceFile, GLenum type) {
+    int fileSize;
+    char* shaderCode;
     GLuint shader = glCreateShader(type);
-    ifstream file(source_file, ios::in | ios::ate | ios::binary);
+    ifstream file(sourceFile, ios::in | ios::ate | ios::binary);
 
     if (file.is_open()) {
-        file_size = (int)file.tellg();
-        shader_code = new char[file_size + 1];
+        fileSize = (int)file.tellg();
+        shaderCode = new char[fileSize + 1];
         file.seekg(0, ios::beg);
-        file.read(shader_code, file_size);
-        shader_code[file_size] = '\0';
+        file.read(shaderCode, fileSize);
+        shaderCode[fileSize] = '\0';
         file.close();
 
-        glShaderSource(shader, 1, (const GLchar**)&shader_code, NULL);
+        glShaderSource(shader, 1, (const GLchar**)&shaderCode, NULL);
         glCompileShader(shader);
-        delete[] shader_code;
+        delete[] shaderCode;
     }
     else {
-        cerr << "Could not open the file " << source_file << endl;
+        cerr << "Could not open the file " << sourceFile << endl;
         glfwTerminate();
         exit(EXIT_FAILURE);
     }
@@ -57,12 +57,12 @@ GLuint ShaderProgram::LoadAndCompileShaderOrDie(const char* source_file, GLenum 
         }
 
         std::cerr << "shader is failed to compile:" << std::endl;
-        GLint  log_size;
-        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &log_size);
-        char* log_msg = new char[static_cast<GLuint>(log_size)];
-        glGetShaderInfoLog(shader, log_size, nullptr, log_msg);
-        std::cerr << log_msg << std::endl;
-        delete[] log_msg;
+        GLint logSize;
+        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logSize);
+        char* logMsg = new char[static_cast<GLuint>(logSize)];
+        glGetShaderInfoLog(shader, logSize, nullptr, logMsg);
+        std::cerr << logMsg << std::endl;
+        delete[] logMsg;
 
         glfwTerminate();
         exit(EXIT_FAILURE);
@@ -71,44 +71,44 @@ GLuint ShaderProgram::LoadAndCompileShaderOrDie(const char* source_file, GLenum 
     return shader;
 }
 
-GLuint ShaderProgram::AttachShadersOrDie(GLuint vertex_shader, GLuint fragment_shader) {
-    GLuint new_program = glCreateProgram();
+GLuint ShaderProgram::AttachShadersOrDie(GLuint vertexShader, GLuint fragmentShader) {
+    GLuint newProgram = glCreateProgram();
 
-    glAttachShader(new_program, vertex_shader);
-    glAttachShader(new_program, fragment_shader);
+    glAttachShader(newProgram, vertexShader);
+    glAttachShader(newProgram, fragmentShader);
 
-    glLinkProgram(new_program);
+    glLinkProgram(newProgram);
 
     GLint linked;
-    glGetProgramiv(new_program, GL_LINK_STATUS, &linked);
+    glGetProgramiv(newProgram, GL_LINK_STATUS, &linked);
 
     if (!linked) {
         std::cerr << "Shader program failed to link" << std::endl;
 
-        GLint  log_size;
-        glGetProgramiv(new_program, GL_INFO_LOG_LENGTH, &log_size);
+        GLint  logSize;
+        glGetProgramiv(newProgram, GL_INFO_LOG_LENGTH, &logSize);
 
-        char* log_msg = new char[static_cast<GLuint>(log_size)];
-        glGetProgramInfoLog(new_program, log_size, nullptr, log_msg);
+        char* logMsg = new char[static_cast<GLuint>(logSize)];
+        glGetProgramInfoLog(newProgram, logSize, nullptr, logMsg);
 
-        std::cerr << log_msg << std::endl;
+        std::cerr << logMsg << std::endl;
 
-        delete[] log_msg;
+        delete[] logMsg;
         glfwTerminate();
         exit(EXIT_FAILURE);
     }
 
-    return new_program;
+    return newProgram;
 }
 
-GLint ShaderProgram::GetUniformLocationOrDie(const char* var_name)
+GLint ShaderProgram::GetUniformLocationOrDie(const char* varName)
 {
     GLint location = -1;
-    location = glGetUniformLocation(shader_program_, var_name);
+    location = glGetUniformLocation(shaderProgram, varName);
 
     if (location < 0)
     {
-        cerr << "ERROR: cannot find uniform location " << var_name << endl;
+        cerr << "ERROR: cannot find uniform location " << varName << endl;
         glfwTerminate();
         exit(EXIT_FAILURE);
     }
@@ -119,9 +119,9 @@ GLint ShaderProgram::GetUniformLocationOrDie(const char* var_name)
 ShaderProgram::~ShaderProgram() {
     glUseProgram(0);
 
-    glDetachShader(shader_program_, vertex_shader_);
-    glDetachShader(shader_program_, fragment_shader_);
+    glDetachShader(shaderProgram, vertexShader);
+    glDetachShader(shaderProgram, fragmentShader);
 
-    glDeleteShader(vertex_shader_);
-    glDeleteShader(fragment_shader_);
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
 }

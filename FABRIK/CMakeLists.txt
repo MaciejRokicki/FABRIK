@@ -20,13 +20,9 @@ add_executable (
 	"src/headers/window.h"
 	"src/window.cpp" 
 	"src/headers/shaderProgram.h"
-	"src/shaderProgram.cpp" 
-	"src/headers/cameraProgram.h"  
+	"src/shaderProgram.cpp" 	  
 	"src/headers/mat4.h" 
 	"src/mat4.cpp" 
-	"src/cameraProgram.cpp" 
-	"src/headers/modelProgram.h" 
-	"src/cameraModelProgram.cpp"
 	"src/headers/segment2D.h"
 	"src/segment2D.cpp"
 	"src/headers/vertex.h"
@@ -58,7 +54,13 @@ add_executable (
 	"src/headers/target3D.h"
 	"src/target3D.cpp"
 	"src/headers/fabrik3D.h" 
-	"src/fabrik3D.cpp" "src/headers/fabrik.h" "src/fabrik.cpp" "src/headers/scene.h" "src/scene.cpp")
+	"src/fabrik3D.cpp" 
+	"src/headers/fabrik.h" 
+	"src/fabrik.cpp"
+	"src/headers/scene.h" 
+	"src/scene.cpp" 
+	"src/headers/camera.h" 
+	"src/camera.cpp" "src/headers/orthographicCamera.h" "src/orthographicCamera.cpp" "src/headers/perspectiveCamera.h" "src/perspectiveCamera.cpp")
 
 target_link_libraries(FABRIK OpenGL::GL glew glfw)
 

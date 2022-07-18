@@ -4,18 +4,20 @@
 #include <GL/glew.h>
 
 class ShaderProgram {
-public:
-	void Init(const char* vertex_shader_file, const char* fragment_shader_file);
-	operator GLuint() const { return shader_program_; }
-	~ShaderProgram();
-protected:
-	GLuint shader_program_;
-	GLint GetUniformLocationOrDie(const char*);
 private:
-	GLuint vertex_shader_;
-	GLuint fragment_shader_;
-	GLuint LoadAndCompileShaderOrDie(const char* source_file, GLenum type);
-	GLuint AttachShadersOrDie(GLuint vertex_shader, GLuint fragment_shader);
+	const char* kVertexShader = "shaders/SimpleShader.vertex.glsl";
+	const char* kFragmentShader = "shaders/SimpleShader.fragment.glsl";
+	GLuint vertexShader;
+	GLuint fragmentShader;
+	GLuint LoadAndCompileShaderOrDie(const char* sourceFile, GLenum type);
+	GLuint AttachShadersOrDie(GLuint vertexShader, GLuint fragmentShader);
+protected:
+	GLuint shaderProgram;
+	GLint GetUniformLocationOrDie(const char* varName);
+public:
+	ShaderProgram();
+	operator GLuint() const { return shaderProgram; }
+	~ShaderProgram();
 };
 
 #endif //!SHADERPROGRAM_H

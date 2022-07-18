@@ -4,7 +4,6 @@
 #include <GL/glew.h>
 
 #include "object2D.h"
-#include "modelProgram.h"
 #include "mat4.h"
 
 class Segment2D : public Object2D {

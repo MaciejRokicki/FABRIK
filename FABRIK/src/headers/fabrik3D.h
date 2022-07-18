@@ -18,9 +18,10 @@ private:
 public:
 	Fabrik3D(Tree<Joint3D>* tree);
 	void Init();
-	void Draw(const ModelProgram& program) const;
+	void Draw(const Camera& camera) const;
 	void Solve();
 	Target3D* SelectTargetByMouseButtonPressCallback(Vector3 space_pos);
+	void Unload();
 };
 
 #endif // !FABRIK3D_H

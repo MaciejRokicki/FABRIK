@@ -4,7 +4,6 @@
 #include <functional>
 
 #include "node.h"
-#include "modelProgram.h"
 
 template <typename T>
 class Tree {

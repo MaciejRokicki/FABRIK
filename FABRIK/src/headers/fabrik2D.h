@@ -18,9 +18,10 @@ private:
 public:
 	Fabrik2D(Tree<Joint2D>* tree);
 	void Init();
-	void Draw(const ModelProgram& program) const;
+	void Draw(const Camera& camera) const;
 	void Solve();
 	Target2D* SelectTargetByMouseButtonPressCallback(Vector3 space_pos);
+	void Unload();
 };
 
 #endif // !FABRIK2D_H

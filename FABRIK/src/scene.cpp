@@ -5,10 +5,14 @@
 #include "headers/fabrik2D.h"
 #include "headers/joint3D.h"
 #include "headers/fabrik3D.h"
+#include "headers/orthographicCamera.h"
+#include "headers/perspectiveCamera.h"
+#include "headers/main.h"
 
 std::vector<Scene*>* Scene::scenes = new std::vector<Scene*>();
 
-Scene::Scene(Fabrik* fabrik) {
+Scene::Scene(Camera* camera, Fabrik* fabrik) {
+    this->camera = camera;
 	this->fabrik = fabrik;
 	this->objects = new std::vector<Object*>();
 
@@ -17,13 +21,18 @@ Scene::Scene(Fabrik* fabrik) {
     this->Update = [] { return; };
 }
 
-Scene::Scene(Fabrik* fabrik, std::vector<Object*>* objects) {
+Scene::Scene(Camera* camera, Fabrik* fabrik, std::vector<Object*>* objects) {
+    this->camera = camera;
 	this->fabrik = fabrik;
 	this->objects = objects;
 
     this->KeyEvent = [](int, int) { return; };
     this->MouseButtonEvent = [](int, int, Vector2) { return; };
     this->Update = [] { return; };
+}
+
+Camera* Scene::GetCamera() {
+    return camera;
 }
 
 void Scene::Init() {
@@ -34,15 +43,90 @@ void Scene::Init() {
 	}
 }
 
-void Scene::Draw(const ModelProgram& program) {
-	fabrik->Draw(program);
+void Scene::Draw(const Camera& camera) {
+	fabrik->Draw(camera);
 
 	for (int i = 0; i < objects->size(); i++) {
-		objects->at(i)->Draw(program);
+		objects->at(i)->Draw(camera);
 	}
 }
 
+void Scene::Unload() {
+    for (int i = 0; i < objects->size(); i++) {
+        objects->at(i)->~Object();
+    }
+
+    fabrik->Unload();
+}
+
 Scene* Scene::BuildScene1() {
+    Camera* camera = new OrthographicCamera(70, 0, 0, 0.1f, 100.0f);
+
+    Node<Joint2D>* root = new Node<Joint2D>(Joint2D(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
+    root->next(Joint2D({ 0.0f, 1.0f }, { 0.35f, 0.35f }));
+    root->child[0]->next(Joint2D({ 0.0f, 1.5f }, { 0.35f, 0.35f }));
+    root->child[0]->child[0]->next(Joint2D({0.0f, 2.0f}, {0.35f, 0.35f}));
+    root->child[0]->child[0]->child[0]->next(Joint2D({0.0f, 2.5f}, {0.35f, 0.35f}));
+    root->child[0]->child[0]->child[0]->child[0]->next(Joint2D({0.0f, 3.0f}, {0.35f, 0.35f}));
+    root->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint2D({0.0f, 3.5f}, {0.35f, 0.35f}));
+    root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint2D({0.0f, 4.0f}, {0.35f, 0.35f}));
+    root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint2D({0.0f, 4.5f}, {0.35f, 0.35f}));
+    root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint2D({0.0f, 5.0f}, {0.35f, 0.35f}));
+    root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint2D({0.0f, 5.5f}, {0.35f, 0.35f}));
+
+    Tree<Joint2D>* tree = new Tree<Joint2D>(root);
+    Fabrik* fabrik = new Fabrik2D(tree);
+
+    Scene* scene = new Scene(camera, fabrik);
+
+    std::function<void(int, int)> keyEvent = [fabrik](int key, int action) {
+        if (action == GLFW_PRESS) {
+            switch (key) {
+            case GLFW_KEY_SPACE:
+                fabrik->Solve();
+                break;
+            }
+        }
+    };
+
+    std::function<void(int, int, Vector2)> mouseEvent = [fabrik, scene](
+        int button,
+        int action,
+        Vector2 space_pos) {
+            if (action == GLFW_PRESS) {
+                switch (button) {
+                case GLFW_MOUSE_BUTTON_1:
+                    scene->selectedObject = fabrik->SelectTargetByMouseButtonPressCallback(space_pos);
+
+                    if (scene->selectedObject != NULL) {
+                        scene->selectedObject->SetColor({ 0.0f, 1.0f, 0.0f });
+                    }
+
+                    break;
+                }
+            }
+            else if (action == GLFW_RELEASE) {
+                switch (button) {
+                case GLFW_MOUSE_BUTTON_1:
+                    if (scene->selectedObject != NULL) {
+                        scene->selectedObject->Translate({ space_pos.x, space_pos.y, 0.0f });
+                        scene->selectedObject->SetDefaultColor();
+                        scene->selectedObject = NULL;
+                    }
+                    break;
+                }
+            }
+    };
+
+    scene->KeyEvent = keyEvent;
+    scene->MouseButtonEvent = mouseEvent;
+
+    return scene;
+}
+
+Scene* Scene::BuildScene2() {
+    Camera* camera = new OrthographicCamera(70, 0, 0, 0.1f, 100.0f);
+
     Node<Joint2D>* root = new Node<Joint2D>(Joint2D(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
     root->next(Joint2D({ 0.0f, 3.00f }, { 0.35f, 0.35f }));                           //tulow - 0
     root->child[0]->next(Joint2D({ 0.0f, 4.00f }, { 0.35f, 0.35f }));                 //szyja - 0
@@ -59,7 +143,7 @@ Scene* Scene::BuildScene1() {
     Tree<Joint2D>* tree = new Tree<Joint2D>(root);
     Fabrik* fabrik = new Fabrik2D(tree);
 
-    Scene* scene = new Scene(fabrik);
+    Scene* scene = new Scene(camera, fabrik);
 
     std::function<void(int, int)> keyEvent = [fabrik](int key, int action) {
         if (action == GLFW_PRESS) {
@@ -106,7 +190,10 @@ Scene* Scene::BuildScene1() {
     return scene;
 }
 
-Scene* Scene::BuildScene2() {
+Scene* Scene::BuildScene3() {
+    Camera* camera = new PerspectiveCamera(60, 0, 0, 0.1f, 1000.0f);
+    camera->Translate(Vector3{-2.0f, -3.0f, 0.0f});
+
     std::vector<Object*>* objects = new std::vector<Object*>{
         new Object3D(Vector3{ 0.0f,  0.0f, -10.0f }, Vector3{ 100.0f, 100.0f, 1.0f }, Color{ 0.3f, 0.3f, 0.3f }),
         new Object3D(Vector3{ 0.0f,  0.0f, -10.0f }, Vector3{ 100.0f, 100.0f, 1.0f }, Color{ 0.4f, 0.4f, 0.4f }),
@@ -136,7 +223,7 @@ Scene* Scene::BuildScene2() {
     Tree<Joint3D>* tree = new Tree<Joint3D>(root);
     Fabrik* fabrik = new Fabrik3D(tree);
 
-    Scene* scene = new Scene(fabrik, objects);
+    Scene* scene = new Scene(camera, fabrik, objects);
 
     std::function<void(int, int)> keyEvent = [fabrik](int key, int action) {
         if (action == GLFW_PRESS) {
@@ -160,4 +247,5 @@ Scene* Scene::BuildScene2() {
 void Scene::BuildScenes() {
     Scene::scenes->push_back(BuildScene1());
     Scene::scenes->push_back(BuildScene2());
+    Scene::scenes->push_back(BuildScene3());
 }

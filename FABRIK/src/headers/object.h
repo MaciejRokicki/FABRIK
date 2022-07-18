@@ -5,19 +5,19 @@
 
 #include "transform.h"
 #include "vertex.h"
-#include "modelProgram.h"
 #include "mat4.h"
 #include "vector3.h"
+#include "camera.h"
 
 class Object : public Transform {
 public:
 	Object();
 	Object(Vector3 position, Vector3 scale, Color default_color);
 	void Init();
-	void Draw(const ModelProgram& program) const;
+	void Draw(const Camera& camera) const;
 	void SetDefaultColor();
 	void SetColor(Color color, bool isDefaultColor = false);
-	~Object();
+	virtual ~Object();
 protected:
 	Color default_color;
 	Color color = Color({ 0.9f, 0.9f, 0.9f, 1.0f });

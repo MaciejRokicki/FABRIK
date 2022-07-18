@@ -7,46 +7,37 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "modelProgram.h"
-#include "shaderProgram.h"
 #include "mat4.h"
 #include "vector2.h"
 #include "scene.h"
+#include "camera.h"
 
 class Window {
-public:
-    Window(const char*, int, int);
-    void Init(int major_gl_version, int minor_gl_version);
-    void Resize(int new_width, int new_height);
-    void KeyEvent(int key, int scancode, int action, int mods);
-    void MouseButtonEvent(int button, int action, int mods);
-    void LoadScene(Scene* scene);
-    Vector2 MousePositionToSpacePosition(double x, double y);
-    void Run(void);
-    operator GLFWwindow* () { return window_; }
 private:
-    int width_;
-    int height_;
-    const char* title_;
-    GLFWwindow* window_;
-
-    ModelProgram model_program_;
+    int width;
+    int height;
+    const char* title;
+    GLFWwindow* window = NULL;
 
     //clock_t last_time_;
 
-    Mat4 view_matrix_;
-    Mat4 projection_matrix_;
+    Camera* camera = NULL;
 
     Scene* scene;
     int sceneId = 0;
 
     void InitModels();
-    void InitPrograms();
-    void SetViewMatrix() const;
-    void SetProjectionMatrix() const;
-
-    void InitGlfwOrDie(int major_gl_version, int minor_gl_version);
+    void InitGlfwOrDie(int majorGlVersion, int minorGlVersion);
     void InitGlewOrDie();
+public:
+    Window(const char*, int, int);
+    void Init(int majorGlVersion, int minorGlVersion);
+    void Resize(int newWidth, int newHeight);
+    void KeyEvent(int key, int scancode, int action, int mods);
+    void MouseButtonEvent(int button, int action, int mods);
+    void LoadScene(Scene* scene);
+    void Run(void);
+    operator GLFWwindow* () { return window; }
 };
 
 #endif // !WINDOW_H

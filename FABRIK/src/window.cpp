@@ -16,20 +16,18 @@
 #include "tree.cpp"
 #include "headers/object3D.h"
 #include "headers/fabrik3D.h"
-
-const char* kVertexShader = "shaders/SimpleShader.vertex.glsl";
-const char* kFragmentShader = "shaders/SimpleShader.fragment.glsl";
-const int s = 70;
+#include "headers/orthographicCamera.h"
+#include "headers/perspectiveCamera.h"
 
 Window::Window(const char* title, int width, int height) {
-    title_ = title;
-    width_ = width;
-    height_ = height;
+    this->title = title;
+    this->width = width;
+    this->height = height;
     //last_time_ = 0;
 }
 
-void Window::Init(int major_gl_version, int minor_gl_version) {
-    InitGlfwOrDie(major_gl_version, minor_gl_version);
+void Window::Init(int majorGlVersion, int minorGlVersion) {
+    InitGlfwOrDie(majorGlVersion, minorGlVersion);
     InitGlewOrDie();
 
     std::cout << "OpenGL initialized: OpenGL version: " << glGetString(GL_VERSION) << " GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
@@ -37,45 +35,38 @@ void Window::Init(int major_gl_version, int minor_gl_version) {
     Scene::BuildScenes();
     LoadScene(Scene::scenes->at(sceneId));
 
+    camera = scene->GetCamera();
+    camera->Resize(width, height);
+
     InitModels();
-    InitPrograms();
-
-    //view_matrix_.Translate(0.0f, 0.0f, -10.0f);      //2D
-    //view_matrix_.Translate(-13.0f, -2.0f, -10.0f); //3D
-    //view_matrix_.RotateY(45.0f);                   //3D
-    SetViewMatrix();
-
-    //projection_matrix_ = Mat4::CreatePerspectiveProjectionMatrix(60, (float)width_ / (float)height_, 0.1f, 1000.0f); //3D
-    projection_matrix_ = Mat4::CreateOrthographicProjectionMatrix(-(float)width_ / s, (float)width_ / s, -(float)height_ / s, (float)height_ / s, 0.1f, 100.0f); //2D
-    SetProjectionMatrix();
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
-void Window::InitGlfwOrDie(int major_gl_version, int minor_gl_version) {
+void Window::InitGlfwOrDie(int majorGlVersion, int minorGlVersion) {
     if (!glfwInit()) {
         std::cerr << "ERROR: Could not initialize GLFW" << std::endl;
         exit(EXIT_FAILURE);
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major_gl_version);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor_gl_version);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, majorGlVersion);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minorGlVersion);
 
     #ifdef DEBUG
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
     #endif
 
-    window_ = glfwCreateWindow(width_, height_, title_, nullptr, nullptr);
+    window = glfwCreateWindow(width, height, title, nullptr, nullptr);
 
-    if (!window_) {
+    if (!window) {
         std::cerr << "ERROR: Could not create a new rendering window" << std::endl;
         glfwTerminate();
         exit(EXIT_FAILURE);
     }
 
-    glfwMakeContextCurrent(window_);
+    glfwMakeContextCurrent(window);
 }
 
 void Window::InitGlewOrDie() {
@@ -111,27 +102,13 @@ void Window::InitModels() {
     scene->Init();
 }
 
-void Window::InitPrograms() {
-    model_program_.Init(kVertexShader, kFragmentShader);
-}
+void Window::Resize(int newWidth, int newHeight) {
+    width = newWidth;
+    height = newHeight;
 
-void Window::SetViewMatrix() const {
-    glUseProgram(model_program_);
-    model_program_.SetViewMatrix(view_matrix_);
-}
+    camera->Resize(width, height);
 
-void Window::SetProjectionMatrix() const {
-    glUseProgram(model_program_);
-    model_program_.SetProjectionMatrix(projection_matrix_);
-}
-
-void Window::Resize(int new_width, int new_height) {
-    width_ = new_width;
-    height_ = new_height;
-    projection_matrix_ = Mat4::CreateOrthographicProjectionMatrix(-(float)width_ / 70, (float)width_ / 70, -(float)height_ / 70, (float)height_ / 70, 0.1f, 100.0f); //2D
-    //projection_matrix_ = Mat4::CreatePerspectiveProjectionMatrix(60, (float)width_ / (float)height_, 0.1f, 1000.0f); //3D
-    SetProjectionMatrix();
-    glViewport(0, 0, width_, height_);
+    glViewport(0, 0, width, height);
 }
 
 void Window::KeyEvent(int key, int /*scancode*/, int action, int /*mods*/) {
@@ -140,27 +117,23 @@ void Window::KeyEvent(int key, int /*scancode*/, int action, int /*mods*/) {
     if (action == GLFW_PRESS) {
         switch (key) {
             case GLFW_KEY_ESCAPE:
-                glfwSetWindowShouldClose(window_, GLFW_TRUE);
+                glfwSetWindowShouldClose(window, GLFW_TRUE);
                 break;
 
             case GLFW_KEY_W:
-                view_matrix_.Translate(0.0f, -1.0f, 0.0f);
-                SetViewMatrix();
+                camera->Translate(Vector3{ 0.0f, -1.0f, 0.0f });
                 break;
 
             case GLFW_KEY_A:
-                view_matrix_.Translate(1.0f, 0.0f, 0.0f);
-                SetViewMatrix();
+                camera->Translate(Vector3{ 1.0f, 0.0f, 0.0f });
                 break;
 
             case GLFW_KEY_S:
-                view_matrix_.Translate(0.0f, 1.0f, 0.0f);
-                SetViewMatrix();
+                camera->Translate(Vector3{ 0.0f, 1.0f, 0.0f });
                 break;
 
             case GLFW_KEY_D:
-                view_matrix_.Translate(-1.0f, 0.0f, 0.0f);
-                SetViewMatrix();
+                camera->Translate(Vector3{ -1.0f, 0.0f, 0.0f });
                 break;
 
             case GLFW_KEY_1:
@@ -189,23 +162,19 @@ void Window::KeyEvent(int key, int /*scancode*/, int action, int /*mods*/) {
     else if (action == GLFW_REPEAT) {
         switch (key) {
             case GLFW_KEY_W:
-                view_matrix_.Translate(0.0f, -1.0f, 0.0f);
-                SetViewMatrix();
+                camera->Translate(Vector3{ 0.0f, -1.0f, 0.0f });
                 break;
 
             case GLFW_KEY_A:
-                view_matrix_.Translate(1.0f, 0.0f, 0.0f);
-                SetViewMatrix();
+                camera->Translate(Vector3{ 1.0f, 0.0f, 0.0f });
                 break;
 
             case GLFW_KEY_S:
-                view_matrix_.Translate(0.0f, 1.0f, 0.0f);
-                SetViewMatrix();
+                camera->Translate(Vector3{ 0.0f, 1.0f, 0.0f });
                 break;
 
             case GLFW_KEY_D:
-                view_matrix_.Translate(-1.0f, 0.0f, 0.0f);
-                SetViewMatrix();
+                camera->Translate(Vector3{ -1.0f, 0.0f, 0.0f });
                 break;
 
             default:
@@ -215,34 +184,26 @@ void Window::KeyEvent(int key, int /*scancode*/, int action, int /*mods*/) {
 }
 
 void Window::MouseButtonEvent(int button, int action, int mods) {
-    double x_pos, y_pos;
-    glfwGetCursorPos(window_, &x_pos, &y_pos);
-    Vector2 space_pos = MousePositionToSpacePosition(x_pos, y_pos);
+    double xPosition, yPosition;
+    glfwGetCursorPos(window, &xPosition, &yPosition);
+    Vector2 worldPosition = camera->CameraToWorldPosition(xPosition, yPosition);
 
-    scene->MouseButtonEvent(button, action, space_pos);
+    scene->MouseButtonEvent(button, action, worldPosition);
 }
 
 void Window::LoadScene(Scene* scene) {
+    if (this->scene != NULL) {
+        scene->Unload();
+    }
+
     this->scene = scene;
-}
-
-Vector2 Window::MousePositionToSpacePosition(double x, double y) {
-    x /= s;
-    x -= (double)width_ / s / 2.0;
-    x *= 2;
-
-    y /= s;
-    y -= (double)height_ / s / 2.0;
-    y *= -2;
-
-    x -= view_matrix_[12];
-    y -= view_matrix_[13];
-
-    return { (float)(round(x * 10.0) / 10.0), (float)(round(y * 10.0) / 10.0) };
+    camera = scene->GetCamera();
+    camera->Resize(width, height);
+    this->scene->Init();
 }
 
 void Window::Run(void) {
-    while (!glfwWindowShouldClose(window_)) {
+    while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         //clock_t now = clock();
 
@@ -254,9 +215,9 @@ void Window::Run(void) {
 
         scene->Update();
 
-        scene->Draw(model_program_);
+        scene->Draw(*camera);
 
-        glfwSwapBuffers(window_);
+        glfwSwapBuffers(window);
         glfwPollEvents();
     }
 }

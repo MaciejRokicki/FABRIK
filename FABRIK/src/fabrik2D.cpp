@@ -52,21 +52,23 @@ void Fabrik2D::Init() {
 	}
 }
 
-void Fabrik2D::Draw(const ModelProgram& program) const {
-	tree->Preorder([program](Node<Joint2D>* nodeJoint) {
-		nodeJoint->value.Draw(program);
+void Fabrik2D::Draw(const Camera& camera) const {
+	tree->Preorder([&camera](Node<Joint2D>* nodeJoint) {
+		nodeJoint->value.Draw(camera);
 
 		if (nodeJoint->value.segment) {
-			nodeJoint->value.segment->Draw(program);
+			nodeJoint->value.segment->Draw(camera);
 		}
 	});
 
 	for (int i = 0; i < this->targets->size(); i++) {
-		this->targets->at(i)->Draw(program);
+		this->targets->at(i)->Draw(camera);
 	}
 }
 
 void Fabrik2D::Solve() {
+	runs++;
+
 	auto begin = std::chrono::high_resolution_clock::now();
 	int iterations = 0;
 
@@ -101,7 +103,18 @@ void Fabrik2D::Solve() {
 	auto end = std::chrono::high_resolution_clock::now();
 	auto elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
 
-	std::cout << "Iterations: " << iterations << " Execution time: " << elapsedTime.count() * 1e-3 << "ms" << " Reachable targets: " << reachableTargetsCounter << " Accuracy: " << (1 - accuracy) * 1e2 << std::endl;
+	double executionTime = elapsedTime.count() * 1e-3;
+	double timePerIteration = elapsedTime.count() * 1e-3 / iterations;
+
+	executionTimeSum += executionTime;
+	tpiSum += timePerIteration;
+
+	std::cout <<"[" << runs << "]"
+		<< " Iterations: " << iterations
+		<< " Execution time: " << executionTime  << "ms" << " (AVG: " << executionTimeSum / runs << "ms)"
+		<< " TPI: " << timePerIteration << "ms" << " (AVG: " << tpiSum / runs << "ms)"
+		<< " Reachable targets: " << reachableTargetsCounter
+		<< " Accuracy: " << (1 - accuracy) * 1e2 << std::endl;
 }
 
 Target2D* Fabrik2D::SelectTargetByMouseButtonPressCallback(Vector3 space_pos) {
@@ -196,4 +209,15 @@ void Fabrik2D::Backward() {
 			nodeJoint->value.PositionTmp = previous_joint_vector + direction * joints_distance;
 		});
 	}
+}
+
+void Fabrik2D::Unload() {
+	for (int i = 0; i < targets->size(); i++) {
+		targets->at(i)->~Target2D();
+	}
+
+	tree->Preorder([](Node<Joint2D>* nodeJoint) {
+		nodeJoint->value.segment->~Segment2D();
+		nodeJoint->value.~Joint2D();
+	});
 }

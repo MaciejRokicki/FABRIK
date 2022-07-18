@@ -32,11 +32,11 @@ void Object::Init() {
     glBindVertexArray(0);
 }
 
-void Object::Draw(const ModelProgram& program) const {
-    glUseProgram(program);
+void Object::Draw(const Camera& camera) const {
+    glUseProgram(camera);
     glBindVertexArray(_vao);
 
-    program.SetModelMatrix(_matrix);
+    camera.SetModelMatrix(_matrix);
 
     glDrawElements(GL_TRIANGLES, _indices_size, GL_UNSIGNED_INT, 0);
 
