@@ -1,19 +1,14 @@
 #ifndef FABRIK3D_H
 #define FABRIK3D_H
 
-#include <vector>
-
-#include "tree.h"
-#include "joint3D.h"
-#include "cameraProgram.h"
+#include "fabrik.h"
 #include "target3D.h"
 
-class Fabrik3D {
+class Fabrik3D : public Fabrik {
 private:
 	Tree<Joint3D>* tree;
 	std::vector<Target3D*>* targets;
-	float tolerance;
-	int iterations_limit = 100;
+
 	bool IsReachable(Node<Joint3D>* root, Target3D* target);
 	float DistanceBetweenJoints(Node<Joint3D>* nodeJoint);
 	void ConnectJoints(Node<Joint3D>* nodeJoint);

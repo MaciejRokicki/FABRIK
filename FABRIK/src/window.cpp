@@ -21,12 +21,6 @@ const char* kVertexShader = "shaders/SimpleShader.vertex.glsl";
 const char* kFragmentShader = "shaders/SimpleShader.fragment.glsl";
 const int s = 70;
 
-Object* selectedObject = NULL;
-
-//Fabrik2D* fabrik2d = NULL;
-Fabrik3D* fabrik3d = NULL;
-std::vector<Object3D> walls;
-
 Window::Window(const char* title, int width, int height) {
     title_ = title;
     width_ = width;
@@ -40,59 +34,19 @@ void Window::Init(int major_gl_version, int minor_gl_version) {
 
     std::cout << "OpenGL initialized: OpenGL version: " << glGetString(GL_VERSION) << " GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
 
-    //Node<Joint2D>* root = new Node<Joint2D>(Joint2D(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
-    //root->next(Joint2D({ 0.0f, 3.00f }, { 0.35f, 0.35f }));                           //tulow - 0
-    //root->child[0]->next(Joint2D({ 0.0f, 4.00f }, { 0.35f, 0.35f }));                 //szyja - 0
-    //root->child[0]->next(Joint2D({ -1.0f, 2.50f }, { 0.35f, 0.35f }));                //lewe ramie - 1
-    //root->child[0]->child[1]->next(Joint2D({ -1.0f, 1.00f }, { 0.35f, 0.35f }));      //lewe przedramie
-    //root->child[0]->next(Joint2D({ 1.0f, 2.50f }, { 0.35f, 0.35f }));                 //prawe ramie - 2
-    //root->child[0]->child[2]->next(Joint2D({ 1.0f, 1.00f }, { 0.35f, 0.35f }));       //prawe przedramie
-
-    //root->next(Joint2D({ -1.0f, -1.00f }, { 0.35f, 0.35f }));                         //lewe udo - 1
-    //root->child[1]->next(Joint2D({ -1.0f, -3.00f }, { 0.35f, 0.35f }));               //lewy piszczel
-    //root->next(Joint2D({ 1.0f, -1.00f }, { 0.35f, 0.35f }));                          //prawe udo - 2
-    //root->child[2]->next(Joint2D({ 1.0f, -3.00f }, { 0.35f, 0.35f }));                //prawy piszczel
-
-    //Tree<Joint2D>* tree = new Tree<Joint2D>(root);
-
-    //fabrik2d = new Fabrik2D(tree);
-
-    walls.push_back(Object3D(Vector3{ 0.0f, 0.0f, -10.0f }, Vector3{ 100.0f, 100.0f, 1.0f }, Color{ 0.3f, 0.3f, 0.3f }));
-    walls.push_back(Object3D(Vector3{ 0.0f, 0.0f, -10.0f }, Vector3{ 100.0f, 100.0f, 1.0f }, Color{ 0.4f, 0.4f, 0.4f }));
-    walls.push_back(Object3D(Vector3{ 0.0f, -5.0f, -10.0f }, Vector3{ 100.0f, 1.0f, 100.0f }, Color{ 0.5f, 0.5f, 0.5f }));
-
-    walls.at(0).Rotate(Vector3{ 0.0f, 45.0f, 0.0f });
-    walls.at(1).Rotate(Vector3{ 0.0f, -45.0f, 0.0f });
-
-    Node<Joint3D>* root = new Node<Joint3D>(Joint3D(Vector3::zero, Vector3::one / 2, { 0.5f, 0.0f, 1.0f, 1.0f }));
-
-    root->next(Joint3D(Vector3{ 0.0f, 1.0f, 0.0f }, Vector3::one / 3));
-    root->child[0]->next(Joint3D(Vector3{ 0.0f, 2.0f, 0.0f }, Vector3::one / 3));
-    root->child[0]->child[0]->next(Joint3D(Vector3{ 1.0f, 3.0f, 0.0f }, Vector3::one / 3));
-    root->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 2.0f, 4.0f, 0.0f }, Vector3::one / 3));
-    root->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 3.0f, 3.0f, 0.0f }, Vector3::one / 3));
-    root->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 4.0f, 2.0f, 0.0f }, Vector3::one / 3));
-    root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 5.0f, 1.0f, 0.0f }, Vector3::one / 3));
-    root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 6.0f, 0.0f, 0.0f }, Vector3::one / 3));
-
-    root->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 2.0f, 5.0f, 0.0f }, Vector3::one / 3));
-    root->child[0]->child[0]->child[0]->child[1]->next(Joint3D(Vector3{ 3.0f, 6.0f, 0.0f }, Vector3::one / 3));
-    root->child[0]->child[0]->child[0]->child[1]->child[0]->next(Joint3D(Vector3{ 4.0f, 7.0f, 0.0f }, Vector3::one / 3));
-    root->child[0]->child[0]->child[0]->child[1]->child[0]->child[0]->next(Joint3D(Vector3{ 2.0f, 6.0f, 0.0f }, Vector3::one / 3));
-    root->child[0]->child[0]->child[0]->child[1]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 1.0f, 4.0f, 0.0f }, Vector3::one / 3));
-
-    Tree<Joint3D>* tree = new Tree<Joint3D>(root);
-    fabrik3d = new Fabrik3D(tree);
+    Scene::BuildScenes();
+    LoadScene(Scene::scenes->at(sceneId));
 
     InitModels();
     InitPrograms();
 
-    view_matrix_.Translate(-13.0f, -2.0f, -10.0f); //3D
-    view_matrix_.RotateY(45.0f);                //3D
+    //view_matrix_.Translate(0.0f, 0.0f, -10.0f);      //2D
+    //view_matrix_.Translate(-13.0f, -2.0f, -10.0f); //3D
+    //view_matrix_.RotateY(45.0f);                   //3D
     SetViewMatrix();
 
-    projection_matrix_ = Mat4::CreatePerspectiveProjectionMatrix(60, (float)width_ / (float)height_, 0.1f, 1000.0f); //3D
-    //projection_matrix_ = Mat4::CreateOrthographicProjectionMatrix(-(float)width_ / s, (float)width_ / s, -(float)height_ / s, (float)height_ / s, 0.1f, 100.0f); //2D
+    //projection_matrix_ = Mat4::CreatePerspectiveProjectionMatrix(60, (float)width_ / (float)height_, 0.1f, 1000.0f); //3D
+    projection_matrix_ = Mat4::CreateOrthographicProjectionMatrix(-(float)width_ / s, (float)width_ / s, -(float)height_ / s, (float)height_ / s, 0.1f, 100.0f); //2D
     SetProjectionMatrix();
 
     glEnable(GL_DEPTH_TEST);
@@ -154,12 +108,7 @@ void Window::InitGlewOrDie() {
 }
 
 void Window::InitModels() {
-    //fabrik2d->Init();
-    fabrik3d->Init();
-
-    for (int i = 0; i < walls.size(); i++) {
-        walls.at(i).Init();
-    }
+    scene->Init();
 }
 
 void Window::InitPrograms() {
@@ -179,13 +128,15 @@ void Window::SetProjectionMatrix() const {
 void Window::Resize(int new_width, int new_height) {
     width_ = new_width;
     height_ = new_height;
-    //projection_matrix_ = Mat4::CreateOrthographicProjectionMatrix(-(float)width_ / 70, (float)width_ / 70, -(float)height_ / 70, (float)height_ / 70, 0.1f, 100.0f); //2D
-    projection_matrix_ = Mat4::CreatePerspectiveProjectionMatrix(60, (float)width_ / (float)height_, 0.1f, 1000.0f); //3D
+    projection_matrix_ = Mat4::CreateOrthographicProjectionMatrix(-(float)width_ / 70, (float)width_ / 70, -(float)height_ / 70, (float)height_ / 70, 0.1f, 100.0f); //2D
+    //projection_matrix_ = Mat4::CreatePerspectiveProjectionMatrix(60, (float)width_ / (float)height_, 0.1f, 1000.0f); //3D
     SetProjectionMatrix();
     glViewport(0, 0, width_, height_);
 }
 
 void Window::KeyEvent(int key, int /*scancode*/, int action, int /*mods*/) {
+    scene->KeyEvent(key, action);
+
     if (action == GLFW_PRESS) {
         switch (key) {
             case GLFW_KEY_ESCAPE:
@@ -212,9 +163,23 @@ void Window::KeyEvent(int key, int /*scancode*/, int action, int /*mods*/) {
                 SetViewMatrix();
                 break;
 
-            case GLFW_KEY_SPACE:
-                //fabrik2d->Solve();
-                fabrik3d->Solve();
+            case GLFW_KEY_1:
+                sceneId--;
+
+                if (sceneId < 0) {
+                    sceneId = Scene::scenes->size() - 1;
+                }
+                LoadScene(Scene::scenes->at(sceneId));
+                break;
+
+            case GLFW_KEY_2:
+                sceneId++;
+
+                if (sceneId >= Scene::scenes->size()) {
+                    sceneId = 0;
+                }
+
+                LoadScene(Scene::scenes->at(sceneId));
                 break;
 
             default:
@@ -250,45 +215,15 @@ void Window::KeyEvent(int key, int /*scancode*/, int action, int /*mods*/) {
 }
 
 void Window::MouseButtonEvent(int button, int action, int mods) {
-    if (action == GLFW_PRESS) {
-        switch (button) {
-            case GLFW_MOUSE_BUTTON_1:
-                //double x_pos, y_pos;
-                //glfwGetCursorPos(window_, &x_pos, &y_pos);
+    double x_pos, y_pos;
+    glfwGetCursorPos(window_, &x_pos, &y_pos);
+    Vector2 space_pos = MousePositionToSpacePosition(x_pos, y_pos);
 
-                //Vector2 space_pos = MousePositionToSpacePosition(x_pos, y_pos);
+    scene->MouseButtonEvent(button, action, space_pos);
+}
 
-                //selectedObject = fabrik2d->SelectTargetByMouseButtonPressCallback(space_pos);
-
-                //if (selectedObject != NULL) {
-                //    selectedObject->SetColor({ 0.0f, 1.0f, 0.0f });
-                //}
-
-                break;
-
-            default:
-                break;
-        }
-    }
-    else if (action == GLFW_RELEASE) {
-        switch (button) {
-            case GLFW_MOUSE_BUTTON_1:
-                //double x_pos, y_pos;
-                //glfwGetCursorPos(window_, &x_pos, &y_pos);
-
-                //Vector2 space_pos = MousePositionToSpacePosition(x_pos, y_pos);
-
-                //if (selectedObject != NULL) {
-                //    selectedObject->Translate({ space_pos.x, space_pos.y, 0.0f });
-                //    selectedObject->SetDefaultColor();
-                //    selectedObject = NULL;
-                //}
-            break;
-
-        default:
-            break;
-        }
-    }
+void Window::LoadScene(Scene* scene) {
+    this->scene = scene;
 }
 
 Vector2 Window::MousePositionToSpacePosition(double x, double y) {
@@ -317,11 +252,9 @@ void Window::Run(void) {
 
         //last_time_ = now;
 
-        //fabrik2d->Draw(model_program_);
-        fabrik3d->Draw(model_program_);
-        for (int i = 0; i < walls.size(); i++) {
-            walls.at(i).Draw(model_program_);
-        }
+        scene->Update();
+
+        scene->Draw(model_program_);
 
         glfwSwapBuffers(window_);
         glfwPollEvents();

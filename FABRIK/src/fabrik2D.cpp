@@ -4,6 +4,7 @@
 #include <chrono>
 #include <iomanip>
 
+#include "headers/fabrik.h"
 #include "headers/fabrik2D.h"
 #include "headers/target2D.h"
 #include "headers/node.h"
@@ -11,10 +12,9 @@
 #include "target2D.cpp"
 #include "tree.cpp"
 
-Fabrik2D::Fabrik2D(Tree<Joint2D>* tree) {
+Fabrik2D::Fabrik2D(Tree<Joint2D>* tree) : Fabrik() {
 	this->tree = tree;
 	this->targets = new std::vector<Target2D*>();
-	this->tolerance = 0.04f;
 
 	srand((unsigned)time(NULL));
 
@@ -104,7 +104,7 @@ void Fabrik2D::Solve() {
 	std::cout << "Iterations: " << iterations << " Execution time: " << elapsedTime.count() * 1e-3 << "ms" << " Reachable targets: " << reachableTargetsCounter << " Accuracy: " << (1 - accuracy) * 1e2 << std::endl;
 }
 
-Target2D* Fabrik2D::SelectTargetByMouseButtonPressCallback(Vector2 space_pos) {
+Target2D* Fabrik2D::SelectTargetByMouseButtonPressCallback(Vector3 space_pos) {
 	for (int i = 0; i < targets->size(); i++) {
 		Target2D* target = targets->at(i);
 

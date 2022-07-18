@@ -11,6 +11,7 @@
 #include "shaderProgram.h"
 #include "mat4.h"
 #include "vector2.h"
+#include "scene.h"
 
 class Window {
 public:
@@ -19,6 +20,7 @@ public:
     void Resize(int new_width, int new_height);
     void KeyEvent(int key, int scancode, int action, int mods);
     void MouseButtonEvent(int button, int action, int mods);
+    void LoadScene(Scene* scene);
     Vector2 MousePositionToSpacePosition(double x, double y);
     void Run(void);
     operator GLFWwindow* () { return window_; }
@@ -34,6 +36,9 @@ private:
 
     Mat4 view_matrix_;
     Mat4 projection_matrix_;
+
+    Scene* scene;
+    int sceneId = 0;
 
     void InitModels();
     void InitPrograms();

@@ -58,7 +58,7 @@ add_executable (
 	"src/headers/target3D.h"
 	"src/target3D.cpp"
 	"src/headers/fabrik3D.h" 
-	"src/fabrik3D.cpp")
+	"src/fabrik3D.cpp" "src/headers/fabrik.h" "src/fabrik.cpp" "src/headers/scene.h" "src/scene.cpp")
 
 target_link_libraries(FABRIK OpenGL::GL glew glfw)
 

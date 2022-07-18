@@ -10,10 +10,9 @@
 #include "headers/tree.h"
 #include "tree.cpp"
 
-Fabrik3D::Fabrik3D(Tree<Joint3D>* tree) {
+Fabrik3D::Fabrik3D(Tree<Joint3D>* tree) : Fabrik() {
 	this->tree = tree;
 	this->targets = new std::vector<Target3D*>();
-	this->tolerance = 0.04f;
 
 	srand((unsigned)time(NULL));
 
