@@ -21,6 +21,7 @@ public:
 	virtual void Draw(const Camera& camera) const = 0;
 	virtual void Solve() = 0;
 	virtual Object* SelectTargetByMouseButtonPressCallback(Vector3 space_pos) = 0;
+	virtual void RandomizeTargets(int min, int max) = 0;
 	virtual void Unload() = 0;
 };
 

@@ -61,18 +61,19 @@ void Scene::Unload() {
 
 Scene* Scene::BuildScene1() {
     Camera* camera = new OrthographicCamera(70, 0, 0, 0.1f, 100.0f);
+    camera->Translate(Vector3{ 0.0f, -3.0f, 0.0f });
 
     Node<Joint2D>* root = new Node<Joint2D>(Joint2D(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
-    root->next(Joint2D({ 0.0f, 1.0f }, { 0.35f, 0.35f }));
+    root->next(Joint2D({ 0.0f, 0.75f }, { 0.35f, 0.35f }));
     root->child[0]->next(Joint2D({ 0.0f, 1.5f }, { 0.35f, 0.35f }));
-    root->child[0]->child[0]->next(Joint2D({0.0f, 2.0f}, {0.35f, 0.35f}));
-    root->child[0]->child[0]->child[0]->next(Joint2D({0.0f, 2.5f}, {0.35f, 0.35f}));
-    root->child[0]->child[0]->child[0]->child[0]->next(Joint2D({0.0f, 3.0f}, {0.35f, 0.35f}));
-    root->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint2D({0.0f, 3.5f}, {0.35f, 0.35f}));
-    root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint2D({0.0f, 4.0f}, {0.35f, 0.35f}));
-    root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint2D({0.0f, 4.5f}, {0.35f, 0.35f}));
-    root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint2D({0.0f, 5.0f}, {0.35f, 0.35f}));
-    root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint2D({0.0f, 5.5f}, {0.35f, 0.35f}));
+    root->child[0]->child[0]->next(Joint2D({0.0f, 2.25f}, {0.35f, 0.35f}));
+    root->child[0]->child[0]->child[0]->next(Joint2D({0.0f, 3.0f}, {0.35f, 0.35f}));
+    root->child[0]->child[0]->child[0]->child[0]->next(Joint2D({0.0f, 3.75f}, {0.35f, 0.35f}));
+    root->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint2D({0.0f, 4.5f}, {0.35f, 0.35f}));
+    root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint2D({0.0f, 5.25f}, {0.35f, 0.35f}));
+    root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint2D({0.0f, 6.0f}, {0.35f, 0.35f}));
+    root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint2D({0.0f, 6.75f}, {0.35f, 0.35f}));
+    root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint2D({0.0f, 7.5f}, {0.35f, 0.35f}));
 
     Tree<Joint2D>* tree = new Tree<Joint2D>(root);
     Fabrik* fabrik = new Fabrik2D(tree);
@@ -84,6 +85,10 @@ Scene* Scene::BuildScene1() {
             switch (key) {
             case GLFW_KEY_SPACE:
                 fabrik->Solve();
+                break;
+            
+            case GLFW_KEY_R:
+                fabrik->RandomizeTargets(-7, 7);
                 break;
             }
         }
@@ -191,13 +196,14 @@ Scene* Scene::BuildScene2() {
 }
 
 Scene* Scene::BuildScene3() {
-    Camera* camera = new PerspectiveCamera(60, 0, 0, 0.1f, 1000.0f);
-    camera->Translate(Vector3{-2.0f, -3.0f, 0.0f});
+    Camera* camera = new PerspectiveCamera(30, 0, 0, 0.1f, 1000.0f);
+    camera->Translate(Vector3{ -2.0f, -3.0f, -20.0f });
+    camera->Rotate(Vector3{ 0.0f, 45.0f, 0.0f });
 
     std::vector<Object*>* objects = new std::vector<Object*>{
         new Object3D(Vector3{ 0.0f,  0.0f, -10.0f }, Vector3{ 100.0f, 100.0f, 1.0f }, Color{ 0.3f, 0.3f, 0.3f }),
         new Object3D(Vector3{ 0.0f,  0.0f, -10.0f }, Vector3{ 100.0f, 100.0f, 1.0f }, Color{ 0.4f, 0.4f, 0.4f }),
-        new Object3D(Vector3{ 0.0f, -5.0f, -10.0f }, Vector3{ 100.0f, 1.0f, 100.0f }, Color{ 0.5f, 0.5f, 0.5f })
+        new Object3D(Vector3{ 0.0f, -5.0f, -10.0f }, Vector3{ 100.0f, 1.0f, 100.0f }, Color{ 0.5f, 0.5f, 0.5f }),
     };
 
     objects->at(0)->Rotate(Vector3{ 0.0f, 45.0f, 0.0f });
@@ -232,9 +238,49 @@ Scene* Scene::BuildScene3() {
             case GLFW_KEY_SPACE:
                 fabrik->Solve();
                 break;
+            }
+        }
+    };
 
-            default:
-                break;
+    scene->KeyEvent = keyEvent;
+
+    return scene;
+}
+
+Scene* Scene::BuildScene4() {
+    Camera* camera = new PerspectiveCamera(30, 0, 0, 0.1f, 1000.0f);
+    camera->Translate(Vector3{ -2.0f, -3.0f, -20.0f });
+
+    std::vector<Object*>* objects = new std::vector<Object*>{
+        new Object3D(Vector3{ 0.0f,  0.0f, -15.0f }, Vector3{ 100.0f, 100.0f, 1.0f }, Color{ 0.3f, 0.3f, 0.3f }),
+        new Object3D(Vector3{ 0.0f,  0.0f, -15.0f }, Vector3{ 100.0f, 100.0f, 1.0f }, Color{ 0.4f, 0.4f, 0.4f }),
+        new Object3D(Vector3{ 0.0f, -5.0f, -15.0f }, Vector3{ 100.0f, 1.0f, 100.0f }, Color{ 0.5f, 0.5f, 0.5f }),
+    };
+
+    objects->at(0)->Rotate(Vector3{ 0.0f, 45.0f, 0.0f });
+    objects->at(1)->Rotate(Vector3{ 0.0f, -45.0f, 0.0f });
+
+    Node<Joint3D>* root = new Node<Joint3D>(Joint3D(Vector3::zero, Vector3::one / 2, { 0.5f, 0.0f, 1.0f, 1.0f }));
+
+    root->next(Joint3D(Vector3{ 0.0f, 1.0f, 0.0f }, Vector3::one / 3));
+    root->child[0]->next(Joint3D(Vector3{ 3.0f, 2.0f, -3.0f }, Vector3::one / 3));
+    root->child[0]->child[0]->next(Joint3D(Vector3{ 5.0f, 3.0f, 5.0f }, Vector3::one / 3));
+
+    Tree<Joint3D>* tree = new Tree<Joint3D>(root);
+    Fabrik* fabrik = new Fabrik3D(tree);
+
+    Scene* scene = new Scene(camera, fabrik, objects);
+
+    std::function<void(int, int)> keyEvent = [fabrik](int key, int action) {
+        if (action == GLFW_PRESS) {
+            switch (key) {
+                case GLFW_KEY_SPACE:
+                    fabrik->Solve();
+                    break;
+
+                case GLFW_KEY_R:
+                    fabrik->RandomizeTargets(-4, 12);
+                    break;
             }
         }
     };
@@ -248,4 +294,5 @@ void Scene::BuildScenes() {
     Scene::scenes->push_back(BuildScene1());
     Scene::scenes->push_back(BuildScene2());
     Scene::scenes->push_back(BuildScene3());
+    Scene::scenes->push_back(BuildScene4());
 }

@@ -7,8 +7,6 @@ PerspectiveCamera::PerspectiveCamera(float fov, float width, float height, float
 
 	glUseProgram(*this);
 	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, projectionMatrix);
-
-	this->Translate(Vector3{ 0.0f, 0.0f, -10.0f });
 }
 
 void PerspectiveCamera::Resize(float width, float height) {
@@ -22,7 +20,7 @@ void PerspectiveCamera::Resize(float width, float height) {
 }
 
 Vector2 PerspectiveCamera::CameraToWorldPosition(double x, double y) {
-	return Vector2();
+	return Vector2::zero;
 }
 
 Mat4 PerspectiveCamera::GetPerspectiveProjectionMatrix(float width, float height) {

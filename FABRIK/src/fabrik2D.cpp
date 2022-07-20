@@ -131,6 +131,20 @@ Target2D* Fabrik2D::SelectTargetByMouseButtonPressCallback(Vector3 space_pos) {
 	return NULL;
 }
 
+void Fabrik2D::RandomizeTargets(int min, int max) {
+	srand((unsigned)time(NULL));
+	int range = max - min + 1;
+
+	for (int i = 0; i < targets->size(); i++) {
+		float x = (rand() % range + min);
+		float y = (rand() % range + min);
+
+		Vector2 vector = { x, y };
+
+		targets->at(i)->Translate(vector);
+	}
+}
+
 bool Fabrik2D::IsReachable(Node<Joint2D>* root, Target2D* target) {
 	float root_target_distance = Vector2::Distance(root->value.GetPosition(), target->GetPosition());
 	float total_joints_distance = 0.0f;

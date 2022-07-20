@@ -21,6 +21,7 @@ public:
 	void Draw(const Camera& camera) const;
 	void Solve();
 	Target3D* SelectTargetByMouseButtonPressCallback(Vector3 space_pos);
+	void RandomizeTargets(int min, int max);
 	void Unload();
 };
 

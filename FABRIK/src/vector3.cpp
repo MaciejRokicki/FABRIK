@@ -73,5 +73,5 @@ bool Vector3::operator <=(const Vector3& vec) {
 }
 
 std::ostream& operator <<(std::ostream& os, const Vector3& vec) {
-	return os << vec.x << " " << vec.y << " " << vec.y;
+	return os << vec.x << " " << vec.y << " " << vec.z;
 };

@@ -28,9 +28,15 @@ void Camera::Translate(Vector3 vector) {
 }
 
 void Camera::Rotate(Vector3 vector) {
+	Vector3 tmp_vector = GetPosition();
+
+	Translate(!tmp_vector);
+
 	viewMatrix.RotateX(vector.x);
 	viewMatrix.RotateY(vector.y);
 	viewMatrix.RotateZ(vector.z);
+
+	Translate(tmp_vector);
 }
 
 Vector3 Camera::GetPosition() {

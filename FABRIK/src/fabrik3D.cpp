@@ -129,6 +129,21 @@ Target3D* Fabrik3D::SelectTargetByMouseButtonPressCallback(Vector3 space_pos) {
 	return NULL;
 }
 
+void Fabrik3D::RandomizeTargets(int min, int max) {
+	srand((unsigned)time(NULL));
+	int range = max - min + 1;
+
+	for (int i = 0; i < targets->size(); i++) {
+		float x = (rand() % range + min);
+		float y = (rand() % range + min);
+		float z = (rand() % range + min);
+
+		Vector3 vector = { x, y, z };
+
+		targets->at(i)->Translate(vector);
+	}
+}
+
 bool Fabrik3D::IsReachable(Node<Joint3D>* root, Target3D* target) {
 	float root_target_distance = Vector3::Distance(root->value.GetPosition(), target->GetPosition());
 	float total_joints_distance = 0.0f;

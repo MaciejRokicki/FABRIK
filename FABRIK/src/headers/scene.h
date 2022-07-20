@@ -18,6 +18,7 @@ private:
 	static Scene* BuildScene1();
 	static Scene* BuildScene2();
 	static Scene* BuildScene3();
+	static Scene* BuildScene4();
 public:
 	static std::vector<Scene*>* scenes;
 
