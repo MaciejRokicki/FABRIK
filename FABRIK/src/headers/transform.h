@@ -18,7 +18,8 @@ public:
 	void Translate(Vector3 position);
 	void SetScale(Vector3 scale);
 	void Rotate(Vector3 angle);
-	void LookAt(Transform& transform);
+	void LookAt2D(Transform& transform);
+	void LookAt3D(Transform& transform);
 protected:
 	Mat4 _matrix;
 };

@@ -248,23 +248,84 @@ Scene* Scene::BuildScene3() {
 }
 
 Scene* Scene::BuildScene4() {
-    Camera* camera = new PerspectiveCamera(30, 0, 0, 0.1f, 1000.0f);
-    camera->Translate(Vector3{ -2.0f, -3.0f, -20.0f });
+    Camera* camera = new PerspectiveCamera(60, 0, 0, 0.1f, 1000.0f);
+    camera->Translate(Vector3{ -2.0f, 0.0f, -19.0f });
+    camera->Rotate(Vector3{ 0.0f, 45.0f, 0.0f });
 
     std::vector<Object*>* objects = new std::vector<Object*>{
         new Object3D(Vector3{ 0.0f,  0.0f, -15.0f }, Vector3{ 100.0f, 100.0f, 1.0f }, Color{ 0.3f, 0.3f, 0.3f }),
         new Object3D(Vector3{ 0.0f,  0.0f, -15.0f }, Vector3{ 100.0f, 100.0f, 1.0f }, Color{ 0.4f, 0.4f, 0.4f }),
-        new Object3D(Vector3{ 0.0f, -5.0f, -15.0f }, Vector3{ 100.0f, 1.0f, 100.0f }, Color{ 0.5f, 0.5f, 0.5f }),
+        new Object3D(Vector3{ 0.0f, -12.0f, -15.0f }, Vector3{ 100.0f, 1.0f, 100.0f }, Color{ 0.5f, 0.5f, 0.5f }),
     };
 
     objects->at(0)->Rotate(Vector3{ 0.0f, 45.0f, 0.0f });
     objects->at(1)->Rotate(Vector3{ 0.0f, -45.0f, 0.0f });
 
-    Node<Joint3D>* root = new Node<Joint3D>(Joint3D(Vector3::zero, Vector3::one / 2, { 0.5f, 0.0f, 1.0f, 1.0f }));
+    Node<Joint3D>* root = new Node<Joint3D>(Joint3D(Vector3{0.0f, 0.0f, 0.0f}, Vector3::one / 2, {0.5f, 0.0f, 1.0f, 1.0f}));
 
-    root->next(Joint3D(Vector3{ 0.0f, 1.0f, 0.0f }, Vector3::one / 3));
-    root->child[0]->next(Joint3D(Vector3{ 3.0f, 2.0f, -3.0f }, Vector3::one / 3));
-    root->child[0]->child[0]->next(Joint3D(Vector3{ 5.0f, 3.0f, 5.0f }, Vector3::one / 3));
+    //gora
+    root->next(Joint3D(Vector3{ 0.0f, 0.75f, 0.0f }, Vector3::one / 3));
+    root->child[0]->next(Joint3D(Vector3{ 0.0f, 1.5f, 0.0f }, Vector3::one / 3));
+    root->child[0]->child[0]->next(Joint3D(Vector3{ 0.0f, 2.25f, 0.0f }, Vector3::one / 3));
+    root->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 0.0f, 3.0f, 0.0f }, Vector3::one / 3));
+    root->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ -0.75f, 3.75f, 0.0f }, Vector3::one / 3));
+        root->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ -0.75f, 4.5f, 0.0f }, Vector3::one / 3));
+        root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ -0.75f, 5.25f, 0.0f }, Vector3::one / 3));
+        root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ -0.75f, 6.0f, 0.0f }, Vector3::one / 3));
+        root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ -0.75f, 6.75f, 0.0f }, Vector3::one / 3));
+        root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ -0.75f, 7.5f, 0.0f }, Vector3::one / 3));
+        root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ -0.75f, 8.25f, 0.0f }, Vector3::one / 3));
+        root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ -0.75f, 9.0f, 0.0f }, Vector3::one / 3));
+    root->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 0.75f, 3.75f, 0.0f }, Vector3::one / 3));
+        root->child[0]->child[0]->child[0]->child[0]->child[1]->next(Joint3D(Vector3{ 0.75f, 4.5f, 0.0f }, Vector3::one / 3));
+        root->child[0]->child[0]->child[0]->child[0]->child[1]->child[0]->next(Joint3D(Vector3{ 0.75f, 5.25f, 0.0f }, Vector3::one / 3));
+        root->child[0]->child[0]->child[0]->child[0]->child[1]->child[0]->child[0]->next(Joint3D(Vector3{ 0.75f, 6.0f, 0.0f }, Vector3::one / 3));
+        root->child[0]->child[0]->child[0]->child[0]->child[1]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 0.75f, 6.75f, 0.0f }, Vector3::one / 3));
+        root->child[0]->child[0]->child[0]->child[0]->child[1]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 0.75f, 7.5f, 0.0f }, Vector3::one / 3));
+        root->child[0]->child[0]->child[0]->child[0]->child[1]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 0.75f, 8.25f, 0.0f }, Vector3::one / 3));
+        root->child[0]->child[0]->child[0]->child[0]->child[1]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 0.75f, 9.0f, 0.0f }, Vector3::one / 3));
+
+    //lewo
+    root->next(Joint3D(Vector3{ -0.75f, 0.0f, 0.0f }, Vector3::one / 3));
+    root->child[1]->next(Joint3D(Vector3{ -1.5f, 0.0f, 0.0f }, Vector3::one / 3));
+    root->child[1]->child[0]->next(Joint3D(Vector3{ -2.25f, 0.0f, 0.0f }, Vector3::one / 3));
+    root->child[1]->child[0]->child[0]->next(Joint3D(Vector3{ -3.0f, 0.0f, 0.0f }, Vector3::one / 3));
+    root->child[1]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ -3.75f, 0.0f, 0.0f }, Vector3::one / 3));
+    root->child[1]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ -4.5f, 0.0f, 0.0f }, Vector3::one / 3));
+    root->child[1]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ -5.25f, 0.0f, 0.0f }, Vector3::one / 3));
+    root->child[1]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ -6.0f, 0.0f, 0.0f }, Vector3::one / 3));
+    root->child[1]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ -6.75f, 0.0f, 0.0f }, Vector3::one / 3));
+    root->child[1]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ -7.5f, 0.0f, 0.0f }, Vector3::one / 3));
+    root->child[1]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ -8.25f, 0.0f, 0.0f }, Vector3::one / 3));
+    root->child[1]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ -9.0f, 0.0f, 0.0f }, Vector3::one / 3));
+
+    //dol
+    root->next(Joint3D(Vector3{ 0.0f, -0.75f, 0.0f }, Vector3::one / 3));
+    root->child[2]->next(Joint3D(Vector3{ 0.0f, -1.5f, 0.0f }, Vector3::one / 3));
+    root->child[2]->child[0]->next(Joint3D(Vector3{ 0.0f, -2.25f, 0.0f }, Vector3::one / 3));
+    root->child[2]->child[0]->child[0]->next(Joint3D(Vector3{ 0.0f, -3.0f, 0.0f }, Vector3::one / 3));
+    root->child[2]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 0.0f, -3.75f, 0.0f }, Vector3::one / 3));
+    root->child[2]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 0.0f, -4.5f, 0.0f }, Vector3::one / 3));
+    root->child[2]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 0.0f, -5.25f, 0.0f }, Vector3::one / 3));
+    root->child[2]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 0.0f, -6.0f, 0.0f }, Vector3::one / 3));
+    root->child[2]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 0.0f, -6.75f, 0.0f }, Vector3::one / 3));
+    root->child[2]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 0.0f, -7.5f, 0.0f }, Vector3::one / 3));
+    root->child[2]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 0.0f, -8.25f, 0.0f }, Vector3::one / 3));
+    root->child[2]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 0.0f, -9.0f, 0.0f }, Vector3::one / 3));
+
+    //prawo
+    root->next(Joint3D(Vector3{ 0.75f, 0.0f, 0.0f }, Vector3::one / 3));
+    root->child[3]->next(Joint3D(Vector3{ 1.5f, 0.0f, 0.0f }, Vector3::one / 3));
+    root->child[3]->child[0]->next(Joint3D(Vector3{ 2.25f, 0.0f, 0.0f }, Vector3::one / 3));
+    root->child[3]->child[0]->child[0]->next(Joint3D(Vector3{ 3.0f, 0.0f, 0.0f }, Vector3::one / 3));
+    root->child[3]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 3.75f, 0.0f, 0.0f }, Vector3::one / 3));
+    root->child[3]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 4.5f, 0.0f, 0.0f }, Vector3::one / 3));
+    root->child[3]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 5.25f, 0.0f, 0.0f }, Vector3::one / 3));
+    root->child[3]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 6.0f, 0.0f, 0.0f }, Vector3::one / 3));
+    root->child[3]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 6.75f, 0.0f, 0.0f }, Vector3::one / 3));
+    root->child[3]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 7.5f, 0.0f, 0.0f }, Vector3::one / 3));
+    root->child[3]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 8.25f, 0.0f, 0.0f }, Vector3::one / 3));
+    root->child[3]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->next(Joint3D(Vector3{ 9.0f, 0.0f, 0.0f }, Vector3::one / 3));
 
     Tree<Joint3D>* tree = new Tree<Joint3D>(root);
     Fabrik* fabrik = new Fabrik3D(tree);
@@ -279,7 +340,7 @@ Scene* Scene::BuildScene4() {
                     break;
 
                 case GLFW_KEY_R:
-                    fabrik->RandomizeTargets(-4, 12);
+                    fabrik->RandomizeTargets(-10, 10);
                     break;
             }
         }

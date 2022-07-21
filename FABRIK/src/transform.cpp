@@ -41,8 +41,33 @@ void Transform::Rotate(Vector3 angle) {
     Translate(tmp_vector);
 }
 
-void Transform::LookAt(Transform& transform) {
-    float angle = (180 / M_PI) * atan2(transform._matrix[12] - _matrix[12], transform._matrix[13] - _matrix[13]);
+void Transform::LookAt2D(Transform& transform) {
+    Vector3 position = GetPosition();
+    Vector3 target = transform.GetPosition();
 
-    Rotate(Vector3{ 0.0f, 0.0f, angle });
+    Vector3 vec = target - position;
+
+    Vector3 angles = Vector3{
+        0.0f,
+        0.0f,
+        atan2(vec.x, vec.y) * 180.0f / M_PI
+    };
+
+    Rotate(angles);
+}
+
+void Transform::LookAt3D(Transform& transform) {
+    Vector3 position = GetPosition();
+    Vector3 target = transform.GetPosition();
+
+    Vector3 vec = target - position;
+    float xz = sqrtf(vec.x * vec.x + vec.z * vec.z);
+
+    Vector3 angles = Vector3{
+        atan2f(vec.y, xz) * 180.0f / M_PI,
+        atan2f(-vec.x, vec.z) * 180.0f / M_PI,
+        0.0f
+    };
+
+    Rotate(angles);
 }

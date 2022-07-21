@@ -132,7 +132,6 @@ Target2D* Fabrik2D::SelectTargetByMouseButtonPressCallback(Vector3 space_pos) {
 }
 
 void Fabrik2D::RandomizeTargets(int min, int max) {
-	srand((unsigned)time(NULL));
 	int range = max - min + 1;
 
 	for (int i = 0; i < targets->size(); i++) {
@@ -167,7 +166,7 @@ void Fabrik2D::ConnectJoints(Node<Joint2D>* nodeJoint) {
 		nodeJoint->value.segment->Translate(Vector2{ (nodeJoint->value.GetPosition() + nodeJoint->parent->value.GetPosition()) / 2.0f });
 		nodeJoint->value.segment->SetScale({ 0.2f, Vector2::Distance(nodeJoint->value.GetPosition(), nodeJoint->parent->value.GetPosition()) + 0.25f });
 
-		nodeJoint->value.segment->LookAt(nodeJoint->parent->value);
+		nodeJoint->value.segment->LookAt2D(nodeJoint->parent->value);
 	}
 }
 

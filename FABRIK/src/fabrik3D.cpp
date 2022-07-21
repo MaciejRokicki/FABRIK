@@ -130,7 +130,6 @@ Target3D* Fabrik3D::SelectTargetByMouseButtonPressCallback(Vector3 space_pos) {
 }
 
 void Fabrik3D::RandomizeTargets(int min, int max) {
-	srand((unsigned)time(NULL));
 	int range = max - min + 1;
 
 	for (int i = 0; i < targets->size(); i++) {
@@ -163,10 +162,10 @@ float Fabrik3D::DistanceBetweenJoints(Node<Joint3D>* nodeJoint) {
 
 void Fabrik3D::ConnectJoints(Node<Joint3D>* nodeJoint) {
 	if (nodeJoint->parent) {
-		nodeJoint->value.segment->Translate( (nodeJoint->value.GetPosition() + nodeJoint->parent->value.GetPosition()) / 2.0f);
-		nodeJoint->value.segment->SetScale({ 0.15f, Vector3::Distance(nodeJoint->value.GetPosition(), nodeJoint->parent->value.GetPosition()) + 0.15f, 0.15f });
+		nodeJoint->value.segment->Translate((nodeJoint->value.GetPosition() + nodeJoint->parent->value.GetPosition()) / 2.0f);
+		nodeJoint->value.segment->SetScale({ 0.15f, 0.15f, Vector3::Distance(nodeJoint->value.GetPosition(), nodeJoint->parent->value.GetPosition()) + 0.15f });
 	
-		nodeJoint->value.segment->LookAt(nodeJoint->parent->value);
+		nodeJoint->value.segment->LookAt3D(nodeJoint->parent->value);
 	}
 }
 
