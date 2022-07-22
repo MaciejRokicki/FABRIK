@@ -220,6 +220,10 @@ void Fabrik2D::Backward() {
 			float joints_distance = DistanceBetweenJoints(nodeJoint);
 
 			nodeJoint->value.PositionTmp = previous_joint_vector + direction * joints_distance;
+
+			if (nodeJoint->value.constraint) {
+				nodeJoint->value.PositionTmp = nodeJoint->value.constraint->Apply(nodeJoint->parent->value.PositionTmp, nodeJoint->value.PositionTmp);
+			}
 		});
 	}
 }

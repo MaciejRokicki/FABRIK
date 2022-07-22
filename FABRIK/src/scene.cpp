@@ -8,6 +8,7 @@
 #include "headers/orthographicCamera.h"
 #include "headers/perspectiveCamera.h"
 #include "headers/main.h"
+#include "headers/hinge2D.h"
 
 std::vector<Scene*>* Scene::scenes = new std::vector<Scene*>();
 
@@ -351,9 +352,72 @@ Scene* Scene::BuildScene4() {
     return scene;
 }
 
+Scene* Scene::BuildScene5() {
+    Camera* camera = new OrthographicCamera(120, 0, 0, 0.1f, 100.0f);
+
+    Node<Joint2D>* root = new Node<Joint2D>(Joint2D(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
+    root->next(Joint2D({ 0.75f, 0.0f }, { 0.35f, 0.35f }, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge2D(Vector3{ 0.0f, 0.0f, 45.0f })));
+    root->child[0]->next(Joint2D({ 1.75f, 0.0f }, { 0.35f, 0.35f }, {1.0f, 0.0f, 0.0f, 1.0f}, new Hinge2D(Vector3{ 0.0f, 0.0f, 170.0f })));
+    root->child[0]->child[0]->next(Joint2D({2.0f, 0.0f}, {0.35f, 0.35f}));
+
+    Tree<Joint2D>* tree = new Tree<Joint2D>(root);
+    Fabrik* fabrik = new Fabrik2D(tree);
+
+    Scene* scene = new Scene(camera, fabrik);
+
+    std::function<void(int, int)> keyEvent = [fabrik](int key, int action) {
+        if (action == GLFW_PRESS) {
+            switch (key) {
+            case GLFW_KEY_SPACE:
+                fabrik->Solve();
+                break;
+
+            case GLFW_KEY_R:
+                fabrik->RandomizeTargets(-7, 7);
+                break;
+            }
+        }
+    };
+
+    std::function<void(int, int, Vector2)> mouseEvent = [fabrik, scene](
+        int button,
+        int action,
+        Vector2 space_pos) {
+            if (action == GLFW_PRESS) {
+                switch (button) {
+                case GLFW_MOUSE_BUTTON_1:
+                    scene->selectedObject = fabrik->SelectTargetByMouseButtonPressCallback(space_pos);
+
+                    if (scene->selectedObject != NULL) {
+                        scene->selectedObject->SetColor({ 0.0f, 1.0f, 0.0f });
+                    }
+
+                    break;
+                }
+            }
+            else if (action == GLFW_RELEASE) {
+                switch (button) {
+                case GLFW_MOUSE_BUTTON_1:
+                    if (scene->selectedObject != NULL) {
+                        scene->selectedObject->Translate({ space_pos.x, space_pos.y, 0.0f });
+                        scene->selectedObject->SetDefaultColor();
+                        scene->selectedObject = NULL;
+                    }
+                    break;
+                }
+            }
+    };
+
+    scene->KeyEvent = keyEvent;
+    scene->MouseButtonEvent = mouseEvent;
+
+    return scene;
+}
+
 void Scene::BuildScenes() {
     Scene::scenes->push_back(BuildScene1());
     Scene::scenes->push_back(BuildScene2());
     Scene::scenes->push_back(BuildScene3());
     Scene::scenes->push_back(BuildScene4());
+    Scene::scenes->push_back(BuildScene5());
 }

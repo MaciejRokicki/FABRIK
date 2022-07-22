@@ -60,7 +60,15 @@ add_executable (
 	"src/headers/scene.h" 
 	"src/scene.cpp" 
 	"src/headers/camera.h" 
-	"src/camera.cpp" "src/headers/orthographicCamera.h" "src/orthographicCamera.cpp" "src/headers/perspectiveCamera.h" "src/perspectiveCamera.cpp")
+	"src/camera.cpp" 
+	"src/headers/orthographicCamera.h"
+	"src/orthographicCamera.cpp" 
+	"src/headers/perspectiveCamera.h"
+	"src/perspectiveCamera.cpp"
+	"src/headers/hinge2D.h" 
+	"src/hinge2D.cpp"
+	"src/headers/constraint2D.h" 
+	 "src/constraint2D.cpp")
 
 target_link_libraries(FABRIK OpenGL::GL glew glfw)
 

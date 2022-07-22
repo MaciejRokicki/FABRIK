@@ -50,7 +50,7 @@ void Transform::LookAt2D(Transform& transform) {
     Vector3 angles = Vector3{
         0.0f,
         0.0f,
-        atan2(vec.x, vec.y) * 180.0f / M_PI
+        atan2f(vec.x, vec.y) * 180.0f / M_PI
     };
 
     Rotate(angles);

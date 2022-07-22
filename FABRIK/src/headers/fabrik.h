@@ -1,4 +1,3 @@
-#pragma once
 #ifndef FABRIK_H
 #define FABRIK_H
 
