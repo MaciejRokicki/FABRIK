@@ -2,43 +2,82 @@
 
 #include "headers/hinge2D.h"
 
-Hinge2D::Hinge2D(Vector3 axis) : Constraint2D(axis) {
+Hinge2D::Hinge2D(float minAngle, float maxAngle) : Constraint2D(minAngle, maxAngle) {
 }
 
-Vector2 Hinge2D::Apply(Vector2 previousJointPosition, Vector2 currentJointPosition) {
+//Vector2 newPosition;
+//float length = Vector2::Distance(previousJointPosition, currentJointPosition);
+//
+//if (angle < minAngle) {
+//	newPosition.x = length * cos(minAngle / 180.0f * M_PI);
+//	newPosition.y = length * sin(minAngle / 180.0f * M_PI);
+//}
+//else if (angle > maxAngle) {
+//	newPosition.x = length * cos(maxAngle / 180.0f * M_PI);
+//	newPosition.y = length * sin(maxAngle / 180.0f * M_PI);
+//}
+//
+//Vector2 relativeTestPosition = newPosition - previousJointPosition;
+//float testAngle = atan2f(relativeTestPosition.y, relativeTestPosition.x) * 180.0f / M_PI;
+//
+//std::cout
+//<< "Angle with parent : " << angle
+//<< " Test angle: " << testAngle
+//<< std::endl;
+//
+//return newPosition + previousJointPosition;
+
+Vector2 Hinge2D::Apply(Vector3 rotation, Vector2 previousJointPosition, Vector2 currentJointPosition) {
 	Vector2 direction = (currentJointPosition - previousJointPosition).Normalize();
-	float angle = atan2f(direction.y, direction.x) * 180.0f / M_PI;
+	float angle = atan2f(direction.y, direction.x) * 180.0f / M_PI - rotation.z;
 
-	if (angle < 0) {
-		angle += 360.0f;
-	}
+	Vector2 newPosition;
+	float length = Vector2::Distance(previousJointPosition, currentJointPosition);
+	angle = angle < 0 ? angle += 360.0f : angle;
 
-	if (axis.z >= angle) {
-		return currentJointPosition;
-	} else {
-		Vector2 newPosition;
-		float length = Vector2::Distance(previousJointPosition, currentJointPosition);
+	std::cout
+		<< "Angle: " << angle
+		<< " dir: " << direction << " Rotation: " << rotation * 180.0f / M_PI
+		<< std::endl
+		<< std::endl;
 
-		if (angle <= 270.0f) {
-			newPosition.x = length * cos(axis.z / 180.0f * M_PI);
-			newPosition.y = length * sin(axis.z / 180.0f * M_PI);
-		}
-		else {
-			newPosition.x = length * cos(0.0f / 180.0f * M_PI);
-			newPosition.y = length * sin(0.0f / 180.0f * M_PI);
-		}
+	//if (minAngle <= maxAngle) {
+	//	if (angle >= minAngle && angle <= maxAngle) {
+	//		return currentJointPosition;
+	//	}
 
-		//Vector2 relativeTestPosition = newPosition - previousJointPosition;
-		//float testAngle = atan2f(relativeTestPosition.y, relativeTestPosition.x) * 180.0f / M_PI;
+	//	if (angle < minAngle) {
+	//		newPosition.x = length * cos(minAngle / 180.0f * M_PI);
+	//		newPosition.y = length * sin(minAngle / 180.0f * M_PI);
+	//	}
+	//	else if(angle > maxAngle) {
+	//		newPosition.x = length * cos(maxAngle / 180.0f * M_PI);
+	//		newPosition.y = length * sin(maxAngle / 180.0f * M_PI);
+	//	}
+	//} 
+	//else {
+	//	if (angle >= minAngle || angle <= maxAngle) {
+	//		return currentJointPosition;
+	//	}
 
-		//std::cout
-		//	<< "Current joint position: (" << currentJointPosition
-		//	<< ") Previous joint position (" << previousJointPosition
-		//	<< ") Direction: (" << direction
-		//	<< ") Angle with parent : " << angle
-		//	<< " Test angle: " << testAngle
-		//	<< std::endl;
+	//	if (fabsf(minAngle - angle) > fabsf(maxAngle - angle)) {
+	//		newPosition.x = length * cos(minAngle / 180.0f * M_PI);
+	//		newPosition.y = length * sin(minAngle / 180.0f * M_PI);
+	//	}
+	//	else {
+	//		newPosition.x = length * cos(maxAngle / 180.0f * M_PI);
+	//		newPosition.y = length * sin(maxAngle / 180.0f * M_PI);
+	//	}
+	//}
 
-		return newPosition + previousJointPosition;
-	}
+	//Vector2 relativeTestPosition = newPosition;
+	//float testAngle = atan2f(relativeTestPosition.y, relativeTestPosition.x) * 180.0f / M_PI;
+
+	//std::cout
+	//	<< "Test angle: " << testAngle
+	//	<< std::endl;
+
+	//return newPosition + previousJointPosition;
+
+	return currentJointPosition;
 }

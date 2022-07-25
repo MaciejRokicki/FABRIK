@@ -17,7 +17,7 @@ Object2D::Object2D() : Object() {
 	};
 }
 
-Object2D::Object2D(Vector2 position, Vector2 scale, Color default_color) : Object(position, scale, default_color) {
+Object2D::Object2D(Vector2 position, Vector2 scale, Color default_color) : Object(position, { scale.x, scale.y, 1.0f }, default_color) {
 	_vertices_size = 4;
 	_indices_size = 6;
 	

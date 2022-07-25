@@ -1,5 +1,6 @@
 #include "headers/constraint2D.h"
 
-Constraint2D::Constraint2D(Vector3 axis) {
-	this->axis = axis;
+Constraint2D::Constraint2D(float minAngle, float maxAngle) {
+	this->minAngle = minAngle;
+	this->maxAngle = maxAngle;
 }

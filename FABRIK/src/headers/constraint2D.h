@@ -6,9 +6,10 @@
 
 class Constraint2D {
 protected:
-	Vector3 axis;
+	float minAngle;
+	float maxAngle;
 public:
-	Constraint2D(Vector3 axis);
+	Constraint2D(float minAngle, float maxAngle);
 	virtual Vector2 Apply(Vector2 previousJointPosition, Vector2 currentJointPosition) = 0;
 };
 

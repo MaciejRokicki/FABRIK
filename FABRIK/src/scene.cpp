@@ -356,25 +356,29 @@ Scene* Scene::BuildScene5() {
     Camera* camera = new OrthographicCamera(120, 0, 0, 0.1f, 100.0f);
 
     Node<Joint2D>* root = new Node<Joint2D>(Joint2D(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
-    root->next(Joint2D({ 0.75f, 0.0f }, { 0.35f, 0.35f }, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge2D(Vector3{ 0.0f, 0.0f, 45.0f })));
-    root->child[0]->next(Joint2D({ 1.75f, 0.0f }, { 0.35f, 0.35f }, {1.0f, 0.0f, 0.0f, 1.0f}, new Hinge2D(Vector3{ 0.0f, 0.0f, 170.0f })));
-    root->child[0]->child[0]->next(Joint2D({2.0f, 0.0f}, {0.35f, 0.35f}));
+    root->next(Joint2D({ 0.75f, 0.0f }, { 0.35f, 0.35f }, { 1.0f, 0.0f, 0.0f, 1.0f }));
+    root->child[0]->next(Joint2D({ 1.75f, 0.0f }, { 0.35f, 0.35f }, { 1.0f, 0.0f, 0.0f, 1.0f }));
 
     Tree<Joint2D>* tree = new Tree<Joint2D>(root);
     Fabrik* fabrik = new Fabrik2D(tree);
 
     Scene* scene = new Scene(camera, fabrik);
 
-    std::function<void(int, int)> keyEvent = [fabrik](int key, int action) {
+    std::function<void(int, int)> keyEvent = [root, fabrik](int key, int action) {
         if (action == GLFW_PRESS) {
             switch (key) {
             case GLFW_KEY_SPACE:
                 fabrik->Solve();
+                system("cls");
+
+                std::cout 
+                    << std::endl 
+                    << "Position: " << root->child.at(0)->value.segment->GetPosition() 
+                    << " Rotation: " << root->child.at(0)->value.segment->GetRotation() 
+                    << " Scale: " << root->child.at(0)->value.segment->GetScale() 
+                    << std::endl;
                 break;
 
-            case GLFW_KEY_R:
-                fabrik->RandomizeTargets(-7, 7);
-                break;
             }
         }
     };
