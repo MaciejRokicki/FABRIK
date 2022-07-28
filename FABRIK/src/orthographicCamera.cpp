@@ -42,14 +42,16 @@ Mat4 OrthographicCamera::GetOrthographicProjectionMatrix(float width, float heig
 	float bottom = -height / size;
 	float top = height / size;
 
+	float frustum_length = farPlane - nearPlane;
+
 	projectionMatrix = Mat4(0);
 
 	projectionMatrix.matrix[0] = 2 / (right - left);
-	projectionMatrix.matrix[3] = -(right + left) / (right - left);
 	projectionMatrix.matrix[5] = 2 / (top - bottom);
-	projectionMatrix.matrix[7] = -(top + bottom) / (top - bottom);
-	projectionMatrix.matrix[10] = -2 / (farPlane - nearPlane);
-	projectionMatrix.matrix[11] = -(farPlane + nearPlane) / (farPlane - nearPlane);
+	projectionMatrix.matrix[10] = -2 / frustum_length;
+	projectionMatrix.matrix[12] = -(right + left) / (right - left);
+	projectionMatrix.matrix[13] = -(top + bottom) / (top - bottom);
+	projectionMatrix.matrix[14] = -(farPlane + nearPlane) / frustum_length;
 	projectionMatrix.matrix[15] = 1;
 
 	return projectionMatrix;
