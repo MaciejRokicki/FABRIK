@@ -109,12 +109,12 @@ void Fabrik2D::Solve() {
 	executionTimeSum += executionTime;
 	tpiSum += timePerIteration;
 
-	std::cout <<"[" << runs << "]"
-		<< " Iterations: " << iterations
-		<< " Execution time: " << executionTime  << "ms" << " (AVG: " << executionTimeSum / runs << "ms)"
-		<< " TPI: " << timePerIteration << "ms" << " (AVG: " << tpiSum / runs << "ms)"
-		<< " Reachable targets: " << reachableTargetsCounter
-		<< " Accuracy: " << (1 - accuracy) * 1e2 << std::endl;
+	//std::cout <<"[" << runs << "]"
+	//	<< " Iterations: " << iterations
+	//	<< " Execution time: " << executionTime  << "ms" << " (AVG: " << executionTimeSum / runs << "ms)"
+	//	<< " TPI: " << timePerIteration << "ms" << " (AVG: " << tpiSum / runs << "ms)"
+	//	<< " Reachable targets: " << reachableTargetsCounter
+	//	<< " Accuracy: " << (1 - accuracy) * 1e2 << std::endl;
 }
 
 Target2D* Fabrik2D::SelectTargetByMouseButtonPressCallback(Vector3 space_pos) {
@@ -222,7 +222,7 @@ void Fabrik2D::Backward() {
 			nodeJoint->value.PositionTmp = previous_joint_vector + direction * joints_distance;
 
 			if (nodeJoint->value.constraint) {
-				nodeJoint->value.PositionTmp = nodeJoint->value.constraint->Apply(nodeJoint->parent->value, nodeJoint->value);
+				nodeJoint->value.PositionTmp = nodeJoint->value.constraint->Apply(&nodeJoint->parent->value, &nodeJoint->value);
 			}
 		});
 	}

@@ -27,9 +27,9 @@ Hinge2D::Hinge2D(float minAngle, float maxAngle) : Constraint2D(minAngle, maxAng
 //
 //return newPosition + previousJointPosition;
 
-Vector2 Hinge2D::Apply(Joint2D previousJoint, Joint2D currentJoint) {
-	Vector2 previousJointPosition = previousJoint.PositionTmp;
-	Vector2 currentJointPosition = currentJoint.PositionTmp;
+Vector2 Hinge2D::Apply(Joint2D* previousJoint, Joint2D* currentJoint) {
+	Vector2 previousJointPosition = previousJoint->PositionTmp;
+	Vector2 currentJointPosition = currentJoint->PositionTmp;
 	Vector2 direction = (currentJointPosition - previousJointPosition).Normalize();
 	float angle = atan2f(direction.y, direction.x) * 180.0f / M_PI;
 

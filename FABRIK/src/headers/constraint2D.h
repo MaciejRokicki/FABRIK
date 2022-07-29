@@ -11,7 +11,7 @@ protected:
 	float maxAngle;
 public:
 	Constraint2D(float minAngle, float maxAngle);
-	virtual Vector2 Apply(Joint2D previousJoint, Joint2D currentJoint) = 0;
+	virtual Vector2 Apply(Joint2D* previousJoint, Joint2D* currentJoint) = 0;
 };
 
 #endif // !CONSTRAINT2D_H
