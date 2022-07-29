@@ -7,7 +7,7 @@
 class Hinge2D : public Constraint2D {
 public:
 	Hinge2D(float minAngle, float maxAngle);
-	Vector2 Apply(Vector3 rotation, Vector2 previousJointPosition, Vector2 currentJointPosition);
+	Vector2 Apply(Transform previousJoint, Transform currentJoint);
 };
 
 #endif // !HINGE2D_H

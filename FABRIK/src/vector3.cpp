@@ -1,3 +1,4 @@
+#include "headers/vector2.h"
 #include "headers/vector3.h"
 
 Vector3 Vector3::zero { 0.0f, 0.0f, 0.0f };
@@ -70,6 +71,10 @@ bool Vector3::operator >=(const Vector3& vec) {
 
 bool Vector3::operator <=(const Vector3& vec) {
 	return this->x <= vec.x && this->y <= vec.y && this->z <= vec.z;
+}
+
+Vector3::operator Vector2() {
+	return { this->x, this->y };
 }
 
 std::ostream& operator <<(std::ostream& os, const Vector3& vec) {
