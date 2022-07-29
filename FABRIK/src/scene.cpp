@@ -356,7 +356,7 @@ Scene* Scene::BuildScene5() {
     Camera* camera = new OrthographicCamera(120, 0, 0, 0.1f, 100.0f);
 
     Node<Joint2D>* root = new Node<Joint2D>(Joint2D(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
-    root->next(Joint2D({ 0.75f, 0.0f }, { 0.35f, 0.35f }, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge2D(0.0f, 120.0f)));
+    root->next(Joint2D({ 0.75f, 0.0f }, { 0.35f, 0.35f }, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge2D(270.0f, 90.0f)));
     root->child[0]->next(Joint2D({ 1.75f, 0.0f }, { 0.35f, 0.35f }, { 1.0f, 0.0f, 0.0f, 1.0f }));
 
     Tree<Joint2D>* tree = new Tree<Joint2D>(root);
