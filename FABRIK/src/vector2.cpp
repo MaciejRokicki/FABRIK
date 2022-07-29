@@ -1,6 +1,7 @@
 #include <cmath>
 
 #include "headers/vector2.h"
+#include "headers/vector3.h"
 
 Vector2 Vector2::zero { 0.0f, 0.0f };
 Vector2 Vector2::one { 1.0f, 1.0f };
@@ -79,5 +80,5 @@ Vector2::operator Vector3() {
 }
 
 std::ostream& operator <<(std::ostream& os, const Vector2& vec) {
-	return os << vec.x << " " << vec.y;
+	return os << "(" << vec.x << ", " << vec.y << ")";
 };

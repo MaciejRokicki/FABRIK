@@ -2,7 +2,7 @@
 
 #include "headers/camera.h"
 
-Camera::Camera(float width, float height, float nearPlane, float farPlane) : ShaderProgram() {
+Camera::Camera(int width, int height, float nearPlane, float farPlane) : ShaderProgram() {
 	this->width = width;
 	this->height = height;
 	this->nearPlane = nearPlane;

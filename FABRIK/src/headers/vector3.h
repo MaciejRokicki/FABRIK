@@ -3,6 +3,8 @@
 
 #include <ostream>
 
+struct Vector2;
+
 struct Vector3 {
 	float x;
 	float y;
@@ -31,6 +33,8 @@ struct Vector3 {
 	Vector3 operator *(const float f);
 	Vector3 operator /(const Vector3& vec);
 	Vector3 operator /(const float f);
+
+	operator Vector2();
 
 	friend std::ostream& operator<<(std::ostream& os, const Vector3& vec);
 };

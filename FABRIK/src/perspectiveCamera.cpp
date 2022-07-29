@@ -1,6 +1,6 @@
 #include "headers/perspectiveCamera.h"
 
-PerspectiveCamera::PerspectiveCamera(float fov, float width, float height, float nearPlane, float farPlane) : Camera(width, height, nearPlane, farPlane) {
+PerspectiveCamera::PerspectiveCamera(float fov, int width, int height, float nearPlane, float farPlane) : Camera(width, height, nearPlane, farPlane) {
 	this->fov = fov;
 	
 	this->projectionMatrix = GetPerspectiveProjectionMatrix(width, height);
@@ -9,7 +9,7 @@ PerspectiveCamera::PerspectiveCamera(float fov, float width, float height, float
 	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, projectionMatrix);
 }
 
-void PerspectiveCamera::Resize(float width, float height) {
+void PerspectiveCamera::Resize(int width, int height) {
 	this->width = width;
 	this->height = height;
 
@@ -23,8 +23,8 @@ Vector2 PerspectiveCamera::CameraToWorldPosition(double x, double y) {
 	return Vector2::zero;
 }
 
-Mat4 PerspectiveCamera::GetPerspectiveProjectionMatrix(float width, float height) {
-	float aspectRatio = width / height;
+Mat4 PerspectiveCamera::GetPerspectiveProjectionMatrix(int width, int height) {
+	float aspectRatio = (float)width / (float)height;
 
 	projectionMatrix = Mat4(0);
 

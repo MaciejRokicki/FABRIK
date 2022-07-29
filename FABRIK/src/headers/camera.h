@@ -20,15 +20,15 @@ protected:
 
 	float nearPlane;
 	float farPlane;
-	float width;
-	float height;
+	int width;
+	int height;
 public:
-	Camera(float width, float height, float nearPlane, float farPlane);
+	Camera(int width, int height, float nearPlane, float farPlane);
 	void SetModelMatrix(const Mat4& matrix) const;
 	void Translate(Vector3 vector);
 	void Rotate(Vector3 vector);
 	Vector3 GetPosition();
-	virtual void Resize(float width, float height) = 0;
+	virtual void Resize(int width, int height) = 0;
 	virtual Vector2 CameraToWorldPosition(double x, double y) = 0;
 };
 

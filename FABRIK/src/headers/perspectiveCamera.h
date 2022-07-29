@@ -8,10 +8,10 @@ class PerspectiveCamera : public Camera {
 private:
 	float fov;
 
-	Mat4 GetPerspectiveProjectionMatrix(float width, float height);
+	Mat4 GetPerspectiveProjectionMatrix(int width, int height);
 public:
-	PerspectiveCamera(float fov, float width, float height, float nearPlane, float farPlane);
-	void Resize(float width, float height);
+	PerspectiveCamera(float fov, int width, int height, float nearPlane, float farPlane);
+	void Resize(int width, int height);
 	Vector2 CameraToWorldPosition(double x, double y);
 };
 
