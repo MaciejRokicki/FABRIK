@@ -140,7 +140,7 @@ void Window::KeyEvent(int key, int /*scancode*/, int action, int /*mods*/) {
                 sceneId--;
 
                 if (sceneId < 0) {
-                    sceneId = Scene::scenes->size() - 1;
+                    sceneId = (int)Scene::scenes->size() - 1;
                 }
                 LoadScene(Scene::scenes->at(sceneId));
                 break;

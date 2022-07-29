@@ -133,9 +133,9 @@ void Fabrik3D::RandomizeTargets(int min, int max) {
 	int range = max - min + 1;
 
 	for (int i = 0; i < targets->size(); i++) {
-		float x = (rand() % range + min);
-		float y = (rand() % range + min);
-		float z = (rand() % range + min);
+		float x = static_cast<float>(rand() % range + min);
+		float y = static_cast<float>(rand() % range + min);
+		float z = static_cast<float>(rand() % range + min);
 
 		Vector3 vector = { x, y, z };
 
@@ -188,7 +188,7 @@ void Fabrik3D::Forward() {
 
 		//Krok niepotrzebny, suma wekorow nowych pozycji subbase'a z kazdego lanucucha wystarczy do wyznaczenia kierunku, a dlugosc miedzy stawami i tak jest zachowana
 		if (nodeJoint == subbase) {
-			subbase->value.PositionTmp = subbase->value.PositionTmp / subbase->child.size();
+			subbase->value.PositionTmp = subbase->value.PositionTmp / (float)subbase->child.size();
 		}
 
 		if (nodeJoint->parent != tree->root && nodeJoint != tree->root) {

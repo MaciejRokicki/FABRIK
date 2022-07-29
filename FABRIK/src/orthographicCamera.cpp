@@ -1,6 +1,6 @@
 #include "headers/orthographicCamera.h"
 
-OrthographicCamera::OrthographicCamera(float size, float width, float height, float nearPlane, float farPlane) : Camera(width, height, nearPlane, farPlane) {
+OrthographicCamera::OrthographicCamera(float size, int width, int height, float nearPlane, float farPlane) : Camera(width, height, nearPlane, farPlane) {
 	this->size = size;
 
 	this->projectionMatrix = GetOrthographicProjectionMatrix(width, height);
@@ -9,7 +9,7 @@ OrthographicCamera::OrthographicCamera(float size, float width, float height, fl
 	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, projectionMatrix);
 }
 
-void OrthographicCamera::Resize(float width, float height) {
+void OrthographicCamera::Resize(int width, int height) {
 	this->width = width;
 	this->height = height;
 
@@ -36,7 +36,7 @@ Vector2 OrthographicCamera::CameraToWorldPosition(double x, double y) {
 	return Vector2{ (float)(round(x * 10.0) / 10.0), (float)(round(y * 10.0) / 10.0) };
 }
 
-Mat4 OrthographicCamera::GetOrthographicProjectionMatrix(float width, float height) {
+Mat4 OrthographicCamera::GetOrthographicProjectionMatrix(int width, int height) {
 	float left = -width / size;
 	float right = width / size;
 	float bottom = -height / size;

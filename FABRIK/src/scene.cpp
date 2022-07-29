@@ -370,7 +370,6 @@ Scene* Scene::BuildScene5() {
             case GLFW_KEY_SPACE:
                 fabrik->Solve();
                 break;
-
             }
         }
     };

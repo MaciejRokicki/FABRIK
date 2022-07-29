@@ -8,10 +8,10 @@ class OrthographicCamera : public Camera {
 private:
 	float size;
 
-	Mat4 GetOrthographicProjectionMatrix(float width, float height);
+	Mat4 GetOrthographicProjectionMatrix(int width, int height);
 public:
-	OrthographicCamera(float size, float width, float height, float nearPlane, float farPlane);
-	void Resize(float width, float height);
+	OrthographicCamera(float size, int width, int height, float nearPlane, float farPlane);
+	void Resize(int width, int height);
 	Vector2 CameraToWorldPosition(double x, double y);
 };
 

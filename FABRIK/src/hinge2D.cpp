@@ -33,7 +33,7 @@ Vector2 Hinge2D::Apply(Joint2D previousJoint, Joint2D currentJoint) {
 	Vector2 direction = (currentJointPosition - previousJointPosition).Normalize();
 	float angle = atan2f(direction.y, direction.x) * 180.0f / M_PI;
 
-	Vector2 newPosition;
+	Vector2 newPosition = Vector2::zero;
 	float length = Vector2::Distance(previousJointPosition, currentJointPosition);
 	angle = angle < 0 ? angle += 360.0f : angle;
 

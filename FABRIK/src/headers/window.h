@@ -23,7 +23,7 @@ private:
 
     Camera* camera = NULL;
 
-    Scene* scene;
+    Scene* scene = NULL;
     int sceneId = 4;
 
     void InitModels();
