@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "headers/hinge2D.h"
+#include "headers/mathf.h"
 
 Hinge2D::Hinge2D(float minAngle, float maxAngle) : Constraint2D(minAngle, maxAngle) { }
 
@@ -9,7 +10,7 @@ Vector2 Hinge2D::Apply(Joint2D* previousJoint, Joint2D* currentJoint) {
 	Vector2 currentJointPosition = currentJoint->PositionTmp;
 
 	Vector2 direction = (currentJointPosition - previousJointPosition).Normalize();
-	float angle = atan2f(direction.y, direction.x) * 180.0f / M_PI;
+	float angle = Mathf::Rad2Deg(atan2f(direction.y, direction.x));
 
 	Vector2 newPosition;
 	float length = Vector2::Distance(previousJointPosition, currentJointPosition);
@@ -27,12 +28,12 @@ Vector2 Hinge2D::Apply(Joint2D* previousJoint, Joint2D* currentJoint) {
 		}
 
 		if (angle < minAngle) {
-			newPosition.x = length * cos(minAngle / 180.0f * M_PI);
-			newPosition.y = length * sin(minAngle / 180.0f * M_PI);
+			newPosition.x = length * cos(Mathf::Deg2Rad(minAngle));
+			newPosition.y = length * sin(Mathf::Deg2Rad(minAngle));
 		}
 		else if(angle > maxAngle) {
-			newPosition.x = length * cos(maxAngle / 180.0f * M_PI);
-			newPosition.y = length * sin(maxAngle / 180.0f * M_PI);
+			newPosition.x = length * cos(Mathf::Deg2Rad(maxAngle));
+			newPosition.y = length * sin(Mathf::Deg2Rad(maxAngle));
 		}
 	} 
 	else {
@@ -41,12 +42,12 @@ Vector2 Hinge2D::Apply(Joint2D* previousJoint, Joint2D* currentJoint) {
 		}
 
 		if (fabsf(minAngle - angle) > fabsf(maxAngle - angle)) {
-			newPosition.x = length * cos(maxAngle / 180.0f * M_PI);
-			newPosition.y = length * sin(maxAngle / 180.0f * M_PI);
+			newPosition.x = length * cos(Mathf::Deg2Rad(maxAngle));
+			newPosition.y = length * sin(Mathf::Deg2Rad(maxAngle));
 		}
 		else {
-			newPosition.x = length * cos(minAngle / 180.0f * M_PI);
-			newPosition.y = length * sin(minAngle / 180.0f * M_PI);
+			newPosition.x = length * cos(Mathf::Deg2Rad(minAngle));
+			newPosition.y = length * sin(Mathf::Deg2Rad(minAngle));
 		}
 	}
 

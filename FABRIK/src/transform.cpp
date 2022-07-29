@@ -6,6 +6,7 @@
 #include "headers/vertex.h"
 #include "headers/mat4.h"
 #include "headers/transform.h"
+#include "headers/mathf.h"
 
 Transform::Transform() { }
 
@@ -102,7 +103,7 @@ void Transform::LookAt2D(Transform& transform) {
     Vector3 angles = Vector3{
         0.0f,
         0.0f,
-        atan2f(vec.x, vec.y) * 180.0f / M_PI
+        Mathf::Rad2Deg(atan2f(vec.x, vec.y))
     };
 
     Rotate(angles);
@@ -116,8 +117,8 @@ void Transform::LookAt3D(Transform& transform) {
     float xz = sqrtf(vec.x * vec.x + vec.z * vec.z);
 
     Vector3 angles = Vector3{
-        atan2f(vec.y, xz) * 180.0f / M_PI,
-        atan2f(-vec.x, vec.z) * 180.0f / M_PI,
+        Mathf::Rad2Deg(atan2f(vec.y, xz)),
+        Mathf::Rad2Deg(atan2f(-vec.x, vec.z)),
         0.0f
     };
 

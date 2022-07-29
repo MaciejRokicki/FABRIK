@@ -1,4 +1,5 @@
 #include "headers/perspectiveCamera.h"
+#include "headers/mathf.h"
 
 PerspectiveCamera::PerspectiveCamera(float fov, int width, int height, float nearPlane, float farPlane) : Camera(width, height, nearPlane, farPlane) {
 	this->fov = fov;

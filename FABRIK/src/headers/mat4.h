@@ -1,10 +1,6 @@
 #ifndef MAT4_H
 #define MAT4_H
 
-#ifndef M_PI
-#define M_PI 3.14159265f
-#endif
-
 class Mat4 {
 public:
 	float matrix[16];

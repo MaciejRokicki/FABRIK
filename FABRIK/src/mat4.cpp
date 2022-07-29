@@ -2,6 +2,7 @@
 #include <cmath>
 
 #include "headers/mat4.h"
+#include "headers/mathf.h"
 
 using namespace std;
 
