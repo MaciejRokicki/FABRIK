@@ -80,5 +80,5 @@ Vector2::operator Vector3() {
 }
 
 std::ostream& operator <<(std::ostream& os, const Vector2& vec) {
-	return os << vec.x << " " << vec.y;
+	return os << "(" << vec.x << ", " << vec.y << ")";
 };
