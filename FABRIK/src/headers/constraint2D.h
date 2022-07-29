@@ -2,7 +2,8 @@
 #define CONSTRAINT2D_H
 
 #include "vector2.h"
-#include "transform.h"
+
+class Joint2D;
 
 class Constraint2D {
 protected:
@@ -10,7 +11,7 @@ protected:
 	float maxAngle;
 public:
 	Constraint2D(float minAngle, float maxAngle);
-	virtual Vector2 Apply(Transform previousJointPosition, Transform currentJointPosition) = 0;
+	virtual Vector2 Apply(Joint2D previousJoint, Joint2D currentJoint) = 0;
 };
 
 #endif // !CONSTRAINT2D_H

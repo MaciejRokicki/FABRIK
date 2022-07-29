@@ -9,6 +9,8 @@
 #include "segment2D.h"
 #include "constraint2D.h"
 
+class Constraint2D;
+
 class Joint2D : public Object2D {
 public:
 	Vector2 PositionTmp;

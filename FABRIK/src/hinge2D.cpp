@@ -1,7 +1,6 @@
 #include <iostream>
 
 #include "headers/hinge2D.h"
-#include "headers/joint2D.h"
 
 Hinge2D::Hinge2D(float minAngle, float maxAngle) : Constraint2D(minAngle, maxAngle) {
 }
@@ -28,7 +27,7 @@ Hinge2D::Hinge2D(float minAngle, float maxAngle) : Constraint2D(minAngle, maxAng
 //
 //return newPosition + previousJointPosition;
 
-Vector2 Hinge2D::Apply(Transform previousJoint, Transform currentJoint) {
+Vector2 Hinge2D::Apply(Joint2D previousJoint, Joint2D currentJoint) {
 	Vector2 previousJointPosition = previousJoint.GetPosition();
 	Vector2 currentJointPosition = currentJoint.GetPosition();
 	Vector2 direction = (currentJointPosition - previousJointPosition).Normalize();
