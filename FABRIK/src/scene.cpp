@@ -62,7 +62,7 @@ void Scene::Unload() {
 
 Scene* Scene::BuildScene1() {
     Camera* camera = new OrthographicCamera(70, 0, 0, 0.1f, 100.0f);
-    camera->Translate(Vector3{ 0.0f, -3.0f, -10.0f });
+    camera->Translate(Vector3{ 0.0f, -3.0f, 0.0f });
 
     Node<Joint2D>* root = new Node<Joint2D>(Joint2D(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
     root->next(Joint2D({ 0.0f, 0.75f }, { 0.35f, 0.35f }));
@@ -132,7 +132,6 @@ Scene* Scene::BuildScene1() {
 
 Scene* Scene::BuildScene2() {
     Camera* camera = new OrthographicCamera(70, 0, 0, 0.1f, 100.0f);
-    camera->Translate({ 0.0f, 0.0f, -10.0f });
 
     Node<Joint2D>* root = new Node<Joint2D>(Joint2D(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
     root->next(Joint2D({ 0.0f, 3.00f }, { 0.35f, 0.35f }));                           //tulow - 0
@@ -355,7 +354,6 @@ Scene* Scene::BuildScene4() {
 
 Scene* Scene::BuildScene5() {
     Camera* camera = new OrthographicCamera(120, 0, 0, 0.1f, 100.0f);
-    camera->Translate({ 0.0f, 0.0f, -10.0f });
 
     Node<Joint2D>* root = NULL;
 
