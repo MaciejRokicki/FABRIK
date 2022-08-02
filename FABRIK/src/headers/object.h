@@ -5,7 +5,6 @@
 
 #include "transform.h"
 #include "vertex.h"
-#include "mat4.h"
 #include "vector3.h"
 #include "camera.h"
 

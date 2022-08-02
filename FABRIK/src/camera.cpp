@@ -16,27 +16,26 @@ Camera::Camera(int width, int height, float nearPlane, float farPlane) : ShaderP
 	glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, viewMatrix);
 }
 
-void Camera::SetModelMatrix(const Mat4& matrix) const {
+void Camera::SetModelMatrix(const Matrix4& matrix) const {
 	glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, matrix);
 }
 
-void Camera::Translate(Vector3 vector) {
-	viewMatrix.Translate(vector.x, vector.y, vector.z);
+void Camera::Translate(Vector3 position) {
+	viewMatrix *= Matrix4::Translate(position);
 
 	glUseProgram(*this);
 	glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, viewMatrix);
 }
 
-void Camera::Rotate(Vector3 vector) {
-	Vector3 tmp_vector = GetPosition();
+void Camera::Rotate(Vector3 angle) {
+	Vector3 currentPosition = GetPosition();
 
-	Translate(!tmp_vector);
+	viewMatrix =
+		Matrix4::Rotate(angle) *
+		Matrix4::Translate(currentPosition);
 
-	viewMatrix.RotateX(vector.x);
-	viewMatrix.RotateY(vector.y);
-	viewMatrix.RotateZ(vector.z);
-
-	Translate(tmp_vector);
+	glUseProgram(*this);
+	glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, viewMatrix);
 }
 
 Vector3 Camera::GetPosition() {

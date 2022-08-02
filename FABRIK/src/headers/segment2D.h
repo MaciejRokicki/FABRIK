@@ -4,11 +4,10 @@
 #include <GL/glew.h>
 
 #include "object2D.h"
-#include "mat4.h"
 
 class Segment2D : public Object2D {
 public:
-	Segment2D(Vector2 position = Vector2::zero, Vector2 scale = Vector2::one / 2, Color color = { 0.9f, 0.9f, 0.9f, 1.0f });
+	Segment2D(Vector3 position = Vector3::zero, Vector3 scale = { 0.5f, 0.5f, 1.0f }, Color color = {0.9f, 0.9f, 0.9f, 1.0f});
 };
 
 #endif // !SEGMENT2D_H

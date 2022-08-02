@@ -4,7 +4,6 @@
 #include <GL/glew.h>
 
 #include "object3D.h"
-#include "mat4.h"
 
 class Segment3D : public Object3D {
 public:

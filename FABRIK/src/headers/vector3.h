@@ -28,11 +28,17 @@ struct Vector3 {
 	bool operator <=(const Vector3& vec);
 
 	Vector3 operator +(const Vector3& vec);
+	Vector3& operator +=(const Vector3& vec);
 	Vector3 operator -(const Vector3& vec);
+	Vector3& operator -=(const Vector3& vec);
 	Vector3 operator *(const Vector3& vec);
 	Vector3 operator *(const float f);
+	Vector3& operator *=(const Vector3& vec);
+	Vector3& operator *=(const float f);
 	Vector3 operator /(const Vector3& vec);
 	Vector3 operator /(const float f);
+	Vector3& operator /=(const Vector3& vec);
+	Vector3& operator /=(const float f);
 
 	operator Vector2();
 

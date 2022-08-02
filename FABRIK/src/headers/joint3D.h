@@ -5,7 +5,6 @@
 
 #include "vector2.h"
 #include "object3D.h"
-#include "mat4.h"
 #include "segment3D.h"
 
 class Joint3D : public Object3D {

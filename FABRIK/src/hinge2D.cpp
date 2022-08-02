@@ -5,9 +5,9 @@
 
 Hinge2D::Hinge2D(float minAngle, float maxAngle) : Constraint2D(minAngle, maxAngle) { }
 
-Vector2 Hinge2D::Apply(Joint2D* previousJoint, Joint2D* currentJoint) {
-	Vector2 previousJointPosition = previousJoint->PositionTmp;
-	Vector2 currentJointPosition = currentJoint->PositionTmp;
+void Hinge2D::Apply(Node<Joint2D>* nodeJoint) {
+	Vector2 previousJointPosition = nodeJoint->parent->value.PositionTmp;
+	Vector2 currentJointPosition = nodeJoint->value.PositionTmp;
 
 	Vector2 direction = (currentJointPosition - previousJointPosition).Normalize();
 	float angle = Mathf::Rad2Deg(atan2f(direction.y, direction.x));
@@ -24,7 +24,7 @@ Vector2 Hinge2D::Apply(Joint2D* previousJoint, Joint2D* currentJoint) {
 
 	if (minAngle <= maxAngle) {
 		if (angle >= minAngle && angle <= maxAngle) {
-			return currentJointPosition;
+			return;
 		}
 
 		if (angle < minAngle) {
@@ -38,7 +38,7 @@ Vector2 Hinge2D::Apply(Joint2D* previousJoint, Joint2D* currentJoint) {
 	} 
 	else {
 		if (angle >= minAngle || angle <= maxAngle) {
-			return currentJointPosition;
+			return;
 		}
 
 		if (fabsf(minAngle - angle) > fabsf(maxAngle - angle)) {
@@ -59,5 +59,5 @@ Vector2 Hinge2D::Apply(Joint2D* previousJoint, Joint2D* currentJoint) {
 	//	<< "Test angle: " << testAngle
 	//	<< std::endl;
 
-	return newPosition + previousJointPosition;
+	nodeJoint->value.PositionTmp = newPosition + previousJointPosition;
 }

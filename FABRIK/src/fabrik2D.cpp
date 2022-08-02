@@ -109,12 +109,12 @@ void Fabrik2D::Solve() {
 	executionTimeSum += executionTime;
 	tpiSum += timePerIteration;
 
-	//std::cout <<"[" << runs << "]"
-	//	<< " Iterations: " << iterations
-	//	<< " Execution time: " << executionTime  << "ms" << " (AVG: " << executionTimeSum / runs << "ms)"
-	//	<< " TPI: " << timePerIteration << "ms" << " (AVG: " << tpiSum / runs << "ms)"
-	//	<< " Reachable targets: " << reachableTargetsCounter
-	//	<< " Accuracy: " << (1 - accuracy) * 1e2 << std::endl;
+	std::cout <<"[" << runs << "]"
+		<< " Iterations: " << iterations
+		<< " Execution time: " << executionTime  << "ms" << " (AVG: " << executionTimeSum / runs << "ms)"
+		<< " TPI: " << timePerIteration << "ms" << " (AVG: " << tpiSum / runs << "ms)"
+		<< " Reachable targets: " << reachableTargetsCounter
+		<< " Accuracy: " << (1 - accuracy) * 1e2 << std::endl;
 }
 
 Target2D* Fabrik2D::SelectTargetByMouseButtonPressCallback(Vector3 space_pos) {
@@ -163,10 +163,10 @@ float Fabrik2D::DistanceBetweenJoints(Node<Joint2D>* nodeJoint) {
 
 void Fabrik2D::ConnectJoints(Node<Joint2D>* nodeJoint) {
 	if (nodeJoint->parent) {
-		nodeJoint->value.segment->Translate(Vector2{ (nodeJoint->value.GetPosition() + nodeJoint->parent->value.GetPosition()) / 2.0f });
-		nodeJoint->value.segment->SetScale({ 0.2f, Vector2::Distance(nodeJoint->value.GetPosition(), nodeJoint->parent->value.GetPosition()) + 0.25f });
+		nodeJoint->value.segment->Translate((nodeJoint->value.GetPosition() + nodeJoint->parent->value.GetPosition()) / 2.0f);
+		nodeJoint->value.segment->SetScale(Vector3{ 0.2f, Vector2::Distance(nodeJoint->value.GetPosition(), nodeJoint->parent->value.GetPosition()) + 0.25f, 1.0f });
 
-		nodeJoint->value.segment->LookAt2D(nodeJoint->parent->value);
+		nodeJoint->value.segment->LookAt(nodeJoint->parent->value);
 	}
 }
 
@@ -222,7 +222,7 @@ void Fabrik2D::Backward() {
 			nodeJoint->value.PositionTmp = previous_joint_vector + direction * joints_distance;
 
 			if (nodeJoint->value.constraint) {
-				nodeJoint->value.PositionTmp = nodeJoint->value.constraint->Apply(&nodeJoint->parent->value, &nodeJoint->value);
+				nodeJoint->value.constraint->Apply(nodeJoint);
 			}
 		});
 	}

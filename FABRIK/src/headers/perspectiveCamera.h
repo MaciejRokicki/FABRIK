@@ -8,7 +8,7 @@ class PerspectiveCamera : public Camera {
 private:
 	float fov;
 
-	Mat4 GetPerspectiveProjectionMatrix(int width, int height);
+	Matrix4 GetPerspectiveProjectionMatrix(int width, int height);
 public:
 	PerspectiveCamera(float fov, int width, int height, float nearPlane, float farPlane);
 	void Resize(int width, int height);

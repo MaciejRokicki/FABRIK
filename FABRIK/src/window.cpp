@@ -6,7 +6,6 @@
 #include <GLFW/glfw3.h>
 
 #include "headers/window.h"
-#include "headers/mat4.h"
 #include "headers/joint2D.h"
 #include "headers/transform.h"
 #include "headers/fabrik2D.h"
@@ -197,8 +196,10 @@ void Window::LoadScene(Scene* scene) {
     }
 
     this->scene = scene;
+
     camera = scene->GetCamera();
     camera->Resize(width, height);
+
     this->scene->Init();
 }
 
