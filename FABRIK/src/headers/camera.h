@@ -5,7 +5,7 @@
 #include <GLFW/glfw3.h>
 
 #include "shaderProgram.h"
-#include "mat4.h"
+#include "matrix4.h"
 #include "vector2.h"
 #include "vector3.h"
 
@@ -15,8 +15,8 @@ protected:
 	GLuint viewMatrixLocation;
 	GLuint modelMatrixLocation;
 
-	Mat4 viewMatrix;
-	Mat4 projectionMatrix;
+	Matrix4 viewMatrix;
+	Matrix4 projectionMatrix;
 
 	float nearPlane;
 	float farPlane;
@@ -24,9 +24,9 @@ protected:
 	int height;
 public:
 	Camera(int width, int height, float nearPlane, float farPlane);
-	void SetModelMatrix(const Mat4& matrix) const;
-	void Translate(Vector3 vector);
-	void Rotate(Vector3 vector);
+	void SetModelMatrix(const Matrix4& matrix) const;
+	void Translate(Vector3 position);
+	void Rotate(Vector3 angle);
 	Vector3 GetPosition();
 	virtual void Resize(int width, int height) = 0;
 	virtual Vector2 CameraToWorldPosition(double x, double y) = 0;

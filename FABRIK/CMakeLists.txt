@@ -21,8 +21,8 @@ add_executable (
 	"src/window.cpp" 
 	"src/headers/shaderProgram.h"
 	"src/shaderProgram.cpp" 	  
-	"src/headers/mat4.h" 
-	"src/mat4.cpp" 
+	"src/headers/matrix4.h" 
+	"src/matrix4.cpp" 
 	"src/headers/segment2D.h"
 	"src/segment2D.cpp"
 	"src/headers/vertex.h"
@@ -68,7 +68,7 @@ add_executable (
 	"src/headers/hinge2D.h" 
 	"src/hinge2D.cpp"
 	"src/headers/constraint2D.h" 
-	 "src/constraint2D.cpp")
+	 "src/constraint2D.cpp" "src/headers/mathf.h" "src/mathf.cpp")
 
 target_link_libraries(FABRIK OpenGL::GL glew glfw)
 

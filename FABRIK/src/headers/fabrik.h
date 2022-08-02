@@ -9,7 +9,7 @@
 class Fabrik {
 protected:
 	float tolerance;
-	int iterations_limit = 100;
+	int iterations_limit = 10;
 
 	int runs = 0;
 	double executionTimeSum = 0.0;

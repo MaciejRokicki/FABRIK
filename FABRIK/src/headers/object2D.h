@@ -10,9 +10,8 @@
 class Object2D : public Object {
 public:
 	Object2D();
-	Object2D(Vector2 position, Vector2 scale, Color default_color);
-	Vector2 GetPosition() const { return { _matrix[12], _matrix[13] }; };
-	Vector2 GetScale() const { return { _matrix[0], _matrix[5] }; };
+	Object2D(Vector3 position, Vector3 scale, Color default_color);
+	void LookAt(Transform& transform);
 };
 
 #endif // !OBJECT2D_H

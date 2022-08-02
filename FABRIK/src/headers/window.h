@@ -7,7 +7,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "mat4.h"
 #include "vector2.h"
 #include "scene.h"
 #include "camera.h"
@@ -24,7 +23,7 @@ private:
     Camera* camera = NULL;
 
     Scene* scene = NULL;
-    int sceneId = 4;
+    int sceneId = 0;
 
     void InitModels();
     void InitGlfwOrDie(int majorGlVersion, int minorGlVersion);

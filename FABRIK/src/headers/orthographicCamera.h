@@ -8,7 +8,7 @@ class OrthographicCamera : public Camera {
 private:
 	float size;
 
-	Mat4 GetOrthographicProjectionMatrix(int width, int height);
+	Matrix4 GetOrthographicProjectionMatrix(int width, int height);
 public:
 	OrthographicCamera(float size, int width, int height, float nearPlane, float farPlane);
 	void Resize(int width, int height);

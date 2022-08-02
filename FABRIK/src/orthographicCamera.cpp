@@ -36,23 +36,23 @@ Vector2 OrthographicCamera::CameraToWorldPosition(double x, double y) {
 	return Vector2{ (float)(round(x * 10.0) / 10.0), (float)(round(y * 10.0) / 10.0) };
 }
 
-Mat4 OrthographicCamera::GetOrthographicProjectionMatrix(int width, int height) {
+Matrix4 OrthographicCamera::GetOrthographicProjectionMatrix(int width, int height) {
 	float left = -width / size;
 	float right = width / size;
 	float bottom = -height / size;
 	float top = height / size;
 
-	float frustum_length = farPlane - nearPlane;
+	float matrix[16] = {0};
+	
+	matrix[0] = 2 / (right - left);
+	matrix[3] = -(right + left) / (right - left);
+	matrix[5] = 2 / (top - bottom);
+	matrix[7] = -(top + bottom) / (top - bottom);
+	matrix[10] = -2 / (farPlane - nearPlane);
+	matrix[11] = -(farPlane + nearPlane) / (farPlane - nearPlane);
+	matrix[15] = 1;
 
-	projectionMatrix = Mat4(0);
-
-	projectionMatrix.matrix[0] = 2 / (right - left);
-	projectionMatrix.matrix[5] = 2 / (top - bottom);
-	projectionMatrix.matrix[10] = -2 / frustum_length;
-	projectionMatrix.matrix[12] = -(right + left) / (right - left);
-	projectionMatrix.matrix[13] = -(top + bottom) / (top - bottom);
-	projectionMatrix.matrix[14] = -(farPlane + nearPlane) / frustum_length;
-	projectionMatrix.matrix[15] = 1;
+	Matrix4 projectionMatrix = Matrix4(matrix);
 
 	return projectionMatrix;
 }

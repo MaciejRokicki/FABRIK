@@ -357,20 +357,39 @@ Scene* Scene::BuildScene5() {
     Camera* camera = new OrthographicCamera(120, 0, 0, 0.1f, 100.0f);
     camera->Translate({ 0.0f, 0.0f, -10.0f });
 
-    Node<Joint2D>* root = new Node<Joint2D>(Joint2D(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
-    root->next(Joint2D({ 0.75f, 0.0f }, { 0.35f, 0.35f }, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge2D(0.0f, 120.0f)));
-    root->child[0]->next(Joint2D({ 1.75f, 0.0f }, { 0.35f, 0.35f }, { 1.0f, 0.0f, 0.0f, 1.0f }));
+    Node<Joint2D>* root = NULL;
+
+    std::vector<Object*>* objects = new std::vector<Object*>{
+        new Object2D(Vector3::zero, Vector3::one, { 1.0f, 0.0f, 1.0f, 1.0f }),
+    };
+
+    //Node<Joint2D>* root = new Node<Joint2D>(Joint2D(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
+    //root->next(Joint2D({ 0.75f, 0.0f }, { 0.35f, 0.35f }, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge2D(270.0f, 90.0f)));
+    //root->child[0]->next(Joint2D({ 1.75f, 0.0f }, { 0.35f, 0.35f }, { 1.0f, 0.0f, 0.0f, 1.0f }/*, new Hinge2D(0.0f, 170.0f)*/));
 
     Tree<Joint2D>* tree = new Tree<Joint2D>(root);
     Fabrik* fabrik = new Fabrik2D(tree);
 
-    Scene* scene = new Scene(camera, fabrik);
+    Scene* scene = new Scene(camera, fabrik, objects);
 
-    std::function<void(int, int)> keyEvent = [root, fabrik](int key, int action) {
+    std::function<void(int, int)> keyEvent = [root, fabrik, objects](int key, int action) {
         if (action == GLFW_PRESS) {
             switch (key) {
             case GLFW_KEY_SPACE:
-                fabrik->Solve();
+                //fabrik->Solve();
+                system("cls");
+
+                objects->at(0)->Translate({ 1.0f, 2.0f, 0.0f });
+                objects->at(0)->SetScale({ 2.0f, 1.0f, 1.0f });
+                objects->at(0)->Rotate({ 0.0f, 0.0f, 60.0f });
+                objects->at(0)->Rotate({ 0.0f, 0.0f, 45.0f });
+                objects->at(0)->SetScale({ 6.0f, 0.5f, 1.0f });
+                objects->at(0)->Translate({ -1.0f, -2.0f, 0.0f });
+
+                std::cout<< "Position: " << objects->at(0)->GetPosition()
+                    << " Rotation: " << objects->at(0)->GetRotation() 
+                    << " Scale: " << objects->at(0)->GetScale() 
+                    << std::endl;
                 break;
             }
         }
