@@ -13,6 +13,11 @@ public:
 	static Vector3 Rad2Deg(Vector3 rad);
 	static float Deg2Rad(float deg);
 	static Vector3 Deg2Rad(Vector3 deg);
+	static float NormalizeAngle180(float angle);
+	static Vector3 NormalizeAngle180(Vector3 angle);
+	static float NormalizeAngle360(float angle);
+	static Vector3 NormalizeAngle360(Vector3 angle);
+	static float ClampAngle(float angle, float minAngle, float maxAngle);
 };
 
 #endif // !MATHF_H

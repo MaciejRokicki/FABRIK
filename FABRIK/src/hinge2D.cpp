@@ -2,6 +2,7 @@
 
 #include "headers/hinge2D.h"
 #include "headers/mathf.h"
+#include "headers/segment2D.h"
 
 Hinge2D::Hinge2D(float minAngle, float maxAngle) : Constraint2D(minAngle, maxAngle) { }
 
@@ -9,55 +10,38 @@ void Hinge2D::Apply(Node<Joint2D>* nodeJoint) {
 	Vector2 previousJointPosition = nodeJoint->parent->value.PositionTmp;
 	Vector2 currentJointPosition = nodeJoint->value.PositionTmp;
 
-	Vector2 direction = (currentJointPosition - previousJointPosition).Normalize();
-	float angle = Mathf::Rad2Deg(atan2f(direction.y, direction.x));
+	Segment2D* currentSegment = nodeJoint->value.segment;
+	Segment2D* previousSegment = nodeJoint->parent->value.segment;
 
-	Vector2 newPosition;
-	float length = Vector2::Distance(previousJointPosition, currentJointPosition);
-	angle = angle < 0 ? angle += 360.0f : angle;
+	Vector2 direction = currentJointPosition - previousJointPosition;
+	float angle = Mathf::Rad2Deg(atan2f(direction.y, direction.x)); // Kat wzgledem punktu (0, 0)
 
-	std::cout
-		<< "Position: " << currentJointPosition
-		<< " Angle: " << angle
-		<< std::endl
-		<< std::endl;
-
-	if (minAngle <= maxAngle) {
-		if (angle >= minAngle && angle <= maxAngle) {
-			return;
-		}
-
-		if (angle < minAngle) {
-			newPosition.x = length * cos(Mathf::Deg2Rad(minAngle));
-			newPosition.y = length * sin(Mathf::Deg2Rad(minAngle));
-		}
-		else if(angle > maxAngle) {
-			newPosition.x = length * cos(Mathf::Deg2Rad(maxAngle));
-			newPosition.y = length * sin(Mathf::Deg2Rad(maxAngle));
-		}
-	} 
-	else {
-		if (angle >= minAngle || angle <= maxAngle) {
-			return;
-		}
-
-		if (fabsf(minAngle - angle) > fabsf(maxAngle - angle)) {
-			newPosition.x = length * cos(Mathf::Deg2Rad(maxAngle));
-			newPosition.y = length * sin(Mathf::Deg2Rad(maxAngle));
-		}
-		else {
-			newPosition.x = length * cos(Mathf::Deg2Rad(minAngle));
-			newPosition.y = length * sin(Mathf::Deg2Rad(minAngle));
-		}
+	// Kat osi z poprzedniego segmentu
+	if (nodeJoint->parent->parent != NULL) {
+		Vector2 previousPreviousJointPosition = nodeJoint->parent->parent->value.PositionTmp;
+		Vector2 direction2 = previousJointPosition - previousPreviousJointPosition;
+		previousSegment->constraintRotationTmp.z = Mathf::Rad2Deg(atan2f(direction2.y, direction2.x));
 	}
 
-	//Vector2 relativeTestPosition = newPosition;
-	//float testAngle = atan2f(relativeTestPosition.y, relativeTestPosition.x) * 180.0f / M_PI;
-	//testAngle = testAngle < 0 ? testAngle += 360.0f : testAngle;
+	// Kat wzgledem poprzedniego segmentu
+	angle -= previousSegment->constraintRotationTmp.z;			
 
-	//std::cout
-	//	<< "Test angle: " << testAngle
-	//	<< std::endl;
+	// Normalizacja wartosci katow do przedzialu 0-360
+	angle = Mathf::NormalizeAngle360(angle);
+
+	if (angle >= minAngle && angle <= maxAngle) {
+		return;
+	}
+
+	angle = Mathf::ClampAngle(angle, minAngle, maxAngle);
+
+	float length = Vector2::Distance(previousJointPosition, currentJointPosition);
+	Vector2 newPosition = {
+		length* cos(Mathf::Deg2Rad(angle + previousSegment->constraintRotationTmp.z)),
+		length* sin(Mathf::Deg2Rad(angle + previousSegment->constraintRotationTmp.z))
+	};
+
+	currentSegment->constraintRotationTmp.z = angle;
 
 	nodeJoint->value.PositionTmp = newPosition + previousJointPosition;
 }

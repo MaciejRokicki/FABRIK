@@ -68,7 +68,9 @@ add_executable (
 	"src/headers/hinge2D.h" 
 	"src/hinge2D.cpp"
 	"src/headers/constraint2D.h" 
-	 "src/constraint2D.cpp" "src/headers/mathf.h" "src/mathf.cpp")
+	"src/constraint2D.cpp" 
+	"src/headers/mathf.h" 
+	"src/mathf.cpp")
 
 target_link_libraries(FABRIK OpenGL::GL glew glfw)
 
