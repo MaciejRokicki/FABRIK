@@ -65,6 +65,7 @@ Scene* Scene::BuildScene1() {
     camera->Translate(Vector3{ 0.0f, -3.0f, 0.0f });
 
     Node<Joint2D>* root = new Node<Joint2D>(Joint2D(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
+
     root->next(Joint2D({ 0.0f, 0.75f }, { 0.35f, 0.35f }));
     root->child[0]->next(Joint2D({ 0.0f, 1.5f }, { 0.35f, 0.35f }));
     root->child[0]->child[0]->next(Joint2D({0.0f, 2.25f}, {0.35f, 0.35f}));
@@ -134,17 +135,18 @@ Scene* Scene::BuildScene2() {
     Camera* camera = new OrthographicCamera(70, 0, 0, 0.1f, 100.0f);
 
     Node<Joint2D>* root = new Node<Joint2D>(Joint2D(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
-    root->next(Joint2D({ 0.0f, 3.00f }, { 0.35f, 0.35f }));                           //tulow - 0
-    root->child[0]->next(Joint2D({ 0.0f, 4.00f }, { 0.35f, 0.35f }));                 //szyja - 0
-    root->child[0]->next(Joint2D({ -1.0f, 2.50f }, { 0.35f, 0.35f }));                //lewe ramie - 1
-    root->child[0]->child[1]->next(Joint2D({ -1.0f, 1.00f }, { 0.35f, 0.35f }));      //lewe przedramie
-    root->child[0]->next(Joint2D({ 1.0f, 2.50f }, { 0.35f, 0.35f }));                 //prawe ramie - 2
-    root->child[0]->child[2]->next(Joint2D({ 1.0f, 1.00f }, { 0.35f, 0.35f }));       //prawe przedramie
 
-    root->next(Joint2D({ -1.0f, -1.00f }, { 0.35f, 0.35f }));                         //lewe udo - 1
-    root->child[1]->next(Joint2D({ -1.0f, -3.00f }, { 0.35f, 0.35f }));               //lewy piszczel
-    root->next(Joint2D({ 1.0f, -1.00f }, { 0.35f, 0.35f }));                          //prawe udo - 2
-    root->child[2]->next(Joint2D({ 1.0f, -3.00f }, { 0.35f, 0.35f }));                //prawy piszczel
+    root->next(                     Joint2D({  0.0f,  3.0f }, { 0.35f, 0.35f }));   //tulow - 0
+    root->child[0]->next(           Joint2D({  0.0f,  4.0f }, { 0.35f, 0.35f }));   //szyja - 0
+    root->child[0]->next(           Joint2D({ -1.0f,  2.5f }, { 0.35f, 0.35f }));   //lewe ramie - 1
+    root->child[0]->child[1]->next( Joint2D({ -1.0f,  1.0f }, { 0.35f, 0.35f }));   //lewe przedramie
+    root->child[0]->next(           Joint2D({  1.0f,  2.5f }, { 0.35f, 0.35f }));   //prawe ramie - 2
+    root->child[0]->child[2]->next( Joint2D({  1.0f,  1.0f }, { 0.35f, 0.35f }));   //prawe przedramie
+
+    root->next(                     Joint2D({ -1.0f, -1.0f }, { 0.35f, 0.35f }));   //lewe udo - 1
+    root->child[1]->next(           Joint2D({ -1.0f, -3.0f }, { 0.35f, 0.35f }));   //lewy piszczel
+    root->next(                     Joint2D({  1.0f, -1.0f }, { 0.35f, 0.35f }));   //prawe udo - 2
+    root->child[2]->next(           Joint2D({  1.0f, -3.0f }, { 0.35f, 0.35f }));   //prawy piszczel
 
     Tree<Joint2D>* tree = new Tree<Joint2D>(root);
     Fabrik* fabrik = new Fabrik2D(tree);
@@ -197,6 +199,73 @@ Scene* Scene::BuildScene2() {
 }
 
 Scene* Scene::BuildScene3() {
+    Camera* camera = new OrthographicCamera(70, 0, 0, 0.1f, 100.0f);
+
+    Node<Joint2D>* root = new Node<Joint2D>(Joint2D(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
+
+    root->next(                     Joint2D({  0.0f,  3.00f }, { 0.35f, 0.35f }, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge2D(  0.0f, 180.0f)));     //tulow - 0
+    root->child[0]->next(           Joint2D({  0.0f,  4.00f }, { 0.35f, 0.35f }, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge2D(290.0f,  70.0f)));     //szyja - 0
+    root->child[0]->next(           Joint2D({ -1.0f,  2.50f }, { 0.35f, 0.35f }, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge2D( 90.0f, 190.0f)));     //lewe ramie - 1
+    root->child[0]->child[1]->next( Joint2D({ -1.0f,  1.00f }, { 0.35f, 0.35f }, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge2D(  0.0f, 170.0f)));     //lewe przedramie
+    root->child[0]->next(           Joint2D({  1.0f,  2.50f }, { 0.35f, 0.35f }, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge2D(170.0f, 270.0f)));     //prawe ramie - 2
+    root->child[0]->child[2]->next( Joint2D({  1.0f,  1.00f }, { 0.35f, 0.35f }, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge2D(  0.0f, 170.0f)));     //prawe przedramie
+
+    root->next(                     Joint2D({ -1.0f, -1.00f }, { 0.35f, 0.35f }, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge2D(190.0f, 350.0f)));     //lewe udo - 1
+    root->child[1]->next(           Joint2D({ -1.0f, -3.00f }, { 0.35f, 0.35f }, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge2D(250.0f,   0.0f)));     //lewy piszczel
+    root->next(                     Joint2D({  1.0f, -1.00f }, { 0.35f, 0.35f }, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge2D(190.0f, 350.0f)));     //prawe udo - 2
+    root->child[2]->next(           Joint2D({  1.0f, -3.00f }, { 0.35f, 0.35f }, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge2D(250.0f,   0.0f)));     //prawy piszczel
+
+    Tree<Joint2D>* tree = new Tree<Joint2D>(root);
+    Fabrik* fabrik = new Fabrik2D(tree);
+
+    Scene* scene = new Scene(camera, fabrik);
+
+    std::function<void(int, int)> keyEvent = [root, fabrik](int key, int action) {
+        if (action == GLFW_PRESS) {
+            switch (key) {
+            case GLFW_KEY_SPACE:
+                fabrik->Solve();
+                break;
+            }
+        }
+    };
+
+    std::function<void(int, int, Vector2)> mouseEvent = [fabrik, scene](
+        int button,
+        int action,
+        Vector2 space_pos) {
+            if (action == GLFW_PRESS) {
+                switch (button) {
+                case GLFW_MOUSE_BUTTON_1:
+                    scene->selectedObject = fabrik->SelectTargetByMouseButtonPressCallback(space_pos);
+
+                    if (scene->selectedObject != NULL) {
+                        scene->selectedObject->SetColor({ 0.0f, 1.0f, 0.0f });
+                    }
+
+                    break;
+                }
+            }
+            else if (action == GLFW_RELEASE) {
+                switch (button) {
+                case GLFW_MOUSE_BUTTON_1:
+                    if (scene->selectedObject != NULL) {
+                        scene->selectedObject->Translate({ space_pos.x, space_pos.y, 0.0f });
+                        scene->selectedObject->SetDefaultColor();
+                        scene->selectedObject = NULL;
+                    }
+                    break;
+                }
+            }
+    };
+
+    scene->KeyEvent = keyEvent;
+    scene->MouseButtonEvent = mouseEvent;
+
+    return scene;
+}
+
+Scene* Scene::BuildScene4() {
     Camera* camera = new PerspectiveCamera(30, 0, 0, 0.1f, 1000.0f);
     camera->Translate(Vector3{ -2.0f, -3.0f, -20.0f });
     camera->Rotate(Vector3{ 0.0f, 45.0f, 0.0f });
@@ -248,7 +317,7 @@ Scene* Scene::BuildScene3() {
     return scene;
 }
 
-Scene* Scene::BuildScene4() {
+Scene* Scene::BuildScene5() {
     Camera* camera = new PerspectiveCamera(60, 0, 0, 0.1f, 1000.0f);
     camera->Translate(Vector3{ -2.0f, 0.0f, -19.0f });
     camera->Rotate(Vector3{ 0.0f, 45.0f, 0.0f });
@@ -348,85 +417,6 @@ Scene* Scene::BuildScene4() {
     };
 
     scene->KeyEvent = keyEvent;
-
-    return scene;
-}
-
-Scene* Scene::BuildScene5() {
-    Camera* camera = new OrthographicCamera(120, 0, 0, 0.1f, 100.0f);
-
-    //Node<Joint2D>* root = NULL;
-
-    //std::vector<Object*>* objects = new std::vector<Object*>{
-    //    new Object2D(Vector3::zero, Vector3::one, { 1.0f, 0.0f, 1.0f, 1.0f }),
-    //};
-
-    Node<Joint2D>* root = new Node<Joint2D>(Joint2D(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
-    //root->next(Joint2D({ 0.75f, 0.0f }, { 0.35f, 0.35f }, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge2D(270.0f, 90.0f)));
-    root->next(Joint2D({ 0.75f, 0.0f }, { 0.35f, 0.35f }, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge2D(10.0f, 10.0f)));
-    root->child[0]->next(Joint2D({ 1.75f, 0.0f }, { 0.35f, 0.35f }, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge2D(90.0f, 90.0f)));
-    root->child[0]->child[0]->next(Joint2D({2.5f, 0.0f}, {0.35f, 0.35f}, {1.0f, 0.0f, 0.0f, 1.0f}, new Hinge2D(180.0f, 0.0f)));
-
-    Tree<Joint2D>* tree = new Tree<Joint2D>(root);
-    Fabrik* fabrik = new Fabrik2D(tree);
-
-    Scene* scene = new Scene(camera, fabrik/*, objects*/);
-
-    std::function<void(int, int)> keyEvent = [root, fabrik/*, objects*/](int key, int action) {
-        if (action == GLFW_PRESS) {
-            switch (key) {
-            case GLFW_KEY_SPACE:
-                system("cls");
-                fabrik->Solve();
-                //system("cls");
-
-                //objects->at(0)->Translate({ 1.0f, 2.0f, 0.0f });
-                //objects->at(0)->SetScale({ 2.0f, 1.0f, 1.0f });
-                //objects->at(0)->Rotate({ 0.0f, 0.0f, 0.0f });
-                //objects->at(0)->Rotate({ 100.0f, 0.0f, 45.0f });
-                //objects->at(0)->SetScale({ 6.0f, 0.5f, 1.0f });
-                //objects->at(0)->Translate({ -1.0f, -2.0f, 0.0f });
-
-                //std::cout<< "Position: " << objects->at(0)->GetPosition()
-                //    << " Rotation: " << objects->at(0)->GetRotation() 
-                //    << " Scale: " << objects->at(0)->GetScale() 
-                //    << std::endl;
-                break;
-            }
-        }
-    };
-
-    std::function<void(int, int, Vector2)> mouseEvent = [fabrik, scene](
-        int button,
-        int action,
-        Vector2 space_pos) {
-            if (action == GLFW_PRESS) {
-                switch (button) {
-                case GLFW_MOUSE_BUTTON_1:
-                    scene->selectedObject = fabrik->SelectTargetByMouseButtonPressCallback(space_pos);
-
-                    if (scene->selectedObject != NULL) {
-                        scene->selectedObject->SetColor({ 0.0f, 1.0f, 0.0f });
-                    }
-
-                    break;
-                }
-            }
-            else if (action == GLFW_RELEASE) {
-                switch (button) {
-                case GLFW_MOUSE_BUTTON_1:
-                    if (scene->selectedObject != NULL) {
-                        scene->selectedObject->Translate({ space_pos.x, space_pos.y, 0.0f });
-                        scene->selectedObject->SetDefaultColor();
-                        scene->selectedObject = NULL;
-                    }
-                    break;
-                }
-            }
-    };
-
-    scene->KeyEvent = keyEvent;
-    scene->MouseButtonEvent = mouseEvent;
 
     return scene;
 }
