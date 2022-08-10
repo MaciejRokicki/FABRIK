@@ -107,12 +107,12 @@ void Fabrik3D::Solve() {
 	executionTimeSum += executionTime;
 	tpiSum += timePerIteration;
 
-	std::cout << "[" << runs << "]"
-		<< " Iterations: " << iterations
-		<< " Execution time: " << executionTime << "ms" << " (AVG: " << executionTimeSum / runs << "ms)"
-		<< " TPI: " << timePerIteration << "ms" << " (AVG: " << tpiSum / runs << "ms)"
-		<< " Reachable targets: " << reachableTargetsCounter
-		<< " Accuracy: " << (1 - accuracy) * 1e2 << std::endl;
+	//std::cout << "[" << runs << "]"
+	//	<< " Iterations: " << iterations
+	//	<< " Execution time: " << executionTime << "ms" << " (AVG: " << executionTimeSum / runs << "ms)"
+	//	<< " TPI: " << timePerIteration << "ms" << " (AVG: " << tpiSum / runs << "ms)"
+	//	<< " Reachable targets: " << reachableTargetsCounter
+	//	<< " Accuracy: " << (1 - accuracy) * 1e2 << std::endl;
 }
 
 Target3D* Fabrik3D::SelectTargetByMouseButtonPressCallback(Vector3 space_pos) {
@@ -219,6 +219,10 @@ void Fabrik3D::Backward() {
 			float joints_distance = DistanceBetweenJoints(nodeJoint);
 
 			nodeJoint->value.PositionTmp = previous_joint_vector + direction * joints_distance;
+
+			if (nodeJoint->value.constraint) {
+				nodeJoint->value.constraint->Apply(nodeJoint);
+			}
 		});
 	}
 }

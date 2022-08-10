@@ -14,7 +14,10 @@ void Hinge2D::Apply(Node<Joint2D>* nodeJoint) {
 	Segment2D* previousSegment = nodeJoint->parent->value.segment;
 
 	Vector2 direction = currentJointPosition - previousJointPosition;
-	float angle = Mathf::Rad2Deg(atan2f(direction.y, direction.x)); // Kat wzgledem punktu (0, 0)
+	// Znormalizowany kat w zakresi [0, 360] wzgledem punktu (0, 0)
+	float angle = Mathf::NormalizeAngle360(
+		Mathf::Rad2Deg(atan2f(direction.y, direction.x))
+	); 
 
 	// Kat osi z poprzedniego segmentu
 	if (nodeJoint->parent->parent != NULL) {
@@ -26,22 +29,18 @@ void Hinge2D::Apply(Node<Joint2D>* nodeJoint) {
 	// Kat wzgledem poprzedniego segmentu
 	angle -= previousSegment->constraintRotationTmp.z;			
 
-	// Normalizacja wartosci katow do przedzialu 0-360
-	angle = Mathf::NormalizeAngle360(angle);
-
 	if (angle >= minAngle && angle <= maxAngle) {
 		return;
 	}
 
 	angle = Mathf::ClampAngle(angle, minAngle, maxAngle);
+	angle += previousSegment->constraintRotationTmp.z;
 
 	float length = Vector2::Distance(previousJointPosition, currentJointPosition);
 	Vector2 newPosition = {
-		length* cos(Mathf::Deg2Rad(angle + previousSegment->constraintRotationTmp.z)),
-		length* sin(Mathf::Deg2Rad(angle + previousSegment->constraintRotationTmp.z))
+		length* cos(Mathf::Deg2Rad(angle)),
+		length* sin(Mathf::Deg2Rad(angle))
 	};
-
-	currentSegment->constraintRotationTmp.z = angle;
 
 	nodeJoint->value.PositionTmp = newPosition + previousJointPosition;
 }

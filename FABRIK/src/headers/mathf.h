@@ -5,6 +5,7 @@
 #define M_PI 3.14159265f
 #endif
 
+#include "vector2.h"
 #include "vector3.h"
 
 class Mathf {
@@ -17,6 +18,7 @@ public:
 	static Vector3 NormalizeAngle180(Vector3 angle);
 	static float NormalizeAngle360(float angle);
 	static Vector3 NormalizeAngle360(Vector3 angle);
+	static Vector2 NormalizeXYAngle90to360(Vector2 angle);
 	static float ClampAngle(float angle, float minAngle, float maxAngle);
 };
 
