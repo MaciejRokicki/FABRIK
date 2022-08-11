@@ -12,32 +12,33 @@ void Hinge3D::Apply(Node<Joint3D>* nodeJoint) {
 	Vector3 previousJointPosition = nodeJoint->parent->value.PositionTmp;
 	Vector3 currentJointPosition = nodeJoint->value.PositionTmp;
 
-	Segment3D* currentSegment = nodeJoint->value.segment;
-	Segment3D* previousSegment = nodeJoint->parent->value.segment;
+	Vector3 previousSegmentConstraintRotationTmp = Vector3::zero;
 
 	Vector3 direction = currentJointPosition - previousJointPosition;
 	float xz = sqrtf(direction.x * direction.x + direction.z * direction.z);
 
-	// Kat XY wzgledem punktu (0, 0) w zakresie przekonwertowanym z [-90, 90] do [0, 360]
+	// Kat XY wzgledem punktu (0, 0) w zakresie [-90, 90]
 	Vector2 angle = {
 		Mathf::Rad2Deg(atan2(direction.y, xz)),
 		Mathf::Rad2Deg(atan2(-direction.x, direction.z))
 	};
 
-	// Kat osi XY z poprzedniego segmentu w zakresie przekonwertowanym z [-90, 90] do [0, 360]
+	// Kat osi XY z poprzedniego segmentu w zakresie [-90, 90]
 	if (nodeJoint->parent->parent != NULL) {
 		Vector3 previousPreviousJointPosition = nodeJoint->parent->parent->value.PositionTmp;
 		Vector3 direction2 = previousJointPosition - previousPreviousJointPosition;
 		float xz2 = sqrtf(direction2.x * direction2.x + direction2.z * direction2.z);
 
-		previousSegment->constraintRotationTmp = {
+		previousSegmentConstraintRotationTmp = {
 			Mathf::Rad2Deg(atan2f(direction2.y, xz2)),
 			Mathf::Rad2Deg(atan2f(-direction2.x, direction2.z)),
 		};
+
+		// Zmiana katow XY wzgledem poprzedniego segmentu
+		angle -= previousSegmentConstraintRotationTmp;
 	}
 
-	// Zmiana katow XY wzgledem poprzedniego segmentu
-	angle -= previousSegment->constraintRotationTmp;
+	angle = Mathf::NormalizeXYAngle90to360(angle);
 
 	switch (axis) {
 		case Axis::X:
@@ -56,7 +57,7 @@ void Hinge3D::Apply(Node<Joint3D>* nodeJoint) {
 			break;
 	}
 
-	angle += previousSegment->constraintRotationTmp;
+	angle += Mathf::NormalizeAngle360(Mathf::NormalizeXYAngle90to360(previousSegmentConstraintRotationTmp));
 
 	float length = Vector3::Distance(previousJointPosition, currentJointPosition);
 	Vector3 newPosition = {

@@ -16,8 +16,7 @@ void Twist3D::Apply(Node<Joint3D>* nodeJoint) {
 	Vector3 previousJointPosition = nodeJoint->parent->value.PositionTmp;
 	Vector3 currentJointPosition = nodeJoint->value.PositionTmp;
 
-	Segment3D* currentSegment = nodeJoint->value.segment;
-	Segment3D* previousSegment = nodeJoint->parent->value.segment;
+	Vector3 previousSegmentConstraintRotationTmp = Vector3::zero;
 
 	Vector3 direction = currentJointPosition - previousJointPosition;
 	float xz = sqrtf(direction.x * direction.x + direction.z * direction.z);
@@ -34,14 +33,16 @@ void Twist3D::Apply(Node<Joint3D>* nodeJoint) {
 		Vector3 direction2 = previousJointPosition - previousPreviousJointPosition;
 		float xz2 = sqrtf(direction2.x * direction2.x + direction2.z * direction2.z);
 
-		previousSegment->constraintRotationTmp = {
+		previousSegmentConstraintRotationTmp = {
 			Mathf::Rad2Deg(atan2f(direction2.y, xz2)),
 			Mathf::Rad2Deg(atan2f(-direction2.x, direction2.z)),
 		};
 	}
 
 	// Zmiana katow XY wzgledem poprzedniego segmentu
-	angle -= previousSegment->constraintRotationTmp;
+	angle -= previousSegmentConstraintRotationTmp;
+
+	angle = Mathf::NormalizeXYAngle90to360(angle);
 
 	bool inRangeX = angle.x >= minAngle && angle.x <= maxAngle;
 	bool inRangeY = angle.y >= minAngleY && angle.y <= maxAngleY;
@@ -60,7 +61,7 @@ void Twist3D::Apply(Node<Joint3D>* nodeJoint) {
 		angle.y = Mathf::ClampAngle(angle.y, minAngleY, maxAngleY);
 	}
 
-	angle += previousSegment->constraintRotationTmp;
+	angle += Mathf::NormalizeXYAngle90to360(previousSegmentConstraintRotationTmp);
 
 	float length = Vector3::Distance(previousJointPosition, currentJointPosition);
 	Vector3 newPosition = {

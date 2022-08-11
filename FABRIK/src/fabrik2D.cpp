@@ -19,6 +19,10 @@ Fabrik2D::Fabrik2D(Tree<Joint2D>* tree) : Fabrik() {
 	srand((unsigned)time(NULL));
 
 	tree->Preorder([&](Node<Joint2D>* nodeJoint) {
+		if (nodeJoint->parent != NULL) {
+			nodeJoint->value.segment = new Segment2D();
+		}
+
 		if (nodeJoint->child.size() == 0) {
 			float r = (rand() % 10 + 1) / 10.0f;
 			float g = (rand() % 10 + 1) / 10.0f;

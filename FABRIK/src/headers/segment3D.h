@@ -7,7 +7,6 @@
 
 class Segment3D : public Object3D {
 public:
-	Vector3 constraintRotationTmp = Vector3::zero;
 	Segment3D(Vector3 position = Vector3::zero, Vector3 scale = Vector3::one / 2, Color color = { 0.9f, 0.9f, 0.9f, 1.0f });
 };
 
