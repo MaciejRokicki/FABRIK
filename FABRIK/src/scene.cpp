@@ -10,6 +10,7 @@
 #include "headers/main.h"
 #include "headers/hinge2D.h"
 #include "headers/hinge3D.h"
+#include "headers/twist3D.h"
 
 std::vector<Scene*>* Scene::scenes = new std::vector<Scene*>();
 
@@ -423,8 +424,9 @@ Scene* Scene::BuildScene5() {
 }
 
 Scene* Scene::BuildScene6() {
-    Camera* camera = new PerspectiveCamera(60, 0, 0, 0.1f, 1000.0f);
+    Camera* camera = new PerspectiveCamera(30, 0, 0, 0.1f, 1000.0f);
     camera->Translate(Vector3{ 0.0f, 0.0f, -10.0f });
+    camera->Rotate(Vector3{ 0.0f, -45.0f, 0.0f });
 
     std::vector<Object*>* objects = new std::vector<Object*>{
         new Object3D(Vector3{ 0.0f,  0.0f, -10.0f }, Vector3{ 100.0f, 100.0f, 1.0f }, Color{ 0.3f, 0.3f, 0.3f }),
@@ -437,16 +439,18 @@ Scene* Scene::BuildScene6() {
 
     Node<Joint3D>* root = new Node<Joint3D>(Joint3D(Vector3::zero, Vector3::one / 2, { 0.5f, 0.0f, 1.0f, 1.0f }));
 
-    root->next(Joint3D(Vector3{ 1.0f, 0.0f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::Y, 180.0f, 180.0f)));
-    root->child[0]->next(Joint3D(Vector3{ 2.0f, 0.0f, 1.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::X, 0.0f, 0.0f)));
-    root->child[0]->child[0]->next(Joint3D(Vector3{ 3.0f, 0.0f, 1.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::X, 90.0f, 90.0f)));
+    root->next(Joint3D(Vector3{ 0.5f, 1.5f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Twist3D(10.0f, 170.0f, 0.0f, 360.0f)));
+    root->child[0]->next(Joint3D(Vector3{ 1.5f, 1.75f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::X, 315.0f, 0.0f)));
+    root->child[0]->child[0]->next(Joint3D(Vector3{ 2.0f, 1.5f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::X, 190.0f, 0.0f)));
+
+    //Target3D* target = new Target3D(nodeJoint, Vector3{ 0.0f, 0.0f, -2.0f }/* + nodeJoint->value.GetPosition()*/, Vector3::one / 2, { r / 2, g / 2, b / 2, 1.0f });
 
     Tree<Joint3D>* tree = new Tree<Joint3D>(root);
     Fabrik* fabrik = new Fabrik3D(tree);
 
     Scene* scene = new Scene(camera, fabrik, objects);
 
-    std::function<void(int, int)> keyEvent = [fabrik](int key, int action) {
+    std::function<void(int, int)> keyEvent = [camera, fabrik](int key, int action) {
         if (action == GLFW_PRESS) {
             switch (key) {
 
@@ -457,6 +461,16 @@ Scene* Scene::BuildScene6() {
 
             case GLFW_KEY_R:
                 fabrik->RandomizeTargets(-4, 4);
+                break;
+
+            case GLFW_KEY_T:
+                    camera->Rotate(Vector3{ -90.0f, 0.0f, 0.0f });
+                 
+                break;
+
+            case GLFW_KEY_Y:
+                camera->Rotate(Vector3{ 0.0f, -45.0f, 0.0f });
+
                 break;
             }
         }

@@ -1,14 +1,18 @@
-#include <iostream>
-
-#include "headers/hinge3D.h"
+#include "headers/twist3D.h"
 #include "headers/mathf.h"
-#include "headers/segment3D.h"
 
-Hinge3D::Hinge3D(Axis axis, float minAngle, float maxAngle) : Constraint3D(minAngle, maxAngle) {
-	this->axis = axis;
+Twist3D::Twist3D(float minAngle, float maxAngle) : Constraint3D(minAngle, maxAngle) {
+	minAngleY = minAngle;
+	maxAngleY = maxAngle;
 }
 
-void Hinge3D::Apply(Node<Joint3D>* nodeJoint) {
+//minAngle i maxAngle z Constraint3D dotyczy osi X
+Twist3D::Twist3D(float minAngleX, float maxAngleX, float minAngleY, float maxAngleY) : Constraint3D(minAngleX, maxAngleX) {
+	this->minAngleY = minAngleY;
+	this->maxAngleY = maxAngleY;
+}
+
+void Twist3D::Apply(Node<Joint3D>* nodeJoint) {
 	Vector3 previousJointPosition = nodeJoint->parent->value.PositionTmp;
 	Vector3 currentJointPosition = nodeJoint->value.PositionTmp;
 
@@ -39,21 +43,21 @@ void Hinge3D::Apply(Node<Joint3D>* nodeJoint) {
 	// Zmiana katow XY wzgledem poprzedniego segmentu
 	angle -= previousSegment->constraintRotationTmp;
 
-	switch (axis) {
-		case Axis::X:
-			if (angle.x >= minAngle && angle.x <= maxAngle) {
-				return;
-			}
-			angle.x = Mathf::ClampAngle(angle.x, minAngle, maxAngle);
-			break;
+	bool inRangeX = angle.x >= minAngle && angle.x <= maxAngle;
+	bool inRangeY = angle.y >= minAngleY && angle.y <= maxAngleY;
 
-		case Axis::Y:
-			if (angle.y >= minAngle && angle.y <= maxAngle) {
-				return;
-			}
-
-			angle.y = Mathf::ClampAngle(angle.y, minAngle, maxAngle);
-			break;
+	if (inRangeX && inRangeY) {
+		return;
+	}
+	else if (!inRangeX && inRangeY) {
+		angle.x = Mathf::ClampAngle(angle.x, minAngle, maxAngle);
+	}
+	else if (inRangeX && !inRangeY) {
+		angle.y = Mathf::ClampAngle(angle.y, minAngleY, maxAngleY);
+	}
+	else if(!inRangeX && !inRangeY) {
+		angle.x = Mathf::ClampAngle(angle.x, minAngle, maxAngle);
+		angle.y = Mathf::ClampAngle(angle.y, minAngleY, maxAngleY);
 	}
 
 	angle += previousSegment->constraintRotationTmp;

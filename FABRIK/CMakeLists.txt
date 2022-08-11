@@ -70,7 +70,7 @@ add_executable (
 	"src/headers/constraint2D.h" 
 	"src/constraint2D.cpp" 
 	"src/headers/mathf.h" 
-	"src/mathf.cpp" "src/headers/constraint3D.h" "src/constraint3D.cpp" "src/headers/hinge3D.h" "src/hinge3D.cpp")
+	"src/mathf.cpp" "src/headers/constraint3D.h" "src/constraint3D.cpp" "src/headers/hinge3D.h" "src/hinge3D.cpp" "src/headers/twist3D.h" "src/twist3D.cpp")
 
 target_link_libraries(FABRIK OpenGL::GL glew glfw)
 
