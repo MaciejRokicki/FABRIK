@@ -1,4 +1,5 @@
 #include "headers/mathf.h"
+#include <iostream>
 
 float Mathf::Rad2Deg(float rad) {
 	rad = rad * 180.0f / M_PI;
@@ -92,7 +93,7 @@ Vector2 Mathf::NormalizeXYAngle90to360(Vector2 angle) {
 
 	return Vector2 {
 		convertAngle(angle.x, angle.y),
-		convertAngle(angle.y, angle.x)
+		Mathf::NormalizeAngle360(angle.y + 90.0f)
 	};
 }
 
