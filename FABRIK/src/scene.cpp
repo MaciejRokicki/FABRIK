@@ -375,7 +375,6 @@ Scene* Scene::BuildScene4() {
 Scene* Scene::BuildScene5() {
     Camera* camera = new PerspectiveCamera(45, 0, 0, 0.1f, 1000.0f);
     camera->Translate(Vector3{ 0.0f, 0.0f, -10.0f });
-    //camera->Rotate(Vector3{ 0.0f, -45.0f, 0.0f });
 
     std::vector<Object*>* objects = new std::vector<Object*>{
         new Object3D(Vector3{ 0.0f,  0.0f, -10.0f }, Vector3{ 100.0f, 100.0f, 1.0f }, Color{ 0.3f, 0.3f, 0.3f }),
@@ -389,8 +388,8 @@ Scene* Scene::BuildScene5() {
     Node<Joint3D>* root = new Node<Joint3D>(Joint3D(Vector3::zero, Vector3::one / 2, { 0.5f, 0.0f, 1.0f, 1.0f }));
 
     root->next(                     Joint3D(Vector3{ 0.5f, 1.50f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Twist3D(10.0f, 170.0f, 0.0f, 360.0f)));
-    root->child[0]->next(           Joint3D(Vector3{ 1.5f, 1.75f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::X, 0.0f, 90.0f)));
-    root->child[0]->child[0]->next( Joint3D(Vector3{ 2.0f, 1.50f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::X, 0.0f, 90.0f)));
+    root->child[0]->next(           Joint3D(Vector3{ 1.5f, 1.75f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::Y, 0.0f, 90.0f)));
+    root->child[0]->child[0]->next( Joint3D(Vector3{ 2.0f, 1.50f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::Y, 0.0f, 90.0f)));
 
     Tree<Joint3D>* tree = new Tree<Joint3D>(root);
     Fabrik* fabrik = new Fabrik3D(tree);
@@ -402,7 +401,6 @@ Scene* Scene::BuildScene5() {
             switch (key) {
 
             case GLFW_KEY_SPACE:
-                system("cls");
                 fabrik->Solve();
                 break;
 

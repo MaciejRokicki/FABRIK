@@ -13,6 +13,7 @@ protected:
 public:
 	Constraint3D(float minAngle, float maxAngle);
 	virtual void Apply(Node<Joint3D>* nodeJoint) = 0;
+	Vector3 GetXYAngleBetweenTwoVectors(Vector3 from, Vector3 to);
 };
 
 #endif // !CONSTRAINT3D_H

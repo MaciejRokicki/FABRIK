@@ -65,38 +65,6 @@ Vector3 Mathf::NormalizeAngle360(Vector3 angle) {
 	return angle;
 }
 
-Vector2 Mathf::NormalizeXYAngle90to360(Vector2 angle) {
-
-	auto convertAngle = [](float x, float y) {
-		float result = 0.0f;
-
-		if (y > 0.0f) {
-			// II cwiartka
-			if (x >= 0.0f) {
-				result = 90.0f + (90.0f - x);
-			}
-			else if (x < 0.0f) { // III cwiartka
-				result = 180.0f - x;
-			}
-		}
-		else {
-			if (x < 0.0f) { // IV cwiartka
-				result = x + 360.0f;
-			}
-			else { // I cwiartka
-				result = x;
-			}
-		}
-
-		return result;
-	};
-
-	return Vector2 {
-		convertAngle(angle.x, angle.y),
-		Mathf::NormalizeAngle360(angle.y + 90.0f)
-	};
-}
-
 float Mathf::ClampAngle(float angle, float minAngle, float maxAngle) {
 	float min = NormalizeAngle180(minAngle - angle);
 	float max = NormalizeAngle180(maxAngle - angle);

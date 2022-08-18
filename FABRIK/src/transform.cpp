@@ -86,10 +86,9 @@ void Transform::LookAt(Transform& transform) {
     Vector3 vec = targetPosition - currentPosition;
     float xz = sqrtf(vec.x * vec.x + vec.z * vec.z);
 
-    Vector3 angles = Mathf::Rad2Deg(Vector3  {
+    Vector3 angles = Mathf::Rad2Deg(Vector3 {
         atan2f(vec.y, xz),
-        atan2f(-vec.x, vec.z),
-        0.0f
+        atan2f(-vec.x, vec.z)
     });
 
     this->_matrix =

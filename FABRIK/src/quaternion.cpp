@@ -52,7 +52,6 @@ Vector3 Quaternion::ToEulerAngles() {
     eulerAngles.z = atan2f(zY, zX);
 
     eulerAngles = Mathf::Rad2Deg(eulerAngles);
-    //eulerAngles = Mathf::NormalizeAngle360(eulerAngles);
 
     return eulerAngles;
 }
@@ -76,18 +75,6 @@ Vector3 Quaternion::operator *(const Vector3& vec)
     result.x = (1.0f - (num5 + num6)) * vec.x + (num7 - num12) * vec.y + (num8 + num11) * vec.z;
     result.y = (num7 + num12) * vec.x + (1.0f - (num4 + num6)) * vec.y + (num9 - num10) * vec.z;
     result.z = (num8 - num11) * vec.x + (num9 + num10) * vec.y + (1.0f - (num4 + num5)) * vec.z;
-
-    return result;
-}
-
-Quaternion Quaternion::operator *(const Quaternion& quaternion)
-{
-    Quaternion result;
-
-    result.x = w * quaternion.x + x * quaternion.w + y * quaternion.z - z * quaternion.y;
-    result.y = w * quaternion.y - x * quaternion.z + y * quaternion.w + z * quaternion.x;
-    result.z = w * quaternion.z + x * quaternion.y - y * quaternion.x + z * quaternion.w;
-    result.w = w * quaternion.w - x * quaternion.x - y * quaternion.y - z * quaternion.z;
 
     return result;
 }

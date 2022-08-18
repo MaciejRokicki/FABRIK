@@ -10,36 +10,19 @@ Hinge3D::Hinge3D(Axis axis, float minAngle, float maxAngle) : Constraint3D(minAn
 }
 
 void Hinge3D::Apply(Node<Joint3D>* nodeJoint) {
-	auto getAngles = [](Vector3 to, Vector3 from) {
-		Vector3 direction = to - from;
-		float xz = sqrtf(direction.x * direction.x + direction.z * direction.z);
-
-		// Kat XY wzgledem punktu (0, 0)
-		Vector3 angle = {
-			Mathf::Rad2Deg(atan2(direction.y, xz)),
-			Mathf::Rad2Deg(atan2(-direction.x, -direction.z))
-		};
-
-		return angle;
-	};
-
 	Vector3 previousJointPosition = nodeJoint->parent->value.PositionTmp;
 	Vector3 currentJointPosition = nodeJoint->value.PositionTmp;
 
-	Quaternion previousSegmentConstraintRotationTmp = Quaternion();
 	Vector3 previousAngle = Vector3::zero;
-
-	Vector3 angle = Mathf::NormalizeAngle360(getAngles(currentJointPosition, previousJointPosition));
+	Vector3 angle = GetXYAngleBetweenTwoVectors(previousJointPosition, currentJointPosition);
 
 	if (nodeJoint->parent->parent != NULL) {
 		Vector3 previousPreviousJointPosition = nodeJoint->parent->parent->value.PositionTmp;
 
-		previousAngle = Mathf::NormalizeAngle360(getAngles(previousJointPosition, previousPreviousJointPosition));
-		previousSegmentConstraintRotationTmp = Quaternion::FromEulersAngles(previousAngle);
+		previousAngle = GetXYAngleBetweenTwoVectors(previousPreviousJointPosition, previousJointPosition);
 	}
 
-	angle -= previousAngle;
-	angle = Mathf::NormalizeAngle360(angle);
+	angle = Mathf::NormalizeAngle360(angle - previousAngle);
 
 	switch (axis) {
 		case Axis::X:
@@ -61,8 +44,7 @@ void Hinge3D::Apply(Node<Joint3D>* nodeJoint) {
 			break;
 	}
 
-	angle += previousAngle;
-	angle = Mathf::NormalizeAngle360(angle);
+	angle = Mathf::NormalizeAngle360(angle + previousAngle);
 
 	Quaternion newQuaternion = Quaternion::FromEulersAngles(angle);
 	Vector3 direction = newQuaternion * Vector3{ 0.0f, 0.0f, -1.0f };
