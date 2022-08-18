@@ -388,29 +388,9 @@ Scene* Scene::BuildScene5() {
 
     Node<Joint3D>* root = new Node<Joint3D>(Joint3D(Vector3::zero, Vector3::one / 2, { 0.5f, 0.0f, 1.0f, 1.0f }));
 
-    root->next(                     Joint3D(Vector3{ 0.5f, 1.50f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }/*, new Twist3D(225.0f, 225.0f)*/));
-    root->child[0]->next(           Joint3D(Vector3{ 1.5f, 1.75f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::X, 0.0f, 0.0f)));
-    //root->child[0]->child[0]->next( Joint3D(Vector3{ 2.0f, 1.50f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::Y, 90.0f, 90.0f)));
-
-    Quaternion q1 = Quaternion::FromEulersAngles({ 30.0f, 45.0f, 0.0f });
-    Quaternion q2 = Quaternion::FromEulersAngles({ 40.0f, 110.0f, 70.0f });
-    Quaternion q3 = Quaternion::FromEulersAngles({ 55.0f, 200.0f, 0.0f });
-    Quaternion q4 = Quaternion::FromEulersAngles({ 220.0f, 245.0f, 0.0f });
-    Quaternion q5 = Quaternion::FromEulersAngles({ -30.0f, -45.0f, 0.0f });
-    Quaternion q6 = Quaternion::FromEulersAngles({ -40.0f, -110.0f, -70.0f });
-    Quaternion q7 = Quaternion::FromEulersAngles({ -55.0f, -200.0f, 0.0f });
-    Quaternion q8 = Quaternion::FromEulersAngles({ -220.0f, -245.0f, 0.0f });
-
-    std::cout
-        << q1 << " " << q1.ToEulerAngles() << std::endl
-        << q2 << " " << q2.ToEulerAngles() << std::endl
-        << q3 << " " << q3.ToEulerAngles() << std::endl
-        << q4 << " " << q4.ToEulerAngles() << std::endl
-        << q5 << " " << q5.ToEulerAngles() << std::endl
-        << q6 << " " << q6.ToEulerAngles() << std::endl
-        << q7 << " " << q7.ToEulerAngles() << std::endl
-        << q8 << " " << q8.ToEulerAngles() << std::endl;
-
+    root->next(                     Joint3D(Vector3{ 0.5f, 1.50f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }/*, new Twist3D(10.0f, 170.0f, 0.0f, 360.0f)*/));
+    root->child[0]->next(           Joint3D(Vector3{ 1.5f, 1.75f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::X, 0.0f, 90.0f)));
+    root->child[0]->child[0]->next( Joint3D(Vector3{ 2.0f, 1.50f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::X, 0.0f, 90.0f)));
 
     Tree<Joint3D>* tree = new Tree<Joint3D>(root);
     Fabrik* fabrik = new Fabrik3D(tree);

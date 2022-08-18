@@ -16,6 +16,9 @@ public:
 	static Quaternion FromEulersAngles(Vector3 angles);
 	Vector3 ToEulerAngles();
 
+	Vector3 operator *(const Vector3& vec);
+	Quaternion operator *(const Quaternion& quaternion);
+
 	friend std::ostream& operator<<(std::ostream& os, const Quaternion& quaternion);
 };
 

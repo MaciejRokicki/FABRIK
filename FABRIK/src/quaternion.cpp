@@ -25,12 +25,11 @@ Quaternion Quaternion::FromEulersAngles(Vector3 angles) {
     float cosZ = cosf(angles.z * 0.5);
     float sinZ = sinf(angles.z * 0.5);
 
-    float x = sinX * cosY * cosZ - cosX * sinY * sinZ;
-    float y = cosX * sinY * cosZ + sinX * cosY * sinZ;
-    float z = cosX * cosY * sinZ - sinX * sinY * cosZ;
-    float w = cosX * cosY * cosZ + sinX * sinY * sinZ;
-
-    Quaternion quaternion = Quaternion(x, y, z, w);
+    Quaternion quaternion;
+    quaternion.x = sinX * cosY * cosZ - cosX * sinY * sinZ;
+    quaternion.y = cosX * sinY * cosZ + sinX * cosY * sinZ;
+    quaternion.z = cosX * cosY * sinZ - sinX * sinY * cosZ;
+    quaternion.w = cosX * cosY * cosZ + sinX * sinY * sinZ;
 
     return quaternion;
 }
@@ -53,9 +52,44 @@ Vector3 Quaternion::ToEulerAngles() {
     eulerAngles.z = atan2f(zY, zX);
 
     eulerAngles = Mathf::Rad2Deg(eulerAngles);
-    eulerAngles = Mathf::NormalizeAngle360(eulerAngles);
+    //eulerAngles = Mathf::NormalizeAngle360(eulerAngles);
 
     return eulerAngles;
+}
+
+Vector3 Quaternion::operator *(const Vector3& vec)
+{
+    float num = x * 2.0f;
+    float num2 = y * 2.0f;
+    float num3 = z * 2.0f;
+    float num4 = x * num;
+    float num5 = y * num2;
+    float num6 = z * num3;
+    float num7 = x * num2;
+    float num8 = x * num3;
+    float num9 = y * num3;
+    float num10 = w * num;
+    float num11 = w * num2;
+    float num12 = w * num3;
+
+    Vector3 result;
+    result.x = (1.0f - (num5 + num6)) * vec.x + (num7 - num12) * vec.y + (num8 + num11) * vec.z;
+    result.y = (num7 + num12) * vec.x + (1.0f - (num4 + num6)) * vec.y + (num9 - num10) * vec.z;
+    result.z = (num8 - num11) * vec.x + (num9 + num10) * vec.y + (1.0f - (num4 + num5)) * vec.z;
+
+    return result;
+}
+
+Quaternion Quaternion::operator *(const Quaternion& quaternion)
+{
+    Quaternion result;
+
+    result.x = w * quaternion.x + x * quaternion.w + y * quaternion.z - z * quaternion.y;
+    result.y = w * quaternion.y - x * quaternion.z + y * quaternion.w + z * quaternion.x;
+    result.z = w * quaternion.z + x * quaternion.y - y * quaternion.x + z * quaternion.w;
+    result.w = w * quaternion.w - x * quaternion.x - y * quaternion.y - z * quaternion.z;
+
+    return result;
 }
 
 std::ostream& operator <<(std::ostream& os, const Quaternion& quaternion)
