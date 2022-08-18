@@ -15,15 +15,16 @@ Quaternion::Quaternion(float x, float y, float z, float w) {
 	this->w = w;
 }
 
+//https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
 Quaternion Quaternion::FromEulersAngles(Vector3 angles) {
     angles = Mathf::Deg2Rad(angles);
 
-    float cosX = cosf(angles.x * 0.5);
-    float sinX = sinf(angles.x * 0.5);
-    float cosY = cosf(angles.y * 0.5);
-    float sinY = sinf(angles.y * 0.5);
-    float cosZ = cosf(angles.z * 0.5);
-    float sinZ = sinf(angles.z * 0.5);
+    float cosX = cosf(angles.x * 0.5f);
+    float sinX = sinf(angles.x * 0.5f);
+    float cosY = cosf(angles.y * 0.5f);
+    float sinY = sinf(angles.y * 0.5f);
+    float cosZ = cosf(angles.z * 0.5f);
+    float sinZ = sinf(angles.z * 0.5f);
 
     Quaternion quaternion;
     quaternion.x = sinX * cosY * cosZ - cosX * sinY * sinZ;
@@ -34,21 +35,22 @@ Quaternion Quaternion::FromEulersAngles(Vector3 angles) {
     return quaternion;
 }
 
+//https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
 Vector3 Quaternion::ToEulerAngles() {
     Vector3 eulerAngles = Vector3::zero;
 
-    float yX = 2 * (w * x + y * z);
-    float xX = 1 - 2 * (x * x + y * y);
+    float yX = 2.0f * (w * x + y * z);
+    float xX = 1.0f - 2.0f * (x * x + y * y);
     eulerAngles.x = atan2f(yX, xX);
 
-    double sinp = 2 * (w * y - z * x);
-    if (fabsf(sinp) >= 1)
-        eulerAngles.y = copysign(M_PI / 2, sinp);
+    float sinp = 2.0f * (w * y - z * x);
+    if (fabsf(sinp) >= 1.0f)
+        eulerAngles.y = copysign(M_PI / 2.0f, sinp);
     else
         eulerAngles.y = asinf(sinp);
 
-    float zY = 2 * (w * z + x * y);
-    float zX = 1 - 2 * (y * y + z * z);
+    float zY = 2.0f * (w * z + x * y);
+    float zX = 1.0f - 2.0f * (y * y + z * z);
     eulerAngles.z = atan2f(zY, zX);
 
     eulerAngles = Mathf::Rad2Deg(eulerAngles);
@@ -56,6 +58,7 @@ Vector3 Quaternion::ToEulerAngles() {
     return eulerAngles;
 }
 
+//https://answers.unity.com/questions/372371/multiply-quaternion-by-vector3-how-is-done.html
 Vector3 Quaternion::operator *(const Vector3& vec)
 {
     float num = x * 2.0f;

@@ -107,8 +107,8 @@ void Fabrik2D::Solve() {
 	auto end = std::chrono::high_resolution_clock::now();
 	auto elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
 
-	double executionTime = elapsedTime.count() * 1e-3;
-	double timePerIteration = elapsedTime.count() * 1e-3 / iterations;
+	float executionTime = elapsedTime.count() * 1e-3f;
+	float timePerIteration = elapsedTime.count() * 1e-3f / iterations;
 
 	executionTimeSum += executionTime;
 	tpiSum += timePerIteration;
@@ -118,7 +118,7 @@ void Fabrik2D::Solve() {
 		<< " Execution time: " << executionTime  << "ms" << " (AVG: " << executionTimeSum / runs << "ms)"
 		<< " TPI: " << timePerIteration << "ms" << " (AVG: " << tpiSum / runs << "ms)"
 		<< " Reachable targets: " << reachableTargetsCounter
-		<< " Accuracy: " << (1 - accuracy) * 1e2 << std::endl;
+		<< " Accuracy: " << (1.0f - accuracy) * 1e2f << std::endl;
 }
 
 Target2D* Fabrik2D::SelectTargetByMouseButtonPressCallback(Vector3 space_pos) {
