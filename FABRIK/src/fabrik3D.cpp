@@ -34,9 +34,7 @@ Fabrik3D::Fabrik3D(Tree<Joint3D>* tree) : Fabrik() {
 	});
 }
 
-Fabrik3D::Fabrik3D(Tree<Joint3D>* tree, std::vector<Target3D*>& targetsRef) : Fabrik() {
-	new (this) Fabrik3D(tree);
-
+Fabrik3D::Fabrik3D(Tree<Joint3D>* tree, std::vector<Target3D*>& targetsRef) : Fabrik3D(tree) {
 	targetsRef = *this->targets;
 }
 

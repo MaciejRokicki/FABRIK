@@ -392,7 +392,9 @@ Scene* Scene::BuildScene5() {
     root->child[0]->child[0]->next( Joint3D(Vector3{ 2.0f, 1.50f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::Y, 0.0f, 90.0f)));
 
     Tree<Joint3D>* tree = new Tree<Joint3D>(root);
-    Fabrik* fabrik = new Fabrik3D(tree);
+    std::vector<Target3D*>* targets = new std::vector<Target3D*>();
+
+    Fabrik* fabrik = new Fabrik3D(tree, *targets);
 
     Scene* scene = new Scene(camera, fabrik, objects);
 

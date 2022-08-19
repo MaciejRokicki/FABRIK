@@ -36,9 +36,7 @@ Fabrik2D::Fabrik2D(Tree<Joint2D>* tree) : Fabrik() {
 	});
 }
 
-Fabrik2D::Fabrik2D(Tree<Joint2D>* tree, std::vector<Target2D*>& targetsRef) {
-	new (this) Fabrik2D(tree);
-
+Fabrik2D::Fabrik2D(Tree<Joint2D>* tree, std::vector<Target2D*>& targetsRef) : Fabrik2D(tree) {
 	targetsRef = *this->targets;
 }
 
