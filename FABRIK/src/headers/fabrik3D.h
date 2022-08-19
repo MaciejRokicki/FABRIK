@@ -17,6 +17,7 @@ private:
 	void Backward();
 public:
 	Fabrik3D(Tree<Joint3D>* tree);
+	Fabrik3D(Tree<Joint3D>* tree, std::vector<Target3D*>& targetsRef);
 	void Init();
 	void Draw(const Camera& camera) const;
 	void Solve();

@@ -34,6 +34,12 @@ Fabrik3D::Fabrik3D(Tree<Joint3D>* tree) : Fabrik() {
 	});
 }
 
+Fabrik3D::Fabrik3D(Tree<Joint3D>* tree, std::vector<Target3D*>& targetsRef) : Fabrik() {
+	new (this) Fabrik3D(tree);
+
+	targetsRef = *this->targets;
+}
+
 void Fabrik3D::Init() {
 	tree->Preorder([&](Node<Joint3D>* nodeJoint) {
 		if (nodeJoint->child.size() > 1) {
