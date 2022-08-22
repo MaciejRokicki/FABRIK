@@ -393,9 +393,7 @@ Scene* Scene::BuildScene5() {
     root->child[0]->child[0]->child[0]->next( Joint3D(Vector3{ 2.25f, 2.00f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }));
 
     Tree<Joint3D>* tree = new Tree<Joint3D>(root);
-    std::vector<Target3D*>* targets = new std::vector<Target3D*>();
-
-    Fabrik* fabrik = new Fabrik3D(tree, *targets);
+    Fabrik* fabrik = new Fabrik3D(tree);
 
     Scene* scene = new Scene(camera, fabrik, objects);
 
@@ -429,10 +427,162 @@ Scene* Scene::BuildScene5() {
     return scene;
 }
 
+Scene* Scene::BuildScene6() {
+    Camera* camera = new PerspectiveCamera(55, 0, 0, 0.1f, 1000.0f);
+    camera->Translate(Vector3{ 0.0f, -1.0f, -10.0f });
+    camera->Rotate(Vector3{ 0.0f, 45.0f, 0.0f });
+
+    std::vector<Object*>* objects = new std::vector<Object*>{
+        new Object3D(Vector3{ 0.0f,  0.0f, -15.0f }, Vector3{ 100.0f, 100.0f, 1.0f }, Color{ 0.3f, 0.3f, 0.3f }),
+        new Object3D(Vector3{ 0.0f,  0.0f, -15.0f }, Vector3{ 100.0f, 100.0f, 1.0f }, Color{ 0.4f, 0.4f, 0.4f }),
+        new Object3D(Vector3{ 0.0f, -12.0f, -15.0f }, Vector3{ 100.0f, 1.0f, 100.0f }, Color{ 0.5f, 0.5f, 0.5f }),
+    };
+
+    objects->at(0)->Rotate(Vector3{ 0.0f, 45.0f, 0.0f });
+    objects->at(1)->Rotate(Vector3{ 0.0f, -45.0f, 0.0f });
+
+    Node<Joint3D>* root = new Node<Joint3D>(Joint3D(Vector3{ 0.0f, -3.0f, 0.0f }, Vector3::one / 2, { 0.5f, 0.0f, 1.0f, 1.0f }));
+
+    root->next(                                         Joint3D(Vector3{  0.000f, -2.00f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Twist3D(80.0f, 270.0f, 0.0f, 0.0f)));
+
+    root->child[0]->next(                               Joint3D(Vector3{ -1.000f,  0.00f, 0.0f }, Vector3::one / 3));
+    root->child[0]->next(                               Joint3D(Vector3{ -0.500f,  0.25f, 0.0f }, Vector3::one / 3));
+    root->child[0]->next(                               Joint3D(Vector3{  0.000f,  0.30f, 0.0f }, Vector3::one / 3));
+    root->child[0]->next(                               Joint3D(Vector3{  0.500f,  0.00f, 0.0f }, Vector3::one / 3));
+    root->child[0]->next(                               Joint3D(Vector3{  1.000f, -1.00f, 0.0f }, Vector3::one / 3));
+
+    root->child[0]->child[0]->next(                     Joint3D(Vector3{ -1.350f,  0.75f, 0.0f }, Vector3::one / 3));
+    root->child[0]->child[1]->next(                     Joint3D(Vector3{ -0.750f,  1.20f, 0.0f }, Vector3::one / 3));
+    root->child[0]->child[2]->next(                     Joint3D(Vector3{  0.000f,  1.40f, 0.0f }, Vector3::one / 3));
+    root->child[0]->child[3]->next(                     Joint3D(Vector3{  0.775f,  1.10f, 0.0f }, Vector3::one / 3));
+    root->child[0]->child[4]->next(                     Joint3D(Vector3{  1.600f, -0.40f, 0.0f }, Vector3::one / 3));
+
+    root->child[0]->child[0]->child[0]->next(           Joint3D(Vector3{ -1.750f,  1.60f, 0.0f }, Vector3::one / 3));
+    root->child[0]->child[1]->child[0]->next(           Joint3D(Vector3{ -1.050f,  2.40f, 0.0f }, Vector3::one / 3));
+    root->child[0]->child[2]->child[0]->next(           Joint3D(Vector3{  0.000f,  2.80f, 0.0f }, Vector3::one / 3));
+    root->child[0]->child[3]->child[0]->next(           Joint3D(Vector3{  1.050f,  2.20f, 0.0f }, Vector3::one / 3));
+    root->child[0]->child[4]->child[0]->next(           Joint3D(Vector3{  2.050f,  0.10f, 0.0f }, Vector3::one / 3));
+
+    root->child[0]->child[0]->child[0]->child[0]->next( Joint3D(Vector3{ -2.000f,  2.10f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::X, 270.0f, 0.0f)));
+    root->child[0]->child[1]->child[0]->child[0]->next( Joint3D(Vector3{ -1.200f,  3.00f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::X, 270.0f, 0.0f)));
+    root->child[0]->child[2]->child[0]->child[0]->next( Joint3D(Vector3{  0.000f,  3.30f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::X, 270.0f, 0.0f)));
+    root->child[0]->child[3]->child[0]->child[0]->next( Joint3D(Vector3{  1.175f,  2.80f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::X, 270.0f, 0.0f)));
+
+    Tree<Joint3D>* tree = new Tree<Joint3D>(root);
+    std::vector<Target3D*>* targets = new std::vector<Target3D*>();
+    Fabrik* fabrik = new Fabrik3D(tree, *targets);
+
+    Scene* scene = new Scene(camera, fabrik, objects);
+
+    std::vector<Vector3*> targetPositions = std::vector<Vector3*>();
+
+    int frames = 20;
+    Vector3 currentVec1 = { -2.000f,  3.10f,  0.0f };
+    Vector3 currentVec2 = { -1.200f,  4.00f,  0.0f };
+    Vector3 currentVec3 = {  0.000f,  4.30f,  0.0f };
+    Vector3 currentVec4 = {  1.175f,  3.80f,  0.0f };
+    Vector3 currentVec5 = {  2.050f,  1.10f,  -1.0f };
+
+    Vector3 targetVec1 =  { -1.500f,  1.00f, -3.5f };
+    Vector3 targetVec2 =  { -0.700f,  1.15f, -3.5f };
+    Vector3 targetVec3 =  {  0.000f,  1.30f, -3.5f };
+    Vector3 targetVec4 =  {  0.675f,  1.20f, -3.5f };
+    Vector3 targetVec5 =  {  1.000f, -1.00f, -2.5f };
+
+    Vector3 diffVec1 = targetVec1 - currentVec1;
+    Vector3 diffVec2 = targetVec2 - currentVec2;
+    Vector3 diffVec3 = targetVec3 - currentVec3;
+    Vector3 diffVec4 = targetVec4 - currentVec4;
+    Vector3 diffVec5 = targetVec5 - currentVec5;
+
+    targetPositions.push_back(new Vector3[targets->size()]{
+        currentVec1,
+        currentVec2,
+        currentVec3,
+        currentVec4,
+        currentVec5,
+    });
+
+    for (int i = frames; i > 0; i--) {
+        Vector3 vec1 = currentVec1 + diffVec1 / frames * (frames - i);
+        Vector3 vec2 = currentVec2 + diffVec2 / frames * (frames - i);
+        Vector3 vec3 = currentVec3 + diffVec3 / frames * (frames - i);
+        Vector3 vec4 = currentVec4 + diffVec4 / frames * (frames - i);
+        Vector3 vec5 = currentVec5 + diffVec5 / frames * (frames - i);
+
+        targetPositions.push_back(new Vector3[targets->size()]{
+            vec1,
+            vec2,
+            vec3,
+            vec4,
+            vec5
+        });
+    }
+
+    targetPositions.push_back(new Vector3[targets->size()]{
+        targetVec1,
+        targetVec2,
+        targetVec3,
+        targetVec4,
+        targetVec5
+    });
+
+    for (int i = frames; i > 1; i--) {
+        targetPositions.push_back(new Vector3[targets->size()]{
+            targetPositions[i][0],
+            targetPositions[i][1],
+            targetPositions[i][2],
+            targetPositions[i][3],
+            targetPositions[i][4]
+        });
+    }
+
+    int& currentFrame = *(new int(0));
+
+    for (int i = 0; i < targets->size(); i++) {
+        targets->at(i)->Translate(targetPositions[currentFrame][i]);
+    }
+
+    fabrik->Solve();
+
+    std::function<void(int, int)> keyEvent = [camera, fabrik, targets, targetPositions, &currentFrame](int key, int action) {
+        if (action == GLFW_PRESS) {
+            switch (key) {
+            case GLFW_KEY_T:
+                camera->Rotate(Vector3::zero);
+                break;
+
+            case GLFW_KEY_Y:
+                camera->Rotate({ 0.0f, 45.0f, 0.0f });
+                break;
+
+            case GLFW_KEY_SPACE:
+                currentFrame++;
+
+                if (currentFrame > targetPositions.size() - 1) {
+                    currentFrame = 0;
+                }
+
+                for (int i = 0; i < targets->size(); i++) {
+                    targets->at(i)->Translate(targetPositions[currentFrame][i]);
+                }
+
+                fabrik->Solve();
+                break;
+            }
+        }
+    };
+
+    scene->KeyEvent = keyEvent;
+
+    return scene;
+}
+
 void Scene::BuildScenes() {
     Scene::scenes->push_back(BuildScene1());
     Scene::scenes->push_back(BuildScene2());
     Scene::scenes->push_back(BuildScene3());
     Scene::scenes->push_back(BuildScene4());
     Scene::scenes->push_back(BuildScene5());
+    Scene::scenes->push_back(BuildScene6());
 }

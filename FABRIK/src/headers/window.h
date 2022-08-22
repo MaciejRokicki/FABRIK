@@ -18,12 +18,10 @@ private:
     const char* title;
     GLFWwindow* window = NULL;
 
-    //clock_t last_time_;
-
     Camera* camera = NULL;
 
     Scene* scene = NULL;
-    int sceneId = 0;
+    int sceneId = 5;
 
     void InitModels();
     void InitGlfwOrDie(int majorGlVersion, int minorGlVersion);
