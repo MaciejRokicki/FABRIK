@@ -21,7 +21,7 @@ private:
     Camera* camera = NULL;
 
     Scene* scene = NULL;
-    int sceneId = 5;
+    int sceneId = 0;
 
     void InitModels();
     void InitGlfwOrDie(int majorGlVersion, int minorGlVersion);

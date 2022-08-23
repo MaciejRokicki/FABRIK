@@ -474,68 +474,60 @@ Scene* Scene::BuildScene6() {
 
     Scene* scene = new Scene(camera, fabrik, objects);
 
-    std::vector<Vector3*> targetPositions = std::vector<Vector3*>();
+    auto generateFrames = [](int targetsCount, Vector3* startPosition, Vector3* targetPosition, int frames, bool loop = false) {
+        std::vector<Vector3*> targetPositions = std::vector<Vector3*>();
+        Vector3* diffVectors = new Vector3[targetsCount];
 
-    int frames = 20;
-    Vector3 currentVec1 = { -2.000f,  3.10f,  0.0f };
-    Vector3 currentVec2 = { -1.200f,  4.00f,  0.0f };
-    Vector3 currentVec3 = {  0.000f,  4.30f,  0.0f };
-    Vector3 currentVec4 = {  1.175f,  3.80f,  0.0f };
-    Vector3 currentVec5 = {  2.050f,  1.10f,  -1.0f };
+        for (int i = 0; i < targetsCount; i++) {
+            diffVectors[i] = targetPosition[i] - startPosition[i];
+        }
 
-    Vector3 targetVec1 =  { -1.500f,  1.00f, -3.5f };
-    Vector3 targetVec2 =  { -0.700f,  1.15f, -3.5f };
-    Vector3 targetVec3 =  {  0.000f,  1.30f, -3.5f };
-    Vector3 targetVec4 =  {  0.675f,  1.20f, -3.5f };
-    Vector3 targetVec5 =  {  1.000f, -1.00f, -2.5f };
+        targetPositions.push_back(startPosition);
 
-    Vector3 diffVec1 = targetVec1 - currentVec1;
-    Vector3 diffVec2 = targetVec2 - currentVec2;
-    Vector3 diffVec3 = targetVec3 - currentVec3;
-    Vector3 diffVec4 = targetVec4 - currentVec4;
-    Vector3 diffVec5 = targetVec5 - currentVec5;
+        for (int i = frames; i > 0; i--) {
+            Vector3* newVectors = new Vector3[targetsCount];
 
-    targetPositions.push_back(new Vector3[targets->size()]{
-        currentVec1,
-        currentVec2,
-        currentVec3,
-        currentVec4,
-        currentVec5,
-    });
+            for (int j = 0; j < targetsCount; j++) {
+                newVectors[j] = startPosition[j] + diffVectors[j] / frames * (frames - i);
+            }
 
-    for (int i = frames; i > 0; i--) {
-        Vector3 vec1 = currentVec1 + diffVec1 / frames * (frames - i);
-        Vector3 vec2 = currentVec2 + diffVec2 / frames * (frames - i);
-        Vector3 vec3 = currentVec3 + diffVec3 / frames * (frames - i);
-        Vector3 vec4 = currentVec4 + diffVec4 / frames * (frames - i);
-        Vector3 vec5 = currentVec5 + diffVec5 / frames * (frames - i);
+            targetPositions.push_back(newVectors);
+        }
 
-        targetPositions.push_back(new Vector3[targets->size()]{
-            vec1,
-            vec2,
-            vec3,
-            vec4,
-            vec5
-        });
-    }
+        targetPositions.push_back(targetPosition);
 
-    targetPositions.push_back(new Vector3[targets->size()]{
-        targetVec1,
-        targetVec2,
-        targetVec3,
-        targetVec4,
-        targetVec5
-    });
+        if (loop) {
+            for (int i = frames; i > 1; i--) {
+                targetPositions.push_back(new Vector3[targetsCount]{
+                    targetPositions[i][0],
+                    targetPositions[i][1],
+                    targetPositions[i][2],
+                    targetPositions[i][3],
+                    targetPositions[i][4]
+                });
+            }
+        }
 
-    for (int i = frames; i > 1; i--) {
-        targetPositions.push_back(new Vector3[targets->size()]{
-            targetPositions[i][0],
-            targetPositions[i][1],
-            targetPositions[i][2],
-            targetPositions[i][3],
-            targetPositions[i][4]
-        });
-    }
+        return targetPositions;
+    };
+
+    Vector3* startPosition = new Vector3[targets->size()]{
+        { -2.000f,  3.10f,   0.0f },
+        { -1.200f,  4.00f,   0.0f },
+        {  0.000f,  4.30f,   0.0f },
+        {  1.175f,  3.80f,   0.0f },
+        {  2.050f,  1.10f,  -1.0f }
+    };
+
+    Vector3* targetPosition = new Vector3[targets->size()]{
+        { -1.500f,  1.00f, -3.5f },
+        { -0.700f,  1.15f, -3.5f },
+        {  0.000f,  1.30f, -3.5f },
+        {  0.675f,  1.20f, -3.5f },
+        {  1.000f, -1.00f, -2.5f }
+    };
+
+    std::vector<Vector3*> targetPositions = generateFrames(targets->size(), startPosition, targetPosition, 20, true);
 
     int& currentFrame = *(new int(0));
 
