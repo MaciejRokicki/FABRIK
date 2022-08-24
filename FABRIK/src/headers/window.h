@@ -20,6 +20,9 @@ private:
 
     Camera* camera = NULL;
 
+    double time = 0.0;
+    double deltaTime = 0.0;
+
     Scene* scene = NULL;
     int sceneId = 0;
 

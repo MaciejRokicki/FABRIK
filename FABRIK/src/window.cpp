@@ -205,50 +205,18 @@ void Window::LoadScene(Scene* scene) {
 }
 
 void Window::Run(void) {
-    //while (!glfwWindowShouldClose(window)) {
-    //    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //    //clock_t now = clock();
-
-    //    //if (last_time_ == 0) {
-    //    //    last_time_ = now;
-    //    //}
-
-    //    //last_time_ = now;
-
-    //    scene->Update();
-
-    //    scene->Draw(*camera);
-
-    //    glfwSwapBuffers(window);
-    //    glfwPollEvents();
-    //}
-
-    double limitFPS = 1.0f / 60.0f;
-    double lastTime = glfwGetTime(), timer = lastTime;
-    double deltaTime = 0, nowTime = 0;
-    int frames = 0, updates = 0;
+    double previousTime = glfwGetTime();
 
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        time = glfwGetTime();
 
-        nowTime = glfwGetTime();
-        deltaTime += (nowTime - lastTime) / limitFPS;
-        lastTime = nowTime;
-
-        while (deltaTime >= 1.0) {
-            scene->Update();
-            updates++;
-            deltaTime--;
-        }
-
+        scene->Update();
+        scene->Animate(deltaTime);
         scene->Draw(*camera);
-        frames++;
 
-        if (glfwGetTime() - timer > 1.0) {
-            timer++;
-            //std::cout << glfwGetTime() << " FPS: " << frames << " Updates:" << updates << std::endl;
-            updates = 0, frames = 0;
-        }
+        deltaTime = time - previousTime;
+        previousTime = time;
 
         glfwSwapBuffers(window);
         glfwPollEvents();

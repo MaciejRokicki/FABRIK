@@ -27,6 +27,7 @@ public:
 	std::function<void(int, int)> KeyEvent;
 	std::function<void(int, int, Vector2)> MouseButtonEvent;
 	std::function<void()> Update;
+	std::function<void(double)> Animate;
 
 	static void BuildScenes();
 

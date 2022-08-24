@@ -12,6 +12,7 @@
 #include "headers/hinge3D.h"
 #include "headers/twist3D.h"
 #include "headers/quaternion.h"
+#include "headers/fabrikAnimation.h"
 
 std::vector<Scene*>* Scene::scenes = new std::vector<Scene*>();
 
@@ -23,6 +24,7 @@ Scene::Scene(Camera* camera, Fabrik* fabrik) {
     this->KeyEvent = [](int, int) { return; };
     this->MouseButtonEvent = [](int, int, Vector2) { return; };
     this->Update = [] { return; };
+    this->Animate = [](double) { return; };
 }
 
 Scene::Scene(Camera* camera, Fabrik* fabrik, std::vector<Object*>* objects) {
@@ -33,6 +35,7 @@ Scene::Scene(Camera* camera, Fabrik* fabrik, std::vector<Object*>* objects) {
     this->KeyEvent = [](int, int) { return; };
     this->MouseButtonEvent = [](int, int, Vector2) { return; };
     this->Update = [] { return; };
+    this->Animate = [](double) { return; };
 }
 
 Camera* Scene::GetCamera() {
@@ -474,70 +477,51 @@ Scene* Scene::BuildScene6() {
 
     Scene* scene = new Scene(camera, fabrik, objects);
 
-    auto generateFrames = [](int targetsCount, Vector3* startPosition, Vector3* targetPosition, int frames, bool loop = false) {
-        std::vector<Vector3*> targetPositions = std::vector<Vector3*>();
-        Vector3* diffVectors = new Vector3[targetsCount];
-
-        for (int i = 0; i < targetsCount; i++) {
-            diffVectors[i] = targetPosition[i] - startPosition[i];
+    Vector3** animationPositions = new Vector3*[3] {
+        new Vector3[targets->size()] {
+            { -2.000f,  3.10f,   0.0f },
+            { -1.200f,  4.00f,   0.0f },
+            {  0.000f,  4.30f,   0.0f },
+            {  1.175f,  3.80f,   0.0f },
+            {  2.050f,  1.10f,  -1.0f }
+        },
+        new Vector3[targets->size()] {
+            { -1.500f,  3.00f, -1.75f },
+            { -0.700f,  3.50f, -2.00f },
+            {  0.000f,  3.80f, -2.30f },
+            {  0.675f,  3.30f, -1.90f },
+            {  1.525f,  0.55f, -1.75f }
+        },
+        new Vector3[targets->size()] {
+            { -1.000f,  0.00f, -3.00f },
+            { -0.700f,  0.15f, -3.00f },
+            {  0.000f,  0.30f, -3.00f },
+            {  0.575f,  0.20f, -3.00f },
+            {  0.700f, -0.80f, -2.50f }
         }
-
-        targetPositions.push_back(startPosition);
-
-        for (int i = frames; i > 0; i--) {
-            Vector3* newVectors = new Vector3[targetsCount];
-
-            for (int j = 0; j < targetsCount; j++) {
-                newVectors[j] = startPosition[j] + diffVectors[j] / frames * (frames - i);
-            }
-
-            targetPositions.push_back(newVectors);
-        }
-
-        targetPositions.push_back(targetPosition);
-
-        if (loop) {
-            for (int i = frames; i > 1; i--) {
-                targetPositions.push_back(new Vector3[targetsCount]{
-                    targetPositions[i][0],
-                    targetPositions[i][1],
-                    targetPositions[i][2],
-                    targetPositions[i][3],
-                    targetPositions[i][4]
-                });
-            }
-        }
-
-        return targetPositions;
     };
-
-    Vector3* startPosition = new Vector3[targets->size()]{
-        { -2.000f,  3.10f,   0.0f },
-        { -1.200f,  4.00f,   0.0f },
-        {  0.000f,  4.30f,   0.0f },
-        {  1.175f,  3.80f,   0.0f },
-        {  2.050f,  1.10f,  -1.0f }
-    };
-
-    Vector3* targetPosition = new Vector3[targets->size()]{
-        { -1.500f,  1.00f, -3.5f },
-        { -0.700f,  1.15f, -3.5f },
-        {  0.000f,  1.30f, -3.5f },
-        {  0.675f,  1.20f, -3.5f },
-        {  1.000f, -1.00f, -2.5f }
-    };
-
-    std::vector<Vector3*> targetPositions = generateFrames(targets->size(), startPosition, targetPosition, 20, true);
-
-    int& currentFrame = *(new int(0));
 
     for (int i = 0; i < targets->size(); i++) {
-        targets->at(i)->Translate(targetPositions[currentFrame][i]);
+        targets->at(i)->Translate(animationPositions[0][i]);
     }
 
     fabrik->Solve();
 
-    std::function<void(int, int)> keyEvent = [camera, fabrik, targets, targetPositions, &currentFrame](int key, int action) {
+    std::function<void()> frameAnimationUpdate = [fabrik]() {
+        fabrik->Solve();
+    };
+
+    std::vector<Object*>* objTargets = new std::vector<Object*>(targets->begin(), targets->end());
+
+    FabrikAnimation* fabrikAnimation = new FabrikAnimation(objTargets, animationPositions, 3, 20, false, 0.05, frameAnimationUpdate, true, true);
+
+    for (int i = 0; i < 3; i++) {
+        delete [] animationPositions[i];
+    }
+
+    delete [] animationPositions;
+
+    std::function<void(int, int)> keyEvent = [camera, fabrikAnimation](int key, int action) {
         if (action == GLFW_PRESS) {
             switch (key) {
             case GLFW_KEY_T:
@@ -548,24 +532,31 @@ Scene* Scene::BuildScene6() {
                 camera->Rotate({ 0.0f, 45.0f, 0.0f });
                 break;
 
+            case GLFW_KEY_R:
+                fabrikAnimation->Reset();
+                break;
+
             case GLFW_KEY_SPACE:
-                currentFrame++;
+                fabrikAnimation->PauseResume();
+                break;
 
-                if (currentFrame > targetPositions.size() - 1) {
-                    currentFrame = 0;
-                }
+            case GLFW_KEY_Z:
+                fabrikAnimation->PreviousFrame();
+                break;
 
-                for (int i = 0; i < targets->size(); i++) {
-                    targets->at(i)->Translate(targetPositions[currentFrame][i]);
-                }
-
-                fabrik->Solve();
+            case GLFW_KEY_X:
+                fabrikAnimation->NextFrame();
                 break;
             }
         }
     };
 
+    std::function<void(double)> animate = [fabrikAnimation](double deltaTime) {
+        fabrikAnimation->Play(deltaTime);
+    };
+
     scene->KeyEvent = keyEvent;
+    scene->Animate = animate;
 
     return scene;
 }

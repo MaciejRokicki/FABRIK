@@ -79,7 +79,8 @@ add_executable (
 	"src/twist3D.cpp" 
 	"src/headers/quaternion.h" 
 	"src/quaternion.cpp" 
-	)
+	 "src/headers/fabrikAnimation.h"
+	 "src/fabrikAnimation.cpp")
 
 target_link_libraries(FABRIK OpenGL::GL glew glfw)
 
