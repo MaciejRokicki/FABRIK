@@ -1,35 +1,5 @@
 #include "headers/fabrikAnimation.h"
 
-void FabrikAnimation::generateFrames(int targetsCount, Vector3* startPosition, Vector3* endPosition, int frames) {
-        Vector3* diffVectors = new Vector3[targetsCount];
-    
-        for (int i = 0; i < targetsCount; i++) {
-            diffVectors[i] = endPosition[i] - startPosition[i];
-        }
-    
-        for (int i = 0; i < frames; i++) {
-            Vector3* newVectors = new Vector3[targetsCount];
-    
-            for (int j = 0; j < targetsCount; j++) {
-                newVectors[j] = startPosition[j] + diffVectors[j] / frames * i;
-            }
-    
-            this->frames.push_back(newVectors);
-        }
-    }
-
-void FabrikAnimation::mirrorFrames() {
-    for (int i = frames.size() - 2; i > 1; i--) {
-        frames.push_back(new Vector3[targets->size()]{
-            frames[i][0],
-            frames[i][1],
-            frames[i][2],
-            frames[i][3],
-            frames[i][4]
-        });
-    }
-}
-
 FabrikAnimation::FabrikAnimation(
         std::vector<Object*>* targets,
         std::vector<Vector3*> frames, 
@@ -46,7 +16,7 @@ FabrikAnimation::FabrikAnimation(
     this->loop = loop;
 
     if (mirror) {
-        mirrorFrames();
+        MirrorFrames();
     }
 }
 
@@ -67,11 +37,11 @@ FabrikAnimation::FabrikAnimation(
     this->loop = loop;
 
     for (int i = 1; i < positionCount; i++) {
-        generateFrames(targets->size(), positions[i-1], positions[i], framesPerPosition);
+        GenerateFrames(targets->size(), positions[i-1], positions[i], framesPerPosition);
     }
 
     if (mirror) {
-        mirrorFrames();
+        MirrorFrames();
     }
 }
 
@@ -131,4 +101,34 @@ void FabrikAnimation::PreviousFrame() {
     }
 
     frameUpdate();
+}
+
+void FabrikAnimation::GenerateFrames(int targetsCount, Vector3* startPosition, Vector3* endPosition, int frames) {
+    Vector3* diffVectors = new Vector3[targetsCount];
+
+    for (int i = 0; i < targetsCount; i++) {
+        diffVectors[i] = endPosition[i] - startPosition[i];
+    }
+
+    for (int i = 0; i < frames; i++) {
+        Vector3* newVectors = new Vector3[targetsCount];
+
+        for (int j = 0; j < targetsCount; j++) {
+            newVectors[j] = startPosition[j] + diffVectors[j] / frames * i;
+        }
+
+        this->frames.push_back(newVectors);
+    }
+}
+
+void FabrikAnimation::MirrorFrames() {
+    for (int i = frames.size() - 2; i > 1; i--) {
+        frames.push_back(new Vector3[targets->size()]{
+            frames[i][0],
+            frames[i][1],
+            frames[i][2],
+            frames[i][3],
+            frames[i][4]
+            });
+    }
 }

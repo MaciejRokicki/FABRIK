@@ -2,31 +2,31 @@
 #include "headers/color.h"
 
 Object::Object() : Transform() {
-    default_color = color;
+    defaultColor = color;
 }
 
-Object::Object(Vector3 position, Vector3 scale, Color default_color) : Transform(position, scale) {
-    color = default_color;
-    this->default_color = default_color;
+Object::Object(Vector3 position, Vector3 scale, Color defaultColor) : Transform(position, scale) {
+    color = defaultColor;
+    this->defaultColor = defaultColor;
 }
 
 void Object::Init() {
-    glGenVertexArrays(1, &_vao);
-    glBindVertexArray(_vao);
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
 
-    glGenBuffers(1, &_vertex_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, _vertex_buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(_vertices[0]) * _vertices_size, _vertices, GL_STATIC_DRAW);
+    glGenBuffers(1, &vertexBuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices[0]) * verticesSize, vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(_vertices[0]), (GLvoid*)0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(vertices[0]), (GLvoid*)0);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(_vertices[0]), (GLvoid*)sizeof(_vertices[0].position));
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(vertices[0]), (GLvoid*)sizeof(vertices[0].position));
     glEnableVertexAttribArray(1);
 
-    glGenBuffers(1, &_index_buffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _index_buffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(_indices[0]) * _indices_size, _indices, GL_STATIC_DRAW);
+    glGenBuffers(1, &indexBuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices[0]) * indicesSize, indices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -34,29 +34,29 @@ void Object::Init() {
 
 void Object::Draw(const Camera& camera) const {
     glUseProgram(camera);
-    glBindVertexArray(_vao);
+    glBindVertexArray(vao);
 
     camera.SetModelMatrix(_matrix);
 
-    glDrawElements(GL_TRIANGLES, _indices_size, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, indicesSize, GL_UNSIGNED_INT, 0);
 
     glBindVertexArray(0);
     glUseProgram(0);
 }
 
 void Object::SetDefaultColor() {
-    SetColor(default_color);
+    SetColor(defaultColor);
 }
 
 void Object::SetColor(Color color, bool isDefaultColor) {
     if (isDefaultColor) {
-        default_color = color;
+        defaultColor = color;
     }
 
     this->color = color;
 
-    for (int i = 0; i < _vertices_size; i++) {
-        _vertices[i] = { {_vertices[i].position[0], _vertices[i].position[1], _vertices[i].position[2], _vertices[i].position[3] }, this->color };
+    for (int i = 0; i < verticesSize; i++) {
+        vertices[i] = { {vertices[i].position[0], vertices[i].position[1], vertices[i].position[2], vertices[i].position[3] }, this->color };
     }
 
     this->~Object();
@@ -70,9 +70,9 @@ Object::~Object() {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-    glDeleteBuffers(1, &_index_buffer);
-    glDeleteBuffers(1, &_vertex_buffer);
+    glDeleteBuffers(1, &indexBuffer);
+    glDeleteBuffers(1, &vertexBuffer);
 
     glBindVertexArray(0);
-    glDeleteVertexArrays(1, &_vao);
+    glDeleteVertexArrays(1, &vao);
 }

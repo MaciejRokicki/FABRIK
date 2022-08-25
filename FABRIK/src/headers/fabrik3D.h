@@ -5,6 +5,15 @@
 #include "target3D.h"
 
 class Fabrik3D : public Fabrik {
+public:
+	Fabrik3D(Tree<Joint3D>* tree);
+	Fabrik3D(Tree<Joint3D>* tree, std::vector<Target3D*>& targetsRef);
+	void Init();
+	void Draw(const Camera& camera) const;
+	void Solve();
+	Target3D* SelectTargetByMouseButtonPressCallback(Vector3 space_pos);
+	void RandomizeTargets(int min, int max);
+	void Unload();
 private:
 	Tree<Joint3D>* tree;
 	std::vector<Target3D*>* targets;
@@ -15,15 +24,6 @@ private:
 	void UpdatePosition();
 	void Forward();
 	void Backward();
-public:
-	Fabrik3D(Tree<Joint3D>* tree);
-	Fabrik3D(Tree<Joint3D>* tree, std::vector<Target3D*>& targetsRef);
-	void Init();
-	void Draw(const Camera& camera) const;
-	void Solve();
-	Target3D* SelectTargetByMouseButtonPressCallback(Vector3 space_pos);
-	void RandomizeTargets(int min, int max);
-	void Unload();
 };
 
 #endif // !FABRIK3D_H

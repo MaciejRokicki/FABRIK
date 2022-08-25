@@ -4,9 +4,6 @@
 #include "vector3.h"
 
 class Matrix4 {
-private:
-	float matrix[16];
-	static void MultiplyBy(const Matrix4& a, const Matrix4& b, Matrix4& resultMatrix);
 public:
 	Matrix4();
 	Matrix4(float);
@@ -19,6 +16,10 @@ public:
 	operator const float* () const;
 	Matrix4 operator *(const Matrix4& mat);
 	Matrix4& operator *=(const Matrix4& mat);
+private:
+	float matrix[16];
+
+	static void MultiplyBy(const Matrix4& a, const Matrix4& b, Matrix4& resultMatrix);
 };
 
 #endif // !MATRIX4_H

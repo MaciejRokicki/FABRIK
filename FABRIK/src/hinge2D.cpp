@@ -13,19 +13,17 @@ void Hinge2D::Apply(Node<Joint2D>* nodeJoint) {
 	float previousSegmentConstraintRotationTmp = 0.0f;
 
 	Vector2 direction = currentJointPosition - previousJointPosition;
-	// Znormalizowany kat w zakresi [0, 360] wzgledem punktu (0, 0)
+
 	float angle = Mathf::NormalizeAngle360(
 		Mathf::Rad2Deg(atan2f(direction.y, direction.x))
 	); 
 
-	// Kat osi z poprzedniego segmentu
 	if (nodeJoint->parent->parent != NULL) {
 		Vector2 previousPreviousJointPosition = nodeJoint->parent->parent->value.PositionTmp;
 		Vector2 direction2 = previousJointPosition - previousPreviousJointPosition;
 		previousSegmentConstraintRotationTmp = Mathf::Rad2Deg(atan2f(direction2.y, direction2.x));
 	}
 
-	// Kat wzgledem poprzedniego segmentu
 	angle -= previousSegmentConstraintRotationTmp;
 
 	if (angle >= minAngle && angle <= maxAngle) {

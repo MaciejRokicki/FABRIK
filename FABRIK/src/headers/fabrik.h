@@ -7,13 +7,6 @@
 #include "object.h"
 
 class Fabrik {
-protected:
-	float tolerance;
-	int iterations_limit = 10;
-
-	int runs = 0;
-	double executionTimeSum = 0.0;
-	double tpiSum = 0.0;
 public:
 	Fabrik();
 	virtual void Init() = 0;
@@ -22,6 +15,13 @@ public:
 	virtual Object* SelectTargetByMouseButtonPressCallback(Vector3 space_pos) = 0;
 	virtual void RandomizeTargets(int min, int max) = 0;
 	virtual void Unload() = 0;
+protected:
+	float tolerance;
+	int iterations_limit = 10;
+
+	int runs = 0;
+	double executionTimeSum = 0.0;
+	double tpiSum = 0.0;
 };
 
 #endif // !FABRIK3D_H

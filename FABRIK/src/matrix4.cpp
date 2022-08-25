@@ -4,8 +4,7 @@
 #include "headers/matrix4.h"
 #include "headers/mathf.h"
 
-Matrix4::Matrix4()
-{
+Matrix4::Matrix4() {
 	for (int i = 0; i < 16; i++) {
 		matrix[i] = 0;
 	}
@@ -13,10 +12,8 @@ Matrix4::Matrix4()
 	matrix[0] = matrix[5] = matrix[10] = matrix[15] = 1;
 }
 
-Matrix4::Matrix4(float val)
-{
-	for (int i = 0; i < 16; i++)
-	{
+Matrix4::Matrix4(float val) {
+	for (int i = 0; i < 16; i++) {
 		matrix[i] = val;
 	}
 }
@@ -82,6 +79,7 @@ Matrix4 Matrix4::Scale(Vector3 scale) {
 void Matrix4::Log() {
 	for (int i = 0; i < 16; i++) {
 		std::cout << matrix[i] << ' ';
+
 		if (i % 4 == 3) {
 			std::cout << std::endl;
 		}

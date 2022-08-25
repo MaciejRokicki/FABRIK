@@ -1,5 +1,6 @@
-#include "headers/mathf.h"
 #include <iostream>
+
+#include "headers/mathf.h"
 
 float Mathf::Rad2Deg(float rad) {
 	rad = rad * 180.0f / M_PI;

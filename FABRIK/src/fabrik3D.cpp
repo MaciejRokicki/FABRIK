@@ -151,6 +151,20 @@ void Fabrik3D::RandomizeTargets(int min, int max) {
 	}
 }
 
+void Fabrik3D::Unload() {
+	for (int i = 0; i < targets->size(); i++) {
+		targets->at(i)->~Target3D();
+	}
+
+	tree->Preorder([](Node<Joint3D>* nodeJoint) {
+		if (nodeJoint->value.segment) {
+			nodeJoint->value.segment->~Segment3D();
+		}
+
+		nodeJoint->value.~Joint3D();
+		});
+}
+
 bool Fabrik3D::IsReachable(Node<Joint3D>* root, Target3D* target) {
 	float root_target_distance = Vector3::Distance(root->value.GetPosition(), target->GetPosition());
 	float total_joints_distance = 0.0f;
@@ -233,18 +247,4 @@ void Fabrik3D::Backward() {
 			}
 		});
 	}
-}
-
-void Fabrik3D::Unload() {
-	for (int i = 0; i < targets->size(); i++) {
-		targets->at(i)->~Target3D();
-	}
-
-	tree->Preorder([](Node<Joint3D>* nodeJoint) {
-		if (nodeJoint->value.segment) {
-			nodeJoint->value.segment->~Segment3D();
-		}
-
-		nodeJoint->value.~Joint3D();
-	});
 }

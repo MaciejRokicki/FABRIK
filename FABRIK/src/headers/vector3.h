@@ -12,6 +12,7 @@ struct Vector3 {
 
 	static Vector3 zero;
 	static Vector3 one;
+
 	static float Distance(Vector3 vec1, Vector3 vec2);
 
 	bool InRange(const Vector3& vec);

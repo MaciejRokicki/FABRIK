@@ -11,7 +11,7 @@ struct Node {
 
 	Node();
 	Node(T value);
-	void next(T value);
+	void Next(T value);
 };
 
 #endif // !NODE_H

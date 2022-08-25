@@ -10,8 +10,6 @@
 #include "matrix4.h"
 
 class Transform {
-protected:
-	Matrix4 _matrix;
 public:
 	Transform();
 	Transform(Vector3 positon, Vector3 scale);
@@ -22,6 +20,8 @@ public:
 	void SetScale(Vector3 scale);
 	void Rotate(Vector3 angle);
 	void LookAt(Transform& transform);
+protected:
+	Matrix4 _matrix;
 };
 #endif // !TRANSFORM_H
 

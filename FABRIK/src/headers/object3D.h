@@ -10,7 +10,7 @@
 class Object3D : public Object {
 public:
 	Object3D();
-	Object3D(Vector3 position, Vector3 scale, Color default_color);
+	Object3D(Vector3 position, Vector3 scale, Color defaultColor);
 };
 
 #endif // !OBJECT2D_H

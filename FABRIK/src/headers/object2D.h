@@ -10,7 +10,7 @@
 class Object2D : public Object {
 public:
 	Object2D();
-	Object2D(Vector3 position, Vector3 scale, Color default_color);
+	Object2D(Vector3 position, Vector3 scale, Color defaultColor);
 	void LookAt(Transform& transform);
 };
 

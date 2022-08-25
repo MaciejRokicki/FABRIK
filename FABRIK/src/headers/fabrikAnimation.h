@@ -8,19 +8,6 @@
 #include "target3D.h"
 
 class FabrikAnimation {
-private:
-	std::vector<Vector3*> frames;
-	int currentFrame = 0;
-	bool stopped = false;
-	bool loop = false;
-	double time = 0.0;
-	double timePerFrame = 0.1;
-
-	std::vector<Object*>* targets;
-	std::function<void()> frameUpdate;
-
-	void generateFrames(int targetsCount, Vector3* startPosition, Vector3* endPosition, int frames);
-	void mirrorFrames();
 public:
 	FabrikAnimation(
 		std::vector<Object*>* targets,
@@ -45,6 +32,19 @@ public:
 	void Reset();
 	void NextFrame();
 	void PreviousFrame();
+private:
+	std::vector<Vector3*> frames;
+	int currentFrame = 0;
+	bool stopped = false;
+	bool loop = false;
+	double time = 0.0;
+	double timePerFrame = 0.1;
+
+	std::vector<Object*>* targets;
+	std::function<void()> frameUpdate;
+
+	void GenerateFrames(int targetsCount, Vector3* startPosition, Vector3* endPosition, int frames);
+	void MirrorFrames();
 };
 
 #endif // !FABRIKANIMATION_H

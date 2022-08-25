@@ -7,12 +7,12 @@
 class Joint2D;
 
 class Constraint2D {
-protected:
-	float minAngle;
-	float maxAngle;
 public:
 	Constraint2D(float minAngle, float maxAngle);
 	virtual void Apply(Node<Joint2D>* nodeJoint) = 0;
+protected:
+	float minAngle;
+	float maxAngle;
 };
 
 #endif // !CONSTRAINT2D_H

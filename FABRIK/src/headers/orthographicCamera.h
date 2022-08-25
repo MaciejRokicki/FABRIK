@@ -5,14 +5,14 @@
 #include "vector2.h"
 
 class OrthographicCamera : public Camera {
-private:
-	float size;
-
-	Matrix4 GetOrthographicProjectionMatrix(int width, int height);
 public:
 	OrthographicCamera(float size, int width, int height, float nearPlane, float farPlane);
 	void Resize(int width, int height);
 	Vector2 CameraToWorldPosition(double x, double y);
+private:
+	float size;
+
+	Matrix4 GetOrthographicProjectionMatrix(int width, int height);
 };
 
 #endif // !ORTHOGRAPHICCAMERA_H

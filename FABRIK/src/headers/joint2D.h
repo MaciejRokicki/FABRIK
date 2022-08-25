@@ -16,7 +16,8 @@ public:
 	bool IsSubBase = false;
 	Segment2D* segment;
 	Constraint2D* constraint;
-	Joint2D(Vector3 position = Vector3::zero, Vector3 scale = { 0.5f, 0.5f, 1.0f }, Color default_color = {1.0f, 0.0f, 0.0f, 1.0f}, Constraint2D* constraint = NULL);
+
+	Joint2D(Vector3 position = Vector3::zero, Vector3 scale = { 0.5f, 0.5f, 1.0f }, Color defaultColor = {1.0f, 0.0f, 0.0f, 1.0f}, Constraint2D* constraint = NULL);
 
 };
 

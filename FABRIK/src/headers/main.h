@@ -5,6 +5,7 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
 #include "window.h"
 
 void Resize(GLFWwindow* /*window*/, int new_width, int new_height);

@@ -11,23 +11,23 @@
 class Object : public Transform {
 public:
 	Object();
-	Object(Vector3 position, Vector3 scale, Color default_color);
+	Object(Vector3 position, Vector3 scale, Color defaultColor);
 	void Init();
 	void Draw(const Camera& camera) const;
 	void SetDefaultColor();
 	void SetColor(Color color, bool isDefaultColor = false);
 	virtual ~Object();
 protected:
-	Color default_color;
+	Color defaultColor;
 	Color color = Color({ 0.9f, 0.9f, 0.9f, 1.0f });
-	int _vertices_size = 0;
-	int _indices_size = 0;
-	Vertex* _vertices;
-	GLuint* _indices;
+	int verticesSize = 0;
+	int indicesSize = 0;
+	Vertex* vertices;
+	GLuint* indices;
 private:
-	GLuint _vao = NULL;
-	GLuint _vertex_buffer = NULL;
-	GLuint _index_buffer = NULL;
+	GLuint vao = NULL;
+	GLuint vertexBuffer = NULL;
+	GLuint indexBuffer = NULL;
 };
 
 #endif // !OBJECT2D_H

@@ -9,18 +9,6 @@
 #include "vector2.h"
 
 class Scene {
-private:
-	Camera* camera;
-	Fabrik* fabrik;
-	std::vector<Object*>* objects;
-	Object* selectedObject = NULL;
-
-	static Scene* BuildScene1();
-	static Scene* BuildScene2();
-	static Scene* BuildScene3();
-	static Scene* BuildScene4();
-	static Scene* BuildScene5();
-	static Scene* BuildScene6();
 public:
 	static std::vector<Scene*>* scenes;
 
@@ -37,6 +25,18 @@ public:
 	void Init();
 	void Draw(const Camera& camera);
 	void Unload();
+private:
+	Camera* camera;
+	Fabrik* fabrik;
+	std::vector<Object*>* objects;
+	Object* selectedObject = NULL;
+
+	static Scene* BuildScene1();
+	static Scene* BuildScene2();
+	static Scene* BuildScene3();
+	static Scene* BuildScene4();
+	static Scene* BuildScene5();
+	static Scene* BuildScene6();
 };
 
 #endif // SCENE_H

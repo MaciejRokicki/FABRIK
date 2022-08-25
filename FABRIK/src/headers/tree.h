@@ -9,6 +9,7 @@ template <typename T>
 class Tree {
 public:
 	Node<T>* root;
+
 	Tree(Node<T>* root);
 	void Preorder(std::function<void(Node<T>*)> func);
 	void Preorder(Node<T>* node, std::function<void(Node<T>*)> func);

@@ -10,6 +10,14 @@
 #include "vector3.h"
 
 class Camera : public ShaderProgram {
+public:
+	Camera(int width, int height, float nearPlane, float farPlane);
+	void SetModelMatrix(const Matrix4& matrix) const;
+	void Translate(Vector3 position);
+	void Rotate(Vector3 angle);
+	Vector3 GetPosition();
+	virtual void Resize(int width, int height) = 0;
+	virtual Vector2 CameraToWorldPosition(double x, double y) = 0;
 protected:
 	GLuint projectionMatrixLocation;
 	GLuint viewMatrixLocation;
@@ -22,14 +30,6 @@ protected:
 	float farPlane;
 	int width;
 	int height;
-public:
-	Camera(int width, int height, float nearPlane, float farPlane);
-	void SetModelMatrix(const Matrix4& matrix) const;
-	void Translate(Vector3 position);
-	void Rotate(Vector3 angle);
-	Vector3 GetPosition();
-	virtual void Resize(int width, int height) = 0;
-	virtual Vector2 CameraToWorldPosition(double x, double y) = 0;
 };
 
 #endif // !CAMERA_H

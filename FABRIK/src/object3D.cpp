@@ -2,10 +2,10 @@
 #include "headers/color.h"
 
 Object3D::Object3D() : Object() {
-	_vertices_size = 8;
-	_indices_size = 36;
+	verticesSize = 8;
+	indicesSize = 36;
 
-	_vertices = new Vertex[_vertices_size]{
+	vertices = new Vertex[verticesSize]{
 		{ { -.5f, -.5f,  .5f, 1.0f }, color },
 		{ { -.5f,  .5f,  .5f, 1.0f }, color },
 		{ {  .5f,  .5f,  .5f, 1.0f }, color },
@@ -16,7 +16,7 @@ Object3D::Object3D() : Object() {
 		{ {  .5f, -.5f, -.5f, 1.0f }, color }
 	};
 
-	_indices = new GLuint[_indices_size]{
+	indices = new GLuint[indicesSize]{
 		0,1,2,  0,2,3,
 		4,0,3,  4,3,7,
 		4,5,1,  4,1,0,
@@ -26,11 +26,11 @@ Object3D::Object3D() : Object() {
 	};
 }
 
-Object3D::Object3D(Vector3 position, Vector3 scale, Color default_color) : Object(position, scale, default_color) {
-	_vertices_size = 8;
-	_indices_size = 36;
+Object3D::Object3D(Vector3 position, Vector3 scale, Color defaultColor) : Object(position, scale, defaultColor) {
+	verticesSize = 8;
+	indicesSize = 36;
 	
-	_vertices = new Vertex[_vertices_size]{
+	vertices = new Vertex[verticesSize]{
 		{ { -.5f, -.5f,  .5f, 1.0f }, color },
 		{ { -.5f,  .5f,  .5f, 1.0f }, color },
 		{ {  .5f,  .5f,  .5f, 1.0f }, color },
@@ -41,7 +41,7 @@ Object3D::Object3D(Vector3 position, Vector3 scale, Color default_color) : Objec
 		{ {  .5f, -.5f, -.5f, 1.0f }, color }
 	};
 
-	_indices = new GLuint[_indices_size]{
+	indices = new GLuint[indicesSize]{
 		0,1,2,  0,2,3,
 		4,0,3,  4,3,7,
 		4,5,1,  4,1,0,

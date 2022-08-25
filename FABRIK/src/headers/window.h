@@ -12,6 +12,15 @@
 #include "camera.h"
 
 class Window {
+public:
+    Window(const char*, int, int);
+    void Init(int majorGlVersion, int minorGlVersion);
+    void Resize(int newWidth, int newHeight);
+    void KeyEvent(int key, int scancode, int action, int mods);
+    void MouseButtonEvent(int button, int action, int mods);
+    void LoadScene(Scene* scene);
+    void Run(void);
+    operator GLFWwindow* () { return window; }
 private:
     int width;
     int height;
@@ -29,15 +38,6 @@ private:
     void InitModels();
     void InitGlfwOrDie(int majorGlVersion, int minorGlVersion);
     void InitGlewOrDie();
-public:
-    Window(const char*, int, int);
-    void Init(int majorGlVersion, int minorGlVersion);
-    void Resize(int newWidth, int newHeight);
-    void KeyEvent(int key, int scancode, int action, int mods);
-    void MouseButtonEvent(int button, int action, int mods);
-    void LoadScene(Scene* scene);
-    void Run(void);
-    operator GLFWwindow* () { return window; }
 };
 
 #endif // !WINDOW_H

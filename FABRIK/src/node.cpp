@@ -9,7 +9,7 @@ Node<T>::Node(T value) {
 }
 
 template<typename T>
-void Node<T>::next(T value) {
+void Node<T>::Next(T value) {
 	Node<T>* newNode = new Node<T>();
 	newNode->parent = this;
 	newNode->value = value;

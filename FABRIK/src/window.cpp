@@ -23,7 +23,6 @@ Window::Window(const char* title, int width, int height) {
     this->title = title;
     this->width = width;
     this->height = height;
-    //last_time_ = 0;
 }
 
 void Window::Init(int majorGlVersion, int minorGlVersion) {
@@ -43,63 +42,6 @@ void Window::Init(int majorGlVersion, int minorGlVersion) {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-}
-
-void Window::InitGlfwOrDie(int majorGlVersion, int minorGlVersion) {
-    if (!glfwInit()) {
-        std::cerr << "ERROR: Could not initialize GLFW" << std::endl;
-        exit(EXIT_FAILURE);
-    }
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, majorGlVersion);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minorGlVersion);
-
-    #ifdef DEBUG
-        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
-    #endif
-
-    window = glfwCreateWindow(width, height, title, nullptr, nullptr);
-
-    if (!window) {
-        std::cerr << "ERROR: Could not create a new rendering window" << std::endl;
-        glfwTerminate();
-        exit(EXIT_FAILURE);
-    }
-
-    glfwMakeContextCurrent(window);
-}
-
-void Window::InitGlewOrDie() {
-    GLenum glew_init_result;
-    glewExperimental = GL_TRUE;
-    glew_init_result = glewInit();
-
-    if (GLEW_OK != glew_init_result) {
-        std::cerr << "Glew ERROR: " << glewGetErrorString(glew_init_result) << std::endl;
-        glfwTerminate();
-        exit(EXIT_FAILURE);
-    }
-
-    #ifdef DEBUG
-        if (glDebugMessageCallback) {
-            std::cout << "Register OpenGL debug callback " << std::endl;
-            glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-            glDebugMessageCallback((GLDEBUGPROC)OpenglCallbackFunction, NULL);
-            GLuint unused_ids = 0;
-            glDebugMessageControl(GL_DONT_CARE,
-                GL_DONT_CARE,
-                GL_DONT_CARE,
-                0,
-                &unused_ids,
-                GL_FALSE);
-        }
-        else
-            std::cout << "glDebugMessageCallback not available" << std::endl;
-    #endif
-}
-
-void Window::InitModels() {
-    scene->Init();
 }
 
 void Window::Resize(int newWidth, int newHeight) {
@@ -221,4 +163,61 @@ void Window::Run(void) {
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+}
+
+void Window::InitModels() {
+    scene->Init();
+}
+
+void Window::InitGlfwOrDie(int majorGlVersion, int minorGlVersion) {
+    if (!glfwInit()) {
+        std::cerr << "ERROR: Could not initialize GLFW" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, majorGlVersion);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minorGlVersion);
+
+    #ifdef DEBUG
+        glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+    #endif
+
+    window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+
+    if (!window) {
+        std::cerr << "ERROR: Could not create a new rendering window" << std::endl;
+        glfwTerminate();
+        exit(EXIT_FAILURE);
+    }
+
+    glfwMakeContextCurrent(window);
+}
+
+void Window::InitGlewOrDie() {
+    GLenum glewInitResult;
+    glewExperimental = GL_TRUE;
+    glewInitResult = glewInit();
+
+    if (GLEW_OK != glewInitResult) {
+        std::cerr << "Glew ERROR: " << glewGetErrorString(glewInitResult) << std::endl;
+        glfwTerminate();
+        exit(EXIT_FAILURE);
+    }
+
+    #ifdef DEBUG
+        if (glDebugMessageCallback) {
+            std::cout << "Register OpenGL debug callback " << std::endl;
+            glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+            glDebugMessageCallback((GLDEBUGPROC)OpenglCallbackFunction, NULL);
+            GLuint unused_ids = 0;
+            glDebugMessageControl(GL_DONT_CARE,
+                GL_DONT_CARE,
+                GL_DONT_CARE,
+                0,
+                &unused_ids,
+                GL_FALSE);
+        }
+        else
+            std::cout << "glDebugMessageCallback not available" << std::endl;
+    #endif
 }

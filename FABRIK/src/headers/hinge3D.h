@@ -10,11 +10,11 @@ enum Axis {
 };
 
 class Hinge3D : public Constraint3D {
-private:
-	Axis axis;
 public:
 	Hinge3D(Axis axis, float minAngle, float maxAngle);
 	void Apply(Node<Joint3D>* nodeJoint);
+private:
+	Axis axis;
 };
 
 #endif // !HINGE3D_H

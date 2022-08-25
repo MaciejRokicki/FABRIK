@@ -152,6 +152,17 @@ void Fabrik2D::RandomizeTargets(int min, int max) {
 	}
 }
 
+void Fabrik2D::Unload() {
+	for (int i = 0; i < targets->size(); i++) {
+		targets->at(i)->~Target2D();
+	}
+
+	tree->Preorder([](Node<Joint2D>* nodeJoint) {
+		nodeJoint->value.segment->~Segment2D();
+		nodeJoint->value.~Joint2D();
+		});
+}
+
 bool Fabrik2D::IsReachable(Node<Joint2D>* root, Target2D* target) {
 	float root_target_distance = Vector2::Distance(root->value.GetPosition(), target->GetPosition());
 	float total_joints_distance = 0.0f;
@@ -234,15 +245,4 @@ void Fabrik2D::Backward() {
 			}
 		});
 	}
-}
-
-void Fabrik2D::Unload() {
-	for (int i = 0; i < targets->size(); i++) {
-		targets->at(i)->~Target2D();
-	}
-
-	tree->Preorder([](Node<Joint2D>* nodeJoint) {
-		nodeJoint->value.segment->~Segment2D();
-		nodeJoint->value.~Joint2D();
-	});
 }

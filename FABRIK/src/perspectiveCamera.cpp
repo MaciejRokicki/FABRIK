@@ -26,17 +26,17 @@ Vector2 PerspectiveCamera::CameraToWorldPosition(double x, double y) {
 Matrix4 PerspectiveCamera::GetPerspectiveProjectionMatrix(int width, int height) {
 	float aspectRatio = (float)width / (float)height;
 
-	float y_scale = 1.0f / tan(fov * M_PI / 360.0f);
-	float x_scale = y_scale / aspectRatio;
-	float frustum_length = farPlane - nearPlane;
+	float yScale = 1.0f / tan(fov * M_PI / 360.0f);
+	float xScale = yScale / aspectRatio;
+	float frustumLength = farPlane - nearPlane;
 
 	float matrix[16]= {0};
 
-	matrix[0] = x_scale;
-	matrix[5] = y_scale;
-	matrix[10] = -((farPlane + nearPlane) / frustum_length);
+	matrix[0] = xScale;
+	matrix[5] = yScale;
+	matrix[10] = -((farPlane + nearPlane) / frustumLength);
 	matrix[11] = -1;
-	matrix[14] = -((2 * nearPlane * farPlane) / frustum_length);
+	matrix[14] = -((2 * nearPlane * farPlane) / frustumLength);
 
 	return Matrix4(matrix);
 }

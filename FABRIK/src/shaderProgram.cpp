@@ -18,6 +18,31 @@ ShaderProgram::ShaderProgram() {
 	glUseProgram(0);
 }
 
+ShaderProgram::~ShaderProgram() {
+    glUseProgram(0);
+
+    glDetachShader(shaderProgram, vertexShader);
+    glDetachShader(shaderProgram, fragmentShader);
+
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+}
+
+GLint ShaderProgram::GetUniformLocationOrDie(const char* varName)
+{
+    GLint location = -1;
+    location = glGetUniformLocation(shaderProgram, varName);
+
+    if (location < 0)
+    {
+        cerr << "ERROR: cannot find uniform location " << varName << endl;
+        glfwTerminate();
+        exit(EXIT_FAILURE);
+    }
+
+    return location;
+}
+
 GLuint ShaderProgram::LoadAndCompileShaderOrDie(const char* sourceFile, GLenum type) {
     int fileSize;
     char* shaderCode;
@@ -99,29 +124,4 @@ GLuint ShaderProgram::AttachShadersOrDie(GLuint vertexShader, GLuint fragmentSha
     }
 
     return newProgram;
-}
-
-GLint ShaderProgram::GetUniformLocationOrDie(const char* varName)
-{
-    GLint location = -1;
-    location = glGetUniformLocation(shaderProgram, varName);
-
-    if (location < 0)
-    {
-        cerr << "ERROR: cannot find uniform location " << varName << endl;
-        glfwTerminate();
-        exit(EXIT_FAILURE);
-    }
-
-    return location;
-}
-
-ShaderProgram::~ShaderProgram() {
-    glUseProgram(0);
-
-    glDetachShader(shaderProgram, vertexShader);
-    glDetachShader(shaderProgram, fragmentShader);
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
 }
