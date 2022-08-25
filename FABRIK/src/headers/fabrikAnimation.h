@@ -4,8 +4,7 @@
 #include <vector>
 #include <functional>
 
-#include "vector3.h"
-#include "target3D.h"
+#include "object.h"
 
 class FabrikAnimation {
 public:
