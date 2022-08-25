@@ -153,7 +153,7 @@ void Fabrik3D::Unload() {
 		}
 
 		nodeJoint->value.~Joint3D();
-		});
+	});
 }
 
 bool Fabrik3D::IsReachable(Node<Joint3D>* root, Target3D* target) {

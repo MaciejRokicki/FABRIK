@@ -150,7 +150,7 @@ void Fabrik2D::Unload() {
 	tree->Preorder([](Node<Joint2D>* nodeJoint) {
 		nodeJoint->value.segment->~Segment2D();
 		nodeJoint->value.~Joint2D();
-		});
+	});
 }
 
 bool Fabrik2D::IsReachable(Node<Joint2D>* root, Target2D* target) {

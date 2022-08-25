@@ -22,8 +22,8 @@ protected:
 	Color color = Color({ 0.9f, 0.9f, 0.9f, 1.0f });
 	int verticesSize = 0;
 	int indicesSize = 0;
-	Vertex* vertices;
-	GLuint* indices;
+	Vertex* vertices = NULL;
+	GLuint* indices = NULL;
 private:
 	GLuint vao = NULL;
 	GLuint vertexBuffer = NULL;
