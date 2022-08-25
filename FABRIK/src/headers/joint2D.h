@@ -3,7 +3,6 @@
 
 #include <GL/glew.h>
 
-#include "vector2.h"
 #include "object2D.h"
 #include "segment2D.h"
 #include "constraint2D.h"

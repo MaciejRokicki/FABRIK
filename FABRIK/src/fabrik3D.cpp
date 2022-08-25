@@ -1,13 +1,4 @@
-#include <iostream>
-#include <functional>
-#include <time.h>
-#include <chrono>
-#include <iomanip>
-
 #include "headers/fabrik3D.h"
-#include "headers/target3D.h"
-#include "headers/node.h"
-#include "headers/tree.h"
 #include "tree.cpp"
 
 Fabrik3D::Fabrik3D(Tree<Joint3D>* tree) : Fabrik() {

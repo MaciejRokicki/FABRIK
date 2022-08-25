@@ -1,10 +1,12 @@
 #ifndef FABRIK_H
 #define FABRIK_H
 
-#include <vector>
+#include <iostream>
+#include <functional>
+#include <chrono>
 
-#include "tree.h"
 #include "object.h"
+#include "tree.h"
 
 class Fabrik {
 public:

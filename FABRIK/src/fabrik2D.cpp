@@ -1,14 +1,4 @@
-#include <iostream>
-#include <functional>
-#include <time.h>
-#include <chrono>
-#include <iomanip>
-
-#include "headers/fabrik.h"
 #include "headers/fabrik2D.h"
-#include "headers/target2D.h"
-#include "headers/node.h"
-#include "headers/tree.h"
 #include "target2D.cpp"
 #include "tree.cpp"
 

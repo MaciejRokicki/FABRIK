@@ -1,7 +1,6 @@
 #ifndef CONSTRAINT2D_H
 #define CONSTRAINT2D_H
 
-#include "vector2.h"
 #include "node.h"
 
 class Joint2D;

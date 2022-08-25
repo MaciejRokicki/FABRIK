@@ -1,5 +1,4 @@
 #include "headers/object2D.h"
-#include "headers/color.h"
 #include "headers/mathf.h"
 
 Object2D::Object2D() : Object() {

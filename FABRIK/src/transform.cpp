@@ -3,8 +3,6 @@
 #include <GL/glew.h>
 
 #include "headers/transform.h"
-#include "headers/vertex.h"
-#include "headers/transform.h"
 #include "headers/mathf.h"
 
 Transform::Transform() { }

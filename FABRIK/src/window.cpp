@@ -1,23 +1,4 @@
-#include <iostream>
-#include <cstdlib>
-#include <cmath>
-#include <chrono>
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
 #include "headers/window.h"
-#include "headers/joint2D.h"
-#include "headers/transform.h"
-#include "headers/fabrik2D.h"
-#include "headers/node.h"
-#include "node.cpp"
-#include "headers/tree.h"
-#include "tree.cpp"
-#include "headers/object3D.h"
-#include "headers/fabrik3D.h"
-#include "headers/orthographicCamera.h"
-#include "headers/perspectiveCamera.h"
 
 Window::Window(const char* title, int width, int height) {
     this->title = title;

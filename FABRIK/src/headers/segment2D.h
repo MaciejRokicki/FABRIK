@@ -1,8 +1,6 @@
 #ifndef SEGMENT2D_H
 #define SEGMENT2D_H
 
-#include <GL/glew.h>
-
 #include "object2D.h"
 
 class Segment2D : public Object2D {

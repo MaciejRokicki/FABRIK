@@ -2,7 +2,6 @@
 #define PERSPECTIVECAMERA_H
 
 #include "camera.h"
-#include "vector2.h"
 
 class PerspectiveCamera : public Camera {
 public:

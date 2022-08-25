@@ -1,5 +1,4 @@
 #include "headers/object3D.h"
-#include "headers/color.h"
 
 Object3D::Object3D() : Object() {
 	verticesSize = 8;

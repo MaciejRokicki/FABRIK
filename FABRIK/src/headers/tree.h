@@ -1,8 +1,6 @@
 #ifndef TREE_H
 #define TREE_H
 
-#include <functional>
-
 #include "node.h"
 
 template <typename T>

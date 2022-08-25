@@ -8,6 +8,7 @@
 #include "vector3.h"
 #include "color.h"
 #include "matrix4.h"
+#include "vertex.h"
 
 class Transform {
 public:

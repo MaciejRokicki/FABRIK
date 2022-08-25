@@ -1,8 +1,6 @@
 #ifndef SEGMENT3D_H
 #define SEGMENT3D_H
 
-#include <GL/glew.h>
-
 #include "object3D.h"
 
 class Segment3D : public Object3D {

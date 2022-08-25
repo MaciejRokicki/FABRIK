@@ -1,7 +1,6 @@
 #ifndef TARGET2D_H
 #define TARGET2D_H
 
-#include "node.h"
 #include "joint2D.h"
 
 class Target2D : public Object2D {

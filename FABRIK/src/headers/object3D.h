@@ -1,11 +1,7 @@
 #ifndef OBJECT3D_H
 #define OBJECT3D_H
 
-#include <GL/glew.h>
-
 #include "object.h"
-#include "vertex.h"
-#include "vector3.h"
 
 class Object3D : public Object {
 public:

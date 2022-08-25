@@ -1,5 +1,3 @@
-#include <cmath>
-
 #include "headers/camera.h"
 
 Camera::Camera(int width, int height, float nearPlane, float farPlane) : ShaderProgram() {

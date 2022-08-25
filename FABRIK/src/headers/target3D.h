@@ -1,7 +1,6 @@
 #ifndef TARGET3D_H
 #define TARGET3D_H
 
-#include "node.h"
 #include "joint3D.h"
 
 class Target3D : public Object3D {

@@ -1,15 +1,7 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include <cstring>
-#include <ctime>
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
-#include "vector2.h"
 #include "scene.h"
-#include "camera.h"
 
 class Window {
 public:

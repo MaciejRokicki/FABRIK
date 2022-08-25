@@ -1,12 +1,7 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include <vector>
-#include <functional>
-
 #include "fabrik.h"
-#include "object.h"
-#include "vector2.h"
 
 class Scene {
 public:
