@@ -12,7 +12,7 @@ public:
 private:
 	float size;
 
-	Matrix4 GetOrthographicProjectionMatrix(int width, int height);
+	Matrix4 GetProjectionMatrix(int width, int height);
 };
 
 #endif // !ORTHOGRAPHICCAMERA_H

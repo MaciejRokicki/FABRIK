@@ -3,7 +3,7 @@
 OrthographicCamera::OrthographicCamera(float size, int width, int height, float nearPlane, float farPlane) : Camera(width, height, nearPlane, farPlane) {
 	this->size = size;
 
-	this->projectionMatrix = GetOrthographicProjectionMatrix(width, height);
+	this->projectionMatrix = GetProjectionMatrix(width, height);
 
 	glUseProgram(*this);
 	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, projectionMatrix);
@@ -13,7 +13,7 @@ void OrthographicCamera::Resize(int width, int height) {
 	this->width = width;
 	this->height = height;
 
-	this->projectionMatrix = GetOrthographicProjectionMatrix(width, height);
+	this->projectionMatrix = GetProjectionMatrix(width, height);
 
 	glUseProgram(*this);
 	glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, projectionMatrix);
@@ -36,7 +36,7 @@ Vector2 OrthographicCamera::CameraToWorldPosition(double x, double y) {
 	return Vector2{ (float)(round(x * 10.0) / 10.0), (float)(round(y * 10.0) / 10.0) };
 }
 
-Matrix4 OrthographicCamera::GetOrthographicProjectionMatrix(int width, int height) {
+Matrix4 OrthographicCamera::GetProjectionMatrix(int width, int height) {
 	float left = -width / size;
 	float right = width / size;
 	float bottom = -height / size;

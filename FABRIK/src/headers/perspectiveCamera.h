@@ -12,7 +12,7 @@ public:
 private:
 	float fov;
 
-	Matrix4 GetPerspectiveProjectionMatrix(int width, int height);
+	Matrix4 GetProjectionMatrix(int width, int height);
 };
 
 #endif // !PERSPECTIVECAMERA_H
