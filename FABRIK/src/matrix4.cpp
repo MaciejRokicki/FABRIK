@@ -1,5 +1,4 @@
 #include <iostream>
-#include <cmath>
 
 #include "headers/matrix4.h"
 #include "headers/mathf.h"
@@ -37,12 +36,12 @@ Matrix4 Matrix4::Translate(Vector3 position) {
 Matrix4 Matrix4::Rotate(Vector3 angle) {
 	Vector3 radians = Mathf::Deg2Rad(angle);
 
-	float xSin = sin(radians.x);
-	float xCos = cos(radians.x);
-	float ySin = sin(radians.y);
-	float yCos = cos(radians.y);
-	float zSin = sin(radians.z);
-	float zCos = cos(radians.z);
+	float xSin = sinf(radians.x);
+	float xCos = cosf(radians.x);
+	float ySin = sinf(radians.y);
+	float yCos = cosf(radians.y);
+	float zSin = sinf(radians.z);
+	float zCos = cosf(radians.z);
 
 	Matrix4 xRotation;
 	Matrix4 yRotation;

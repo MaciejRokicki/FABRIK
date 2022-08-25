@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "headers/mathf.h"
 
 float Mathf::Rad2Deg(float rad) {

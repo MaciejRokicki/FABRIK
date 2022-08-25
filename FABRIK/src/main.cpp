@@ -1,10 +1,4 @@
-﻿#include <iostream>
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
-#include "headers/main.h"
-#include "headers/window.h"
+﻿#include "headers/main.h"
 
 using namespace std;
 

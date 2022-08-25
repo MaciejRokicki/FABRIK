@@ -2,7 +2,6 @@
 
 #include "headers/hinge2D.h"
 #include "headers/mathf.h"
-#include "headers/segment2D.h"
 
 Hinge2D::Hinge2D(float minAngle, float maxAngle) : Constraint2D(minAngle, maxAngle) { }
 

@@ -1,5 +1,3 @@
-#include <cmath>
-
 #include "headers/vector2.h"
 #include "headers/vector3.h"
 

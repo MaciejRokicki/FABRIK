@@ -7,11 +7,9 @@
 #include "headers/fabrik3D.h"
 #include "headers/orthographicCamera.h"
 #include "headers/perspectiveCamera.h"
-#include "headers/main.h"
 #include "headers/hinge2D.h"
 #include "headers/hinge3D.h"
 #include "headers/twist3D.h"
-#include "headers/quaternion.h"
 #include "headers/fabrikAnimation.h"
 
 std::vector<Scene*>* Scene::scenes = new std::vector<Scene*>();

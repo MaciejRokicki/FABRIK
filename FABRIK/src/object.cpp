@@ -1,5 +1,4 @@
 #include "headers/object.h"
-#include "headers/color.h"
 
 Object::Object() : Transform() {
     defaultColor = color;

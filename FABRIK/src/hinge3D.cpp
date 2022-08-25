@@ -2,7 +2,6 @@
 
 #include "headers/hinge3D.h"
 #include "headers/mathf.h"
-#include "headers/segment3D.h"
 #include "headers/quaternion.h"
 
 Hinge3D::Hinge3D(Axis axis, float minAngle, float maxAngle) : Constraint3D(minAngle, maxAngle) {
