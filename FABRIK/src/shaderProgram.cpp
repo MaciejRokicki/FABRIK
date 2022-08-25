@@ -84,7 +84,7 @@ GLuint ShaderProgram::LoadAndCompileShaderOrDie(const char* sourceFile, GLenum t
         std::cerr << "shader is failed to compile:" << std::endl;
         GLint logSize;
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logSize);
-        char* logMsg = new char[static_cast<GLuint>(logSize)];
+        char* logMsg = new char[(GLuint)logSize];
         glGetShaderInfoLog(shader, logSize, nullptr, logMsg);
         std::cerr << logMsg << std::endl;
         delete[] logMsg;
@@ -113,7 +113,7 @@ GLuint ShaderProgram::AttachShadersOrDie(GLuint vertexShader, GLuint fragmentSha
         GLint  logSize;
         glGetProgramiv(newProgram, GL_INFO_LOG_LENGTH, &logSize);
 
-        char* logMsg = new char[static_cast<GLuint>(logSize)];
+        char* logMsg = new char[(GLuint)logSize];
         glGetProgramInfoLog(newProgram, logSize, nullptr, logMsg);
 
         std::cerr << logMsg << std::endl;

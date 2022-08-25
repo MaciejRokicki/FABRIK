@@ -37,7 +37,7 @@ FabrikAnimation::FabrikAnimation(
     this->loop = loop;
 
     for (int i = 1; i < positionCount; i++) {
-        GenerateFrames(static_cast<int>(targets->size()), positions[i-1], positions[i], framesPerPosition);
+        GenerateFrames((int)targets->size(), positions[i-1], positions[i], framesPerPosition);
     }
 
     if (mirror) {
@@ -79,7 +79,7 @@ void FabrikAnimation::NextFrame() {
     currentFrame++;
 
     if (currentFrame > frames.size() - 1) {
-        currentFrame = static_cast<int>(frames.size()) - 1;
+        currentFrame = (int)frames.size() - 1;
     }
 
     for (int i = 0; i < targets->size(); i++) {
@@ -114,7 +114,7 @@ void FabrikAnimation::GenerateFrames(int targetsCount, Vector3* startPosition, V
         Vector3* newVectors = new Vector3[targetsCount];
 
         for (int j = 0; j < targetsCount; j++) {
-            newVectors[j] = startPosition[j] + diffVectors[j] / static_cast<float>(frames) * static_cast<float>(i);
+            newVectors[j] = startPosition[j] + diffVectors[j] / (float)frames * (float)i;
         }
 
         this->frames.push_back(newVectors);
@@ -122,7 +122,7 @@ void FabrikAnimation::GenerateFrames(int targetsCount, Vector3* startPosition, V
 }
 
 void FabrikAnimation::MirrorFrames() {
-    for (int i = static_cast<int>(frames.size()) - 2; i > 1; i--) {
+    for (int i = (int)frames.size() - 2; i > 1; i--) {
         frames.push_back(new Vector3[targets->size()] {
             frames[i][0],
             frames[i][1],
