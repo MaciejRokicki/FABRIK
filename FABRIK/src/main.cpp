@@ -5,7 +5,7 @@ using namespace std;
 const int kMajorGLVersion = 4;
 const int kMinorGLVersion = 3;
 
-static Window window("Fabrik", 720, 480);
+static Window window("Fabrik - Maciej Kamil Rokicki", 720, 480);
 
 void Resize(GLFWwindow* /*window*/, int new_width, int new_height) {
 	window.Resize(new_width, new_height);

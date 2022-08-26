@@ -10,7 +10,7 @@
 
 class Fabrik {
 public:
-	Fabrik();
+	Fabrik() {};
 	virtual void Init() = 0;
 	virtual void Draw(const Camera& camera) const = 0;
 	virtual void Solve() = 0;
@@ -18,12 +18,12 @@ public:
 	virtual void RandomizeTargets(int min, int max) = 0;
 	virtual void Unload() = 0;
 protected:
-	float tolerance;
-	int iterations_limit = 10;
+	float tolerance = 0.2f;
+	int iterationsLimit = 10;
 
 	int runs = 0;
 	double executionTimeSum = 0.0;
 	double tpiSum = 0.0;
 };
 
-#endif // !FABRIK3D_H
+#endif // !FABRIK_H

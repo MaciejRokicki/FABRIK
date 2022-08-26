@@ -56,7 +56,6 @@ add_executable (
 	"src/headers/fabrik3D.h" 
 	"src/fabrik3D.cpp" 
 	"src/headers/fabrik.h" 
-	"src/fabrik.cpp"
 	"src/headers/scene.h" 
 	"src/scene.cpp" 
 	"src/headers/camera.h" 
@@ -80,7 +79,7 @@ add_executable (
 	"src/headers/quaternion.h" 
 	"src/quaternion.cpp" 
 	 "src/headers/fabrikAnimation.h"
-	 "src/fabrikAnimation.cpp")
+	 "src/fabrikAnimation.cpp" )
 
 target_link_libraries(FABRIK OpenGL::GL glew glfw)
 

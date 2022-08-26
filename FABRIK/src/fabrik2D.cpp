@@ -66,53 +66,51 @@ void Fabrik2D::Draw(const Camera& camera) const {
 
 void Fabrik2D::Solve() {
 	runs++;
-
+	
 	auto begin = std::chrono::high_resolution_clock::now();
 	int iterations = 0;
-
+	
 	float accuracy;
 	int reachableTargetsCounter;
-
+	
 	do {
-		iterations++;
-
 		accuracy = 0.0f;
 		reachableTargetsCounter = 0;
-
+	
 		for (int i = 0; i < targets->size(); i++) {
 			Node<Joint2D>* subbase = targets->at(i)->endEffector->parent;
-
-			for (subbase; !subbase->value.IsSubBase && subbase->parent != NULL; subbase = subbase->parent) { }
-
+	
+			for (subbase; !subbase->value.IsSubBase && subbase->parent != NULL; subbase = subbase->parent) {}
+	
 			if (IsReachable(subbase, targets->at(i))) {
 				accuracy += Vector2::Distance(targets->at(i)->endEffector->value.GetPosition(), targets->at(i)->GetPosition());
 				reachableTargetsCounter++;
 			}
 		}
-
+	
 		accuracy /= reachableTargetsCounter;
-
+	
 		Forward();
 		Backward();
-
+	
 		UpdatePosition();
-	} while (accuracy > tolerance && iterations < iterations_limit);
-
+	
+		iterations++;
+	} while (accuracy > tolerance && iterations < iterationsLimit);
+	
 	auto end = std::chrono::high_resolution_clock::now();
 	auto elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
-
+	
 	float executionTime = elapsedTime.count() * 1e-3f;
 	float timePerIteration = elapsedTime.count() * 1e-3f / iterations;
-
+	
 	executionTimeSum += executionTime;
 	tpiSum += timePerIteration;
-
-	std::cout <<"[" << runs << "]"
+	
+	std::cout << "[" << runs << "]"
 		<< " Iterations: " << iterations
-		<< " Execution time: " << executionTime  << "ms" << " (AVG: " << executionTimeSum / runs << "ms)"
-		<< " TPI: " << timePerIteration << "ms" << " (AVG: " << tpiSum / runs << "ms)"
-		<< " Reachable targets: " << reachableTargetsCounter
-		<< " Accuracy: " << (1.0f - accuracy) * 1e2f << std::endl;
+		<< " Execution time: " << executionTime << "ms" << " (AVG: " << executionTimeSum / runs << "ms)"
+		<< " TPI: " << timePerIteration << "ms" << " (AVG: " << tpiSum / runs << "ms)" << std::endl;
 }
 
 Target2D* Fabrik2D::SelectTargetByMouseButtonPressCallback(Vector3 space_pos) {
@@ -187,16 +185,13 @@ void Fabrik2D::UpdatePosition() {
 }
 
 void Fabrik2D::Forward() {
-	int i = 0;
 	Node<Joint2D>* subbase = NULL;
 
-	tree->Inorder([&](Node<Joint2D>* nodeJoint) {
-		if (nodeJoint->child.size() == 0) {
-			nodeJoint->value.PositionTmp = targets->at(i)->GetPosition();
-			i++;
-		}
+	for (int i = 0; i < targets->size(); i++) {
+		targets->at(i)->endEffector->value.PositionTmp = targets->at(i)->GetPosition();
+	}
 
-		//Krok niepotrzebny, suma wekorow nowych pozycji subbase'a z kazdego lanucucha wystarczy do wyznaczenia kierunku, a dlugosc miedzy stawami i tak jest zachowana
+	tree->Inorder([&](Node<Joint2D>* nodeJoint) {
 		if (nodeJoint == subbase) {
 			subbase->value.PositionTmp = subbase->value.PositionTmp / (float)subbase->child.size();
 		}
