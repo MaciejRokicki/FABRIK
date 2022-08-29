@@ -22,12 +22,12 @@ protected:
 	Color color = Color({ 0.9f, 0.9f, 0.9f, 1.0f });
 	int verticesSize = 0;
 	int indicesSize = 0;
-	Vertex* vertices = NULL;
-	GLuint* indices = NULL;
+	Vertex* vertices = 0;
+	GLuint* indices = 0;
 private:
-	GLuint vao = NULL;
-	GLuint vertexBuffer = NULL;
-	GLuint indexBuffer = NULL;
+	GLuint vao = 0;
+	GLuint vertexBuffer = 0;
+	GLuint indexBuffer = 0;
 };
 
 #endif // !OBJECT2D_H

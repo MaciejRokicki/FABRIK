@@ -1,6 +1,8 @@
 #ifndef HINGE2D_H
 #define HINGE2D_H
 
+#include <cmath>
+
 #include "constraint2D.h"
 #include "joint2D.h"
 

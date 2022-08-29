@@ -34,8 +34,8 @@ void Hinge2D::Apply(Node<Joint2D>* nodeJoint) {
 
 	float length = Vector2::Distance(previousJointPosition, currentJointPosition);
 	Vector2 newPosition = {
-		length* cos(Mathf::Deg2Rad(angle)),
-		length* sin(Mathf::Deg2Rad(angle))
+		length * cosf(Mathf::Deg2Rad(angle)),
+		length * sinf(Mathf::Deg2Rad(angle))
 	};
 
 	nodeJoint->value.PositionTmp = newPosition + previousJointPosition;
