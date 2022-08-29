@@ -43,6 +43,7 @@ add_executable (
 	"src/node.cpp" 
 	"src/headers/tree.h" 
 	"src/headers/target2D.h" 
+	"src/target2D.cpp"
 	"src/headers/object.h"
 	"src/object.cpp" 
 	"src/headers/object3D.h"

@@ -2,6 +2,7 @@
 #define VECTOR3_H
 
 #include <ostream>
+#include <cmath>
 
 struct Vector2;
 

@@ -1,6 +1,8 @@
 #ifndef MATRIX4_H
 #define MATRIX4_H
 
+#include <cmath>
+
 #include "vector3.h"
 
 class Matrix4 {

@@ -1,5 +1,4 @@
 #include "headers/fabrik2D.h"
-#include "target2D.cpp"
 #include "tree.cpp"
 
 Fabrik2D::Fabrik2D(Tree<Joint2D>* tree) : Fabrik() {
@@ -19,7 +18,7 @@ Fabrik2D::Fabrik2D(Tree<Joint2D>* tree) : Fabrik() {
 			float b = (rand() % 10 + 1) / 10.0f;
 
 			nodeJoint->value.SetColor({ r, g, b, 1.0f });
-			Target2D* target = new Target2D(nodeJoint, Vector2{ 0.0f, 1.0f } + nodeJoint->value.GetPosition(), Vector2::one / 2, {r / 2, g / 2, b / 2, 1.0f});
+			Target2D* target = new Target2D(nodeJoint, Vector3{ 0.0f, 1.0f, 0.0f } + nodeJoint->value.GetPosition(), Vector3::one / 2, { r / 2, g / 2, b / 2, 1.0f });
 
 			this->targets->push_back(target);
 		}
