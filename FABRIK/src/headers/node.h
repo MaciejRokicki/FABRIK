@@ -2,6 +2,7 @@
 #define NODE_H
 
 #include <vector>
+#include <cstddef>
 
 template <typename T>
 struct Node {

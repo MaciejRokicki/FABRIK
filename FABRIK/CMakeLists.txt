@@ -87,6 +87,11 @@ target_link_libraries(FABRIK OpenGL::GL glew glfw)
 add_custom_command(TARGET FABRIK POST_BUILD
 	COMMAND ${CMAKE_COMMAND} -E copy_directory
 				${FABRIK_SOURCE_DIR}/src/shaders ${PROJECT_BINARY_DIR}/shaders
-	COMMAND ${CMAKE_COMMAND} -E copy
-				${PROJECT_BINARY_DIR}/bin/glew32d.dll ${PROJECT_BINARY_DIR}/glew32d.dll
 )
+
+if(WIN32)
+	add_custom_command(TARGET FABRIK POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy
+					${PROJECT_BINARY_DIR}/bin/glew32d.dll ${PROJECT_BINARY_DIR}/glew32d.dll
+	)
+endif (WIN32)
