@@ -1,0 +1,7 @@
+sudo apt-get install libegl1-mesa-dev
+sudo apt-get install libxrandr-dev
+sudo apt-get install libxinerama-dev
+sudo apt-get install libxcursor-dev
+sudo apt-get install libxi-devsudo apt-get install mesa-utils
+
+clear; cmake . -B out; cmake --build out
