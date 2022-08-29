@@ -18,7 +18,7 @@ public:
 	virtual void RandomizeTargets(int min, int max) = 0;
 	virtual void Unload() = 0;
 protected:
-	float tolerance = 0.2f;
+	float tolerance = 0.05f;
 	int iterationsLimit = 10;
 
 	int runs = 0;

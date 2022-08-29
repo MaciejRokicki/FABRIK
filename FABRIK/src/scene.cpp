@@ -269,6 +269,7 @@ Scene* Scene::BuildScene3() {
     return scene;
 }
 
+//56 joint'ow
 Scene* Scene::BuildScene4() {
     Camera* camera = new PerspectiveCamera(60, 0, 0, 0.1f, 1000.0f);
     camera->Translate(Vector3{ -2.0f, 0.0f, -19.0f });

@@ -66,47 +66,41 @@ void Fabrik2D::Draw(const Camera& camera) const {
 
 void Fabrik2D::Solve() {
 	runs++;
-	
+
 	auto begin = std::chrono::high_resolution_clock::now();
 	int iterations = 0;
-	
-	float accuracy;
-	int reachableTargetsCounter;
-	
+
+	float previousTotalDistance = 0.0f;
+	float totalDistance = 0.0f;
+
 	do {
-		accuracy = 0.0f;
-		reachableTargetsCounter = 0;
-	
+		previousTotalDistance = totalDistance;
+		totalDistance = 0.0f;
+
 		for (int i = 0; i < targets->size(); i++) {
-			Node<Joint2D>* subbase = targets->at(i)->endEffector->parent;
-	
-			for (subbase; !subbase->value.IsSubBase && subbase->parent != NULL; subbase = subbase->parent) {}
-	
-			if (IsReachable(subbase, targets->at(i))) {
-				accuracy += Vector2::Distance(targets->at(i)->endEffector->value.GetPosition(), targets->at(i)->GetPosition());
-				reachableTargetsCounter++;
-			}
+			totalDistance += Vector2::Distance(targets->at(i)->endEffector->value.GetPosition(), targets->at(i)->GetPosition());
 		}
-	
-		accuracy /= reachableTargetsCounter;
-	
+
+		if (fabsf(totalDistance - previousTotalDistance) < tolerance)
+			break;
+
 		Forward();
 		Backward();
-	
+
 		UpdatePosition();
-	
+
 		iterations++;
-	} while (accuracy > tolerance && iterations < iterationsLimit);
-	
+	} while (iterations < iterationsLimit);
+
 	auto end = std::chrono::high_resolution_clock::now();
 	auto elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
-	
+
 	float executionTime = elapsedTime.count() * 1e-3f;
-	float timePerIteration = elapsedTime.count() * 1e-3f / iterations;
-	
+	float timePerIteration = elapsedTime.count() * 1e-3f / (iterations == 0 ? 1 : iterations);
+
 	executionTimeSum += executionTime;
 	tpiSum += timePerIteration;
-	
+
 	std::cout << "[" << runs << "]"
 		<< " Iterations: " << iterations
 		<< " Execution time: " << executionTime << "ms" << " (AVG: " << executionTimeSum / runs << "ms)"
