@@ -18,22 +18,12 @@ Scene::Scene(Camera* camera, Fabrik* fabrik) {
     this->camera = camera;
 	this->fabrik = fabrik;
 	this->objects = new std::vector<Object*>();
-
-    this->KeyEvent = [](int, int) { return; };
-    this->MouseButtonEvent = [](int, int, Vector2) { return; };
-    this->Update = [] { return; };
-    this->Animate = [](double) { return; };
 }
 
 Scene::Scene(Camera* camera, Fabrik* fabrik, std::vector<Object*>* objects) {
     this->camera = camera;
 	this->fabrik = fabrik;
 	this->objects = objects;
-
-    this->KeyEvent = [](int, int) { return; };
-    this->MouseButtonEvent = [](int, int, Vector2) { return; };
-    this->Update = [] { return; };
-    this->Animate = [](double) { return; };
 }
 
 Camera* Scene::GetCamera() {
@@ -500,25 +490,13 @@ Scene* Scene::BuildScene6() {
         }
     };
 
-    for (int i = 0; i < targets->size(); i++) {
-        targets->at(i)->Translate(animationPositions[0][i]);
-    }
-
-    fabrik->Solve();
+    std::vector<Object*>* objTargets = new std::vector<Object*>(targets->begin(), targets->end());
 
     std::function<void()> frameAnimationUpdate = [fabrik]() {
         fabrik->Solve();
     };
 
-    std::vector<Object*>* objTargets = new std::vector<Object*>(targets->begin(), targets->end());
-
     FabrikAnimation* fabrikAnimation = new FabrikAnimation(objTargets, animationPositions, 3, 20, false, 0.05, frameAnimationUpdate, true, true);
-
-    for (int i = 0; i < 3; i++) {
-        delete [] animationPositions[i];
-    }
-
-    delete [] animationPositions;
 
     std::function<void(int, int)> keyEvent = [camera, fabrikAnimation](int key, int action) {
         if (action == GLFW_PRESS) {
@@ -550,11 +528,20 @@ Scene* Scene::BuildScene6() {
         }
     };
 
+    std::function<void()> start = [targets, fabrik, animationPositions]() {
+        for (int i = 0; i < targets->size(); i++) {
+            targets->at(i)->Translate(animationPositions[0][i]);
+        }
+
+        fabrik->Solve();
+    };
+
     std::function<void(double)> animate = [fabrikAnimation](double deltaTime) {
         fabrikAnimation->Play(deltaTime);
     };
 
     scene->KeyEvent = keyEvent;
+    scene->Start = start;
     scene->Animate = animate;
 
     return scene;

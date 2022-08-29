@@ -125,6 +125,7 @@ void Window::LoadScene(Scene* scene) {
     camera->Resize(width, height);
 
     this->scene->Init();
+    this->scene->Start();
 }
 
 void Window::Run(void) {

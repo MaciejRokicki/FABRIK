@@ -7,10 +7,11 @@ class Scene {
 public:
 	static std::vector<Scene*>* scenes;
 
-	std::function<void(int, int)> KeyEvent;
-	std::function<void(int, int, Vector2)> MouseButtonEvent;
-	std::function<void()> Update;
-	std::function<void(double)> Animate;
+	std::function<void(int, int)> KeyEvent = [](int, int) { return; };
+	std::function<void(int, int, Vector2)> MouseButtonEvent = [](int, int, Vector2) { return; };
+	std::function<void()> Start = [] { return; };
+	std::function<void()> Update = [] { return; };
+	std::function<void(double)> Animate = [](double) { return; };
 
 	static void BuildScenes();
 
