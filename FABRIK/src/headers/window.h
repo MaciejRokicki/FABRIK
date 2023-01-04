@@ -25,7 +25,7 @@ private:
     double deltaTime = 0.0;
 
     Scene* scene = NULL;
-    int sceneId = 0;
+    int sceneId = 6;
 
     void InitModels();
     void InitGlfwOrDie(int majorGlVersion, int minorGlVersion);

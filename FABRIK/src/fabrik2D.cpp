@@ -2,12 +2,20 @@
 #include "tree.cpp"
 
 Fabrik2D::Fabrik2D(Tree<Joint2D>* tree) : Fabrik() {
+	this->jointsTmp = new std::vector<Joint2D*>();
+	this->vectorsTmp = new std::vector<Vector3>();
+
 	this->tree = tree;
 	this->targets = new std::vector<Target2D*>();
 
 	srand((unsigned)time(NULL));
 
 	tree->Preorder([&](Node<Joint2D>* nodeJoint) {
+		jointsTmp->push_back(new Joint2D(nodeJoint->value.GetPosition(), Vector2{0.35f, 0.35f}, Color{1.0f, 1.0f, 1.0f, 1.0f}));
+		vectorsTmp->push_back(Vector3::zero);
+
+		std::cout << nodeJoint->value.GetPosition() << std::endl;
+
 		if (nodeJoint->parent != NULL) {
 			nodeJoint->value.segment = new Segment2D();
 		}
@@ -23,6 +31,9 @@ Fabrik2D::Fabrik2D(Tree<Joint2D>* tree) : Fabrik() {
 			this->targets->push_back(target);
 		}
 	});
+
+	std::cout<<std::endl;
+	this->forwardCounter = jointsTmp->size() - 1;
 }
 
 Fabrik2D::Fabrik2D(Tree<Joint2D>* tree, std::vector<Target2D*>& targetsRef) : Fabrik2D(tree) {
@@ -30,6 +41,12 @@ Fabrik2D::Fabrik2D(Tree<Joint2D>* tree, std::vector<Target2D*>& targetsRef) : Fa
 }
 
 void Fabrik2D::Init() {
+
+	for (int i = 0; i < jointsTmp->size(); i++)
+	{
+		jointsTmp->at(i)->Init();
+	}
+
 	tree->Preorder([&](Node<Joint2D>* nodeJoint) {
 		if (nodeJoint->child.size() > 1) {
 			nodeJoint->value.IsSubBase = true;
@@ -50,6 +67,11 @@ void Fabrik2D::Init() {
 }
 
 void Fabrik2D::Draw(const Camera& camera) const {
+	for (int i = 0; i < jointsTmp->size(); i++)
+	{
+		jointsTmp->at(i)->Draw(camera);
+	}
+
 	tree->Preorder([&camera](Node<Joint2D>* nodeJoint) {
 		nodeJoint->value.Draw(camera);
 
@@ -64,46 +86,51 @@ void Fabrik2D::Draw(const Camera& camera) const {
 }
 
 void Fabrik2D::Solve() {
-	runs++;
+	//runs++;
 
-	auto begin = std::chrono::high_resolution_clock::now();
-	int iterations = 0;
+	//auto begin = std::chrono::high_resolution_clock::now();
+	//int iterations = 0;
 
-	float previousTotalDistance = 0.0f;
-	float totalDistance = 0.0f;
+	//float previousTotalDistance = 0.0f;
+	//float totalDistance = 0.0f;
 
-	do {
-		previousTotalDistance = totalDistance;
-		totalDistance = 0.0f;
+	//do {
+	//	previousTotalDistance = totalDistance;
+	//	totalDistance = 0.0f;
 
-		for (int i = 0; i < targets->size(); i++) {
-			totalDistance += Vector2::Distance(targets->at(i)->endEffector->value.GetPosition(), targets->at(i)->GetPosition());
-		}
+	//	for (int i = 0; i < targets->size(); i++) {
+	//		totalDistance += Vector2::Distance(targets->at(i)->endEffector->value.GetPosition(), targets->at(i)->GetPosition());
+	//	}
 
-		if (fabsf(totalDistance - previousTotalDistance) < tolerance)
-			break;
+	//	if (fabsf(totalDistance - previousTotalDistance) < tolerance)
+	//		break;
 
-		Forward();
-		Backward();
+	//	Forward();
+	//	Backward();
 
-		UpdatePosition();
+	//	UpdatePosition();
 
-		iterations++;
-	} while (iterations < iterationsLimit);
+	//	iterations++;
+	//} while (iterations < iterationsLimit);
 
-	auto end = std::chrono::high_resolution_clock::now();
-	auto elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
+	//auto end = std::chrono::high_resolution_clock::now();
+	//auto elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
 
-	float executionTime = elapsedTime.count() * 1e-3f;
-	float timePerIteration = elapsedTime.count() * 1e-3f / (iterations == 0 ? 1 : iterations);
+	//float executionTime = elapsedTime.count() * 1e-3f;
+	//float timePerIteration = elapsedTime.count() * 1e-3f / (iterations == 0 ? 1 : iterations);
 
-	executionTimeSum += executionTime;
-	tpiSum += timePerIteration;
+	//executionTimeSum += executionTime;
+	//tpiSum += timePerIteration;
 
-	std::cout << "[" << runs << "]"
-		<< " Iterations: " << iterations
-		<< " Execution time: " << executionTime << "ms" << " (AVG: " << executionTimeSum / runs << "ms)"
-		<< " TPI: " << timePerIteration << "ms" << " (AVG: " << tpiSum / runs << "ms)" << std::endl;
+	//std::cout << "[" << runs << "]"
+	//	<< " Iterations: " << iterations
+	//	<< " Execution time: " << executionTime << "ms" << " (AVG: " << executionTimeSum / runs << "ms)"
+	//	<< " TPI: " << timePerIteration << "ms" << " (AVG: " << tpiSum / runs << "ms)" << std::endl;
+
+	Forward();
+	//Backward();
+
+	//UpdatePosition();
 }
 
 Target2D* Fabrik2D::SelectTargetByMouseButtonPressCallback(Vector3 space_pos) {
@@ -182,7 +209,13 @@ void Fabrik2D::Forward() {
 
 	for (int i = 0; i < targets->size(); i++) {
 		targets->at(i)->endEffector->value.PositionTmp = targets->at(i)->GetPosition();
+
+		vectorsTmp->at(jointsTmp->size() - 1) = targets->at(i)->endEffector->value.PositionTmp;
+
+		std::cout << jointsTmp->size() - 1 << "F: " << targets->at(i)->endEffector->value.GetPosition() << std::endl;
 	}
+
+	int i = jointsTmp->size() - 2;
 
 	tree->Inorder([&](Node<Joint2D>* nodeJoint) {
 		if (nodeJoint == subbase) {
@@ -190,6 +223,8 @@ void Fabrik2D::Forward() {
 		}
 
 		if (nodeJoint->parent != tree->root && nodeJoint != tree->root) {
+			std::cout << i << "F: " << nodeJoint->parent->value.GetPosition() << std::endl;
+
 			Vector2 previous_joint_vector = nodeJoint->parent->value.PositionTmp;
 			Vector2 current_joint_vector = nodeJoint->value.PositionTmp;
 			Vector2 direction = (previous_joint_vector - current_joint_vector).Normalize();
@@ -203,13 +238,21 @@ void Fabrik2D::Forward() {
 			else {
 				nodeJoint->parent->value.PositionTmp = current_joint_vector + direction * joints_distance;
 			}
+
+			vectorsTmp->at(i) = nodeJoint->parent->value.PositionTmp;
 		}
+
+		i--;
 	});
 }
 
 void Fabrik2D::Backward() {
+	int j = 0;
 	for (int i = 0; i < tree->root->child.size(); i++) {
+		int k = 1;
 		tree->Preorder(tree->root->child.at(i), [&](Node<Joint2D>* nodeJoint) {
+			std::cout << k+j << "B: " << nodeJoint->value.GetPosition() << std::endl;
+
 			Vector2 current_joint_vector = nodeJoint->value.PositionTmp;
 			Vector2 previous_joint_vector = nodeJoint->parent->value.PositionTmp;
 			Vector2 direction = (current_joint_vector - previous_joint_vector).Normalize();
@@ -221,6 +264,48 @@ void Fabrik2D::Backward() {
 			if (nodeJoint->value.constraint) {
 				nodeJoint->value.constraint->Apply(nodeJoint);
 			}
+
+			vectorsTmp->at(j+k) = nodeJoint->value.PositionTmp;
+
+			j++;
 		});
+
+		k++;
+	}
+}
+
+void Fabrik2D::ForwardNextStep() {
+	if (forwardCounter != 0)
+	{
+		if (forwardCounter != jointsTmp->size() - 1)
+		{
+			jointsTmp->at(forwardCounter + 1)->SetDefaultColor();
+		}
+
+		std::cout << "    " << forwardCounter << "F: " << jointsTmp->at(forwardCounter)->GetPosition() << std::endl;
+		jointsTmp->at(forwardCounter)->Translate(vectorsTmp->at(forwardCounter));
+		jointsTmp->at(forwardCounter)->SetColor(Color{ 0.0f, 0.0f, 1.0f, 1.0f });
+
+		forwardCounter--;
+	}
+}
+
+void Fabrik2D::BackwardNextStep() {
+	if (backwardCounter != jointsTmp->size() - 1) {
+
+		if (backwardCounter > 0)
+		{
+			jointsTmp->at(backwardCounter)->SetDefaultColor();
+		}
+
+		std::cout << "    " << backwardCounter << "B: " << jointsTmp->at(backwardCounter)->GetPosition() << std::endl;
+		jointsTmp->at(backwardCounter+1)->Translate(vectorsTmp->at(backwardCounter+1));
+		jointsTmp->at(backwardCounter+1)->SetColor(Color{ 1.0f, 0.0f, 1.0f, 1.0f });
+
+		backwardCounter++;
+	}
+	else
+	{
+		UpdatePosition();
 	}
 }

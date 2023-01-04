@@ -4,8 +4,14 @@
 #include "fabrik.h"
 #include "target2D.h"
 
+
 class Fabrik2D : public Fabrik {
 public:
+	int forwardCounter = 0;
+	int backwardCounter = 0;
+	std::vector<Joint2D*>* jointsTmp;
+	std::vector<Vector3>* vectorsTmp;
+
 	Fabrik2D(Tree<Joint2D>* tree);
 	Fabrik2D(Tree<Joint2D>* tree, std::vector<Target2D*>& targetsRef);
 	void Init();
@@ -14,6 +20,10 @@ public:
 	Target2D* SelectTargetByMouseButtonPressCallback(Vector3 space_pos);
 	void RandomizeTargets(int min, int max);
 	void Unload();
+	void Forward();
+	void Backward();
+	void ForwardNextStep();
+	void BackwardNextStep();
 private:
 	Tree<Joint2D>* tree;
 	std::vector<Target2D*>* targets;
@@ -22,8 +32,7 @@ private:
 	float DistanceBetweenJoints(Node<Joint2D>* nodeJoint);
 	void ConnectJoints(Node<Joint2D>* nodeJoint);
 	void UpdatePosition();
-	void Forward();
-	void Backward();
+
 };
 
 #endif // !FABRIK2D_H

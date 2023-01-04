@@ -547,6 +547,95 @@ Scene* Scene::BuildScene6() {
     return scene;
 }
 
+Scene* Scene::BuildScene7() {
+    Camera* camera = new OrthographicCamera(70, 0, 0, 0.1f, 100.0f);
+    camera->Translate(Vector3{ 0.0f, -3.0f, 0.0f });
+
+    Node<Joint2D>* root = new Node<Joint2D>(Joint2D(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
+
+    root->Next(Joint2D({ 0.0f, 0.75f }, { 0.35f, 0.35f }));
+    root->child[0]->Next(Joint2D({ 0.0f, 1.5f }, { 0.35f, 0.35f }));
+    root->child[0]->child[0]->Next(Joint2D({ 0.0f, 2.25f }, { 0.35f, 0.35f }));
+    root->child[0]->child[0]->child[0]->Next(Joint2D({ 0.0f, 3.0f }, { 0.35f, 0.35f }));
+    root->child[0]->child[0]->child[0]->child[0]->Next(Joint2D({ 0.0f, 3.75f }, { 0.35f, 0.35f }));
+    root->child[0]->child[0]->child[0]->child[0]->child[0]->Next(Joint2D({ 0.0f, 4.5f }, { 0.35f, 0.35f }));
+    root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->Next(Joint2D({ 0.0f, 5.25f }, { 0.35f, 0.35f }));
+    root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->Next(Joint2D({ 0.0f, 6.0f }, { 0.35f, 0.35f }));
+    root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->Next(Joint2D({ 0.0f, 6.75f }, { 0.35f, 0.35f }));
+    root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->Next(Joint2D({ 0.0f, 7.5f }, { 0.35f, 0.35f }));
+
+    std::vector<Target2D*>* targets = new std::vector<Target2D*>();
+    Tree<Joint2D>* tree = new Tree<Joint2D>(root);
+    Fabrik* fabrik = new Fabrik2D(tree, *targets);
+    
+    targets->at(0)->Translate({ 3.0f, 2.0f });
+
+    Scene* scene = new Scene(camera, fabrik);
+
+    Fabrik2D* fabrik2d = static_cast<Fabrik2D*>(fabrik);
+
+    std::function<void(int, int)> keyEvent = [fabrik, fabrik2d](int key, int action) {
+        if (action == GLFW_PRESS) {
+            switch (key) {
+            case GLFW_KEY_SPACE:
+                fabrik2d->Solve();
+                break;
+            case GLFW_KEY_Z:
+                fabrik2d->Forward();
+                fabrik2d->forwardCounter = fabrik2d->jointsTmp->size() - 1;
+                break;
+
+            case GLFW_KEY_F:
+                fabrik2d->ForwardNextStep();
+                break;
+
+            case GLFW_KEY_X:
+                fabrik2d->Backward();
+                fabrik2d->backwardCounter = 0;
+                break;
+
+            case GLFW_KEY_B:
+                fabrik2d->BackwardNextStep();
+                break;
+            }
+        }
+    };
+
+    std::function<void(int, int, Vector2)> mouseEvent = [fabrik, scene](
+        int button,
+        int action,
+        Vector2 space_pos) {
+            if (action == GLFW_PRESS) {
+                switch (button) {
+                case GLFW_MOUSE_BUTTON_1:
+                    scene->selectedObject = fabrik->SelectTargetByMouseButtonPressCallback(space_pos);
+
+                    if (scene->selectedObject != NULL) {
+                        scene->selectedObject->SetColor({ 0.0f, 1.0f, 0.0f });
+                    }
+
+                    break;
+                }
+            }
+            else if (action == GLFW_RELEASE) {
+                switch (button) {
+                case GLFW_MOUSE_BUTTON_1:
+                    if (scene->selectedObject != NULL) {
+                        scene->selectedObject->Translate({ space_pos.x, space_pos.y, 0.0f });
+                        scene->selectedObject->SetDefaultColor();
+                        scene->selectedObject = NULL;
+                    }
+                    break;
+                }
+            }
+    };
+
+    scene->KeyEvent = keyEvent;
+    scene->MouseButtonEvent = mouseEvent;
+
+    return scene;
+}
+
 void Scene::BuildScenes() {
     Scene::scenes->push_back(BuildScene1());
     Scene::scenes->push_back(BuildScene2());
@@ -554,4 +643,5 @@ void Scene::BuildScenes() {
     Scene::scenes->push_back(BuildScene4());
     Scene::scenes->push_back(BuildScene5());
     Scene::scenes->push_back(BuildScene6());
+    Scene::scenes->push_back(BuildScene7());
 }
