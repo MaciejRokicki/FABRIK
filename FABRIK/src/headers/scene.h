@@ -34,6 +34,7 @@ private:
 	static Scene* BuildScene5();
 	static Scene* BuildScene6();
 	static Scene* BuildScene7();
+	static Scene* BuildScene8();
 };
 
 #endif // SCENE_H

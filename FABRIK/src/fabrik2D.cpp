@@ -41,7 +41,6 @@ Fabrik2D::Fabrik2D(Tree<Joint2D>* tree, std::vector<Target2D*>& targetsRef) : Fa
 }
 
 void Fabrik2D::Init() {
-
 	for (int i = 0; i < jointsTmp->size(); i++)
 	{
 		jointsTmp->at(i)->Init();
@@ -86,51 +85,46 @@ void Fabrik2D::Draw(const Camera& camera) const {
 }
 
 void Fabrik2D::Solve() {
-	//runs++;
+	runs++;
 
-	//auto begin = std::chrono::high_resolution_clock::now();
-	//int iterations = 0;
+	auto begin = std::chrono::high_resolution_clock::now();
+	int iterations = 0;
 
-	//float previousTotalDistance = 0.0f;
-	//float totalDistance = 0.0f;
+	float previousTotalDistance = 0.0f;
+	float totalDistance = 0.0f;
 
-	//do {
-	//	previousTotalDistance = totalDistance;
-	//	totalDistance = 0.0f;
+	do {
+		previousTotalDistance = totalDistance;
+		totalDistance = 0.0f;
 
-	//	for (int i = 0; i < targets->size(); i++) {
-	//		totalDistance += Vector2::Distance(targets->at(i)->endEffector->value.GetPosition(), targets->at(i)->GetPosition());
-	//	}
+		for (int i = 0; i < targets->size(); i++) {
+			totalDistance += Vector2::Distance(targets->at(i)->endEffector->value.GetPosition(), targets->at(i)->GetPosition());
+		}
 
-	//	if (fabsf(totalDistance - previousTotalDistance) < tolerance)
-	//		break;
+		if (fabsf(totalDistance - previousTotalDistance) < tolerance)
+			break;
 
-	//	Forward();
-	//	Backward();
+		Forward();
+		Backward();
 
-	//	UpdatePosition();
+		UpdatePosition();
 
-	//	iterations++;
-	//} while (iterations < iterationsLimit);
+		iterations++;
+	} while (iterations < iterationsLimit);
 
-	//auto end = std::chrono::high_resolution_clock::now();
-	//auto elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
+	auto end = std::chrono::high_resolution_clock::now();
+	auto elapsedTime = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
 
-	//float executionTime = elapsedTime.count() * 1e-3f;
-	//float timePerIteration = elapsedTime.count() * 1e-3f / (iterations == 0 ? 1 : iterations);
+	float executionTime = elapsedTime.count() * 1e-3f;
+	float timePerIteration = elapsedTime.count() * 1e-3f / (iterations == 0 ? 1 : iterations);
 
-	//executionTimeSum += executionTime;
-	//tpiSum += timePerIteration;
+	executionTimeSum += executionTime;
+	tpiSum += timePerIteration;
 
-	//std::cout << "[" << runs << "]"
-	//	<< " Iterations: " << iterations
-	//	<< " Execution time: " << executionTime << "ms" << " (AVG: " << executionTimeSum / runs << "ms)"
-	//	<< " TPI: " << timePerIteration << "ms" << " (AVG: " << tpiSum / runs << "ms)" << std::endl;
-
-	Forward();
-	//Backward();
-
-	//UpdatePosition();
+	std::cout << "[" << runs << "]"
+		<< " Iterations: " << iterations
+		<< " Execution time: " << executionTime << "ms" << " (AVG: " << executionTimeSum / runs << "ms)"
+		<< " TPI: " << timePerIteration << "ms" << " (AVG: " << tpiSum / runs << "ms)" << std::endl;
 }
 
 Target2D* Fabrik2D::SelectTargetByMouseButtonPressCallback(Vector3 space_pos) {
@@ -241,7 +235,6 @@ void Fabrik2D::Forward() {
 
 			vectorsTmp->at(i) = nodeJoint->parent->value.PositionTmp;
 		}
-
 		i--;
 	});
 }
@@ -274,10 +267,14 @@ void Fabrik2D::Backward() {
 	}
 }
 
-void Fabrik2D::ForwardNextStep() {
+void Fabrik2D::ShowcaseNextStep() {
 	if (forwardCounter != 0)
 	{
-		if (forwardCounter != jointsTmp->size() - 1)
+		if (forwardCounter == jointsTmp->size() - 1)
+		{
+			Forward();
+		}
+		else
 		{
 			jointsTmp->at(forwardCounter + 1)->SetDefaultColor();
 		}
@@ -288,24 +285,124 @@ void Fabrik2D::ForwardNextStep() {
 
 		forwardCounter--;
 	}
-}
-
-void Fabrik2D::BackwardNextStep() {
-	if (backwardCounter != jointsTmp->size() - 1) {
-
-		if (backwardCounter > 0)
-		{
-			jointsTmp->at(backwardCounter)->SetDefaultColor();
-		}
-
-		std::cout << "    " << backwardCounter << "B: " << jointsTmp->at(backwardCounter)->GetPosition() << std::endl;
-		jointsTmp->at(backwardCounter+1)->Translate(vectorsTmp->at(backwardCounter+1));
-		jointsTmp->at(backwardCounter+1)->SetColor(Color{ 1.0f, 0.0f, 1.0f, 1.0f });
-
-		backwardCounter++;
-	}
 	else
 	{
-		UpdatePosition();
+		if (backwardCounter == 0)
+		{
+			Backward();
+		}
+
+		if (backwardCounter != jointsTmp->size() - 1) {
+
+			if (backwardCounter > 0)
+			{
+				jointsTmp->at(backwardCounter)->SetDefaultColor();
+			}
+
+			std::cout << "    " << backwardCounter << "B: " << jointsTmp->at(backwardCounter)->GetPosition() << std::endl;
+			jointsTmp->at(backwardCounter + 1)->Translate(vectorsTmp->at(backwardCounter + 1));
+			jointsTmp->at(backwardCounter + 1)->SetColor(Color{ 1.0f, 0.0f, 1.0f, 1.0f });
+
+			backwardCounter++;
+		}
+		else
+		{
+			UpdatePosition();
+			jointsTmp->at(backwardCounter)->SetDefaultColor();
+			forwardCounter = jointsTmp->size() - 1;
+			backwardCounter = 0;
+		}
 	}
 }
+
+
+
+
+
+
+
+
+
+//void Fabrik2D::ShowcaseNextStep() {
+//	if (forwardCounter != 0)
+//	{
+//		if (forwardCounter == jointsTmp->size() - 1)
+//		{
+//			Forward();
+//		}
+//		else
+//		{
+//			jointsTmp->at(forwardCounter + 1)->SetDefaultColor();
+//		}
+//
+//		std::cout << "    " << forwardCounter << "F: " << jointsTmp->at(forwardCounter)->GetPosition() << std::endl;
+//		jointsTmp->at(forwardCounter)->Translate(vectorsTmp->at(forwardCounter));
+//		jointsTmp->at(forwardCounter)->SetColor(Color{ 0.0f, 0.0f, 1.0f, 1.0f });
+//
+//		forwardCounter--;
+//	}
+//	else
+//	{
+//		if (backwardCounter == 0)
+//		{
+//			Backward();
+//		}
+//
+//		if (backwardCounter != jointsTmp->size() - 1) {
+//
+//			if (backwardCounter > 0)
+//			{
+//				jointsTmp->at(backwardCounter)->SetDefaultColor();
+//			}
+//
+//			std::cout << "    " << backwardCounter << "B: " << jointsTmp->at(backwardCounter)->GetPosition() << std::endl;
+//			jointsTmp->at(backwardCounter + 1)->Translate(vectorsTmp->at(backwardCounter + 1));
+//			jointsTmp->at(backwardCounter + 1)->SetColor(Color{ 1.0f, 0.0f, 1.0f, 1.0f });
+//
+//			backwardCounter++;
+//		}
+//		else
+//		{
+//			UpdatePosition();
+//			jointsTmp->at(backwardCounter)->SetDefaultColor();
+//			forwardCounter = jointsTmp->size() - 1;
+//			backwardCounter = 0;
+//		}
+//	}
+//}
+//
+//void Fabrik2D::ForwardNextStep() {
+//	if (forwardCounter != 0)
+//	{
+//		if (forwardCounter != jointsTmp->size() - 1)
+//		{
+//			jointsTmp->at(forwardCounter + 1)->SetDefaultColor();
+//		}
+//
+//		std::cout << "    " << forwardCounter << "F: " << jointsTmp->at(forwardCounter)->GetPosition() << std::endl;
+//		jointsTmp->at(forwardCounter)->Translate(vectorsTmp->at(forwardCounter));
+//		jointsTmp->at(forwardCounter)->SetColor(Color{ 0.0f, 0.0f, 1.0f, 1.0f });
+//
+//		forwardCounter--;
+//	}
+//}
+//
+//void Fabrik2D::BackwardNextStep() {
+//	if (backwardCounter != jointsTmp->size() - 1) {
+//
+//		if (backwardCounter > 0)
+//		{
+//			jointsTmp->at(backwardCounter)->SetDefaultColor();
+//		}
+//
+//		std::cout << "    " << backwardCounter << "B: " << jointsTmp->at(backwardCounter)->GetPosition() << std::endl;
+//		jointsTmp->at(backwardCounter + 1)->Translate(vectorsTmp->at(backwardCounter + 1));
+//		jointsTmp->at(backwardCounter + 1)->SetColor(Color{ 1.0f, 0.0f, 1.0f, 1.0f });
+//
+//		backwardCounter++;
+//	}
+//	else
+//	{
+//		UpdatePosition();
+//	}
+//}

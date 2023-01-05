@@ -7,11 +7,6 @@
 
 class Fabrik2D : public Fabrik {
 public:
-	int forwardCounter = 0;
-	int backwardCounter = 0;
-	std::vector<Joint2D*>* jointsTmp;
-	std::vector<Vector3>* vectorsTmp;
-
 	Fabrik2D(Tree<Joint2D>* tree);
 	Fabrik2D(Tree<Joint2D>* tree, std::vector<Target2D*>& targetsRef);
 	void Init();
@@ -22,9 +17,13 @@ public:
 	void Unload();
 	void Forward();
 	void Backward();
-	void ForwardNextStep();
-	void BackwardNextStep();
+	void ShowcaseNextStep();
 private:
+	int forwardCounter = 0;
+	int backwardCounter = 0;
+	std::vector<Joint2D*>* jointsTmp;
+	std::vector<Vector3>* vectorsTmp;
+
 	Tree<Joint2D>* tree;
 	std::vector<Target2D*>* targets;
 
@@ -32,7 +31,6 @@ private:
 	float DistanceBetweenJoints(Node<Joint2D>* nodeJoint);
 	void ConnectJoints(Node<Joint2D>* nodeJoint);
 	void UpdatePosition();
-
 };
 
 #endif // !FABRIK2D_H

@@ -578,24 +578,76 @@ Scene* Scene::BuildScene7() {
         if (action == GLFW_PRESS) {
             switch (key) {
             case GLFW_KEY_SPACE:
-                fabrik2d->Solve();
+                fabrik2d->ShowcaseNextStep();
                 break;
-            case GLFW_KEY_Z:
-                fabrik2d->Forward();
-                fabrik2d->forwardCounter = fabrik2d->jointsTmp->size() - 1;
-                break;
+            }
+        }
+    };
 
-            case GLFW_KEY_F:
-                fabrik2d->ForwardNextStep();
-                break;
+    std::function<void(int, int, Vector2)> mouseEvent = [fabrik, scene](
+        int button,
+        int action,
+        Vector2 space_pos) {
+            if (action == GLFW_PRESS) {
+                switch (button) {
+                case GLFW_MOUSE_BUTTON_1:
+                    scene->selectedObject = fabrik->SelectTargetByMouseButtonPressCallback(space_pos);
 
-            case GLFW_KEY_X:
-                fabrik2d->Backward();
-                fabrik2d->backwardCounter = 0;
-                break;
+                    if (scene->selectedObject != NULL) {
+                        scene->selectedObject->SetColor({ 0.0f, 1.0f, 0.0f });
+                    }
 
-            case GLFW_KEY_B:
-                fabrik2d->BackwardNextStep();
+                    break;
+                }
+            }
+            else if (action == GLFW_RELEASE) {
+                switch (button) {
+                case GLFW_MOUSE_BUTTON_1:
+                    if (scene->selectedObject != NULL) {
+                        scene->selectedObject->Translate({ space_pos.x, space_pos.y, 0.0f });
+                        scene->selectedObject->SetDefaultColor();
+                        scene->selectedObject = NULL;
+                    }
+                    break;
+                }
+            }
+    };
+
+    scene->KeyEvent = keyEvent;
+    scene->MouseButtonEvent = mouseEvent;
+
+    return scene;
+}
+
+Scene* Scene::BuildScene8() {
+    Camera* camera = new OrthographicCamera(70, 0, 0, 0.1f, 100.0f);
+
+    Node<Joint2D>* root = new Node<Joint2D>(Joint2D(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
+
+    root->Next(Joint2D({ 0.0f,  3.0f }, { 0.35f, 0.35f }));   //tulow - 0
+    root->child[0]->Next(Joint2D({ 0.0f,  4.0f }, { 0.35f, 0.35f }));   //szyja - 0
+    root->child[0]->Next(Joint2D({ -1.0f,  2.5f }, { 0.35f, 0.35f }));   //lewe ramie - 1
+    root->child[0]->child[1]->Next(Joint2D({ -1.0f,  1.0f }, { 0.35f, 0.35f }));   //lewe przedramie
+    root->child[0]->Next(Joint2D({ 1.0f,  2.5f }, { 0.35f, 0.35f }));   //prawe ramie - 2
+    root->child[0]->child[2]->Next(Joint2D({ 1.0f,  1.0f }, { 0.35f, 0.35f }));   //prawe przedramie
+
+    root->Next(Joint2D({ -1.0f, -1.0f }, { 0.35f, 0.35f }));   //lewe udo - 1
+    root->child[1]->Next(Joint2D({ -1.0f, -3.0f }, { 0.35f, 0.35f }));   //lewy piszczel
+    root->Next(Joint2D({ 1.0f, -1.0f }, { 0.35f, 0.35f }));   //prawe udo - 2
+    root->child[2]->Next(Joint2D({ 1.0f, -3.0f }, { 0.35f, 0.35f }));   //prawy piszczel
+
+    Tree<Joint2D>* tree = new Tree<Joint2D>(root);
+    Fabrik* fabrik = new Fabrik2D(tree);
+
+    Scene* scene = new Scene(camera, fabrik);
+
+    Fabrik2D* fabrik2d = static_cast<Fabrik2D*>(fabrik);
+
+    std::function<void(int, int)> keyEvent = [fabrik, fabrik2d](int key, int action) {
+        if (action == GLFW_PRESS) {
+            switch (key) {
+            case GLFW_KEY_SPACE:
+                fabrik2d->ShowcaseNextStep();
                 break;
             }
         }
@@ -644,4 +696,5 @@ void Scene::BuildScenes() {
     Scene::scenes->push_back(BuildScene5());
     Scene::scenes->push_back(BuildScene6());
     Scene::scenes->push_back(BuildScene7());
+    Scene::scenes->push_back(BuildScene8());
 }
