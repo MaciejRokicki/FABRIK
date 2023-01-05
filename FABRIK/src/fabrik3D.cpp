@@ -202,7 +202,7 @@ void Fabrik3D::Forward() {
 
 			if (nodeJoint->parent->value.IsSubBase) {
 				subbase = nodeJoint->parent;
-				nodeJoint->parent->value.PositionTmp = nodeJoint->parent->value.PositionTmp + current_joint_vector + direction * joints_distance;
+				nodeJoint->parent->value.PositionTmp += (current_joint_vector + direction * joints_distance) / (float)subbase->child.size();
 			}
 			else {
 				nodeJoint->parent->value.PositionTmp = current_joint_vector + direction * joints_distance;

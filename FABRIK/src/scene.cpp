@@ -624,22 +624,25 @@ Scene* Scene::BuildScene8() {
 
     Node<Joint2D>* root = new Node<Joint2D>(Joint2D(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
 
-    root->Next(Joint2D({ 0.0f,  3.0f }, { 0.35f, 0.35f }));   //tulow - 0
-    root->child[0]->Next(Joint2D({ 0.0f,  4.0f }, { 0.35f, 0.35f }));   //szyja - 0
-    root->child[0]->Next(Joint2D({ -1.0f,  2.5f }, { 0.35f, 0.35f }));   //lewe ramie - 1
-    root->child[0]->child[1]->Next(Joint2D({ -1.0f,  1.0f }, { 0.35f, 0.35f }));   //lewe przedramie
-    root->child[0]->Next(Joint2D({ 1.0f,  2.5f }, { 0.35f, 0.35f }));   //prawe ramie - 2
-    root->child[0]->child[2]->Next(Joint2D({ 1.0f,  1.0f }, { 0.35f, 0.35f }));   //prawe przedramie
+    root->Next(Joint2D({ 0.0f,  1.0f }, { 0.35f, 0.35f }));
+    root->child[0]->Next(Joint2D({ 0.0f,  2.0f }, { 0.35f, 0.35f }));
 
-    root->Next(Joint2D({ -1.0f, -1.0f }, { 0.35f, 0.35f }));   //lewe udo - 1
-    root->child[1]->Next(Joint2D({ -1.0f, -3.0f }, { 0.35f, 0.35f }));   //lewy piszczel
-    root->Next(Joint2D({ 1.0f, -1.0f }, { 0.35f, 0.35f }));   //prawe udo - 2
-    root->child[2]->Next(Joint2D({ 1.0f, -3.0f }, { 0.35f, 0.35f }));   //prawy piszczel
+    root->child[0]->child[0]->Next(Joint2D({-1.0f,  2.0f}, {0.35f, 0.35f}));
+    root->child[0]->child[0]->child[0]->Next(Joint2D({ -2.0f,  2.0f }, { 0.35f, 0.35f }));
+    root->child[0]->child[0]->child[0]->child[0]->Next(Joint2D({ -3.0f,  2.0f }, { 0.35f, 0.35f }));
 
+    root->child[0]->child[0]->Next(Joint2D({1.0f,  2.0f}, {0.35f, 0.35f}));
+    root->child[0]->child[0]->child[1]->Next(Joint2D({ 2.0f,  2.0f }, { 0.35f, 0.35f }));
+    root->child[0]->child[0]->child[1]->child[0]->Next(Joint2D({ 3.0f,  2.0f }, { 0.35f, 0.35f }));
+
+    std::vector<Target2D*>* targets = new std::vector<Target2D*>();
     Tree<Joint2D>* tree = new Tree<Joint2D>(root);
-    Fabrik* fabrik = new Fabrik2D(tree);
+    Fabrik* fabrik = new Fabrik2D(tree, *targets);
 
     Scene* scene = new Scene(camera, fabrik);
+
+    targets->at(0)->Translate({ -1.0f, 4.0f });
+    targets->at(1)->Translate({ 1.0f, 4.0f });
 
     Fabrik2D* fabrik2d = static_cast<Fabrik2D*>(fabrik);
 

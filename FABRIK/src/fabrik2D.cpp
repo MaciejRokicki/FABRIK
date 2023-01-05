@@ -204,18 +204,14 @@ void Fabrik2D::Forward() {
 	for (int i = 0; i < targets->size(); i++) {
 		targets->at(i)->endEffector->value.PositionTmp = targets->at(i)->GetPosition();
 
-		vectorsTmp->at(jointsTmp->size() - 1) = targets->at(i)->endEffector->value.PositionTmp;
+		vectorsTmp->at(jointsTmp->size() - 1 - i) = targets->at(i)->endEffector->value.PositionTmp;
 
-		std::cout << jointsTmp->size() - 1 << "F: " << targets->at(i)->endEffector->value.GetPosition() << std::endl;
+		std::cout << jointsTmp->size() - 1 - i << "F: " << targets->at(i)->endEffector->value.GetPosition() << std::endl;
 	}
 
-	int i = jointsTmp->size() - 2;
+	int i = jointsTmp->size() - 1 - targets->size();
 
 	tree->Inorder([&](Node<Joint2D>* nodeJoint) {
-		if (nodeJoint == subbase) {
-			subbase->value.PositionTmp = subbase->value.PositionTmp / (float)subbase->child.size();
-		}
-
 		if (nodeJoint->parent != tree->root && nodeJoint != tree->root) {
 			std::cout << i << "F: " << nodeJoint->parent->value.GetPosition() << std::endl;
 
@@ -227,7 +223,7 @@ void Fabrik2D::Forward() {
 
 			if (nodeJoint->parent->value.IsSubBase) {
 				subbase = nodeJoint->parent;
-				nodeJoint->parent->value.PositionTmp = nodeJoint->parent->value.PositionTmp + current_joint_vector + direction * joints_distance;
+				nodeJoint->parent->value.PositionTmp += (current_joint_vector + direction * joints_distance) / (float)subbase->child.size();
 			}
 			else {
 				nodeJoint->parent->value.PositionTmp = current_joint_vector + direction * joints_distance;
@@ -279,7 +275,7 @@ void Fabrik2D::ShowcaseNextStep() {
 			jointsTmp->at(forwardCounter + 1)->SetDefaultColor();
 		}
 
-		std::cout << "    " << forwardCounter << "F: " << jointsTmp->at(forwardCounter)->GetPosition() << std::endl;
+		std::cout << "    " << forwardCounter << "F: " << jointsTmp->at(forwardCounter)->GetPosition() << " TMP: " << vectorsTmp->at(forwardCounter) << std::endl;
 		jointsTmp->at(forwardCounter)->Translate(vectorsTmp->at(forwardCounter));
 		jointsTmp->at(forwardCounter)->SetColor(Color{ 0.0f, 0.0f, 1.0f, 1.0f });
 
