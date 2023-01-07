@@ -649,7 +649,11 @@ Scene* Scene::BuildScene8() {
 
     root->child[0]->child[0]->Next(Joint2D({-1.0f,  2.0f}, {0.35f, 0.35f}));
     root->child[0]->child[0]->child[0]->Next(Joint2D({ -2.0f,  2.0f }, { 0.35f, 0.35f }));
-    root->child[0]->child[0]->child[0]->child[0]->Next(Joint2D({ -3.0f,  2.0f }, { 0.35f, 0.35f }));
+    root->child[0]->child[0]->child[0]->child[0]->Next(Joint2D({ -3.0f,  2.5f }, { 0.35f, 0.35f }));
+    root->child[0]->child[0]->child[0]->child[0]->child[0]->Next(Joint2D({ -4.0f,  2.5f }, { 0.35f, 0.35f }));
+
+    root->child[0]->child[0]->child[0]->child[0]->Next(Joint2D({ -3.0f,  1.5f }, { 0.35f, 0.35f }));
+    root->child[0]->child[0]->child[0]->child[0]->child[1]->Next(Joint2D({ -4.0f,  1.5f }, { 0.35f, 0.35f }));
 
     root->child[0]->child[0]->Next(Joint2D({1.0f,  2.0f}, {0.35f, 0.35f}));
     root->child[0]->child[0]->child[1]->Next(Joint2D({ 2.0f,  2.0f }, { 0.35f, 0.35f }));
@@ -661,8 +665,9 @@ Scene* Scene::BuildScene8() {
 
     Scene* scene = new Scene(camera, fabrik);
 
-    targets->at(0)->Translate({ -1.0f, 4.0f });
-    targets->at(1)->Translate({ 1.0f, 4.0f });
+    targets->at(0)->Translate({ -3.0f, 3.0f });
+    targets->at(1)->Translate({ -3.0f, 0.5f });
+    targets->at(2)->Translate({ 3.0f, 3.0f });
 
     std::function<void(int, int)> keyEvent = [fabrik](int key, int action) {
         if (action == GLFW_PRESS) {
