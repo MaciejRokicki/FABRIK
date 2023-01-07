@@ -3,18 +3,22 @@
 
 Fabrik2D::Fabrik2D(Tree<Joint2D>* tree) : Fabrik() {
 	this->jointsTmp = new std::vector<Joint2D*>();
-	this->vectorsTmp = new std::vector<Vector3>();
+	this->forwardOrder = std::vector<int>();
+	this->backwardOrder = std::vector<int>();
 
 	this->tree = tree;
 	this->targets = new std::vector<Target2D*>();
 
 	srand((unsigned)time(NULL));
 
-	tree->Preorder([&](Node<Joint2D>* nodeJoint) {
-		jointsTmp->push_back(new Joint2D(nodeJoint->value.GetPosition(), Vector2{0.35f, 0.35f}, Color{1.0f, 1.0f, 1.0f, 1.0f}));
-		vectorsTmp->push_back(Vector3::zero);
+	int i = 0;
 
-		std::cout << nodeJoint->value.GetPosition() << std::endl;
+	tree->Preorder([&](Node<Joint2D>* nodeJoint) {
+		nodeJoint->value.id = i;
+		backwardOrder.push_back(nodeJoint->value.id);
+
+		jointsTmp->push_back(new Joint2D(nodeJoint->value.GetPosition(), Vector2{ 0.35f, 0.35f }, Color{ 1.0f, 1.0f, 1.0f, 1.0f }));
+		jointsTmp->at(jointsTmp->size()-1)->id = nodeJoint->value.id;
 
 		if (nodeJoint->parent != NULL) {
 			nodeJoint->value.segment = new Segment2D();
@@ -30,10 +34,13 @@ Fabrik2D::Fabrik2D(Tree<Joint2D>* tree) : Fabrik() {
 
 			this->targets->push_back(target);
 		}
+
+		i++;
 	});
 
-	std::cout<<std::endl;
-	this->forwardCounter = jointsTmp->size() - 1;
+	tree->Inorder([&](Node<Joint2D>* nodeJoint) {
+		forwardOrder.push_back(nodeJoint->value.id);
+	});
 }
 
 Fabrik2D::Fabrik2D(Tree<Joint2D>* tree, std::vector<Target2D*>& targetsRef) : Fabrik2D(tree) {
@@ -204,17 +211,11 @@ void Fabrik2D::Forward() {
 	for (int i = 0; i < targets->size(); i++) {
 		targets->at(i)->endEffector->value.PositionTmp = targets->at(i)->GetPosition();
 
-		vectorsTmp->at(jointsTmp->size() - 1 - i) = targets->at(i)->endEffector->value.PositionTmp;
-
-		std::cout << jointsTmp->size() - 1 - i << "F: " << targets->at(i)->endEffector->value.GetPosition() << std::endl;
+		FindJoint(targets->at(i)->endEffector->value.id)->PositionTmp = targets->at(i)->GetPosition();
 	}
-
-	int i = jointsTmp->size() - 1 - targets->size();
 
 	tree->Inorder([&](Node<Joint2D>* nodeJoint) {
 		if (nodeJoint->parent != tree->root && nodeJoint != tree->root) {
-			std::cout << i << "F: " << nodeJoint->parent->value.GetPosition() << std::endl;
-
 			Vector2 previous_joint_vector = nodeJoint->parent->value.PositionTmp;
 			Vector2 current_joint_vector = nodeJoint->value.PositionTmp;
 			Vector2 direction = (previous_joint_vector - current_joint_vector).Normalize();
@@ -223,25 +224,20 @@ void Fabrik2D::Forward() {
 
 			if (nodeJoint->parent->value.IsSubBase) {
 				subbase = nodeJoint->parent;
-				nodeJoint->parent->value.PositionTmp += (current_joint_vector + direction * joints_distance) / (float)subbase->child.size();
+				nodeJoint->parent->value.PositionTmp += (current_joint_vector + direction * joints_distance) / (float)subbase->child.size() / 10;
 			}
 			else {
 				nodeJoint->parent->value.PositionTmp = current_joint_vector + direction * joints_distance;
 			}
 
-			vectorsTmp->at(i) = nodeJoint->parent->value.PositionTmp;
+			FindJoint(nodeJoint->parent->value.id)->PositionTmp = nodeJoint->parent->value.PositionTmp;
 		}
-		i--;
 	});
 }
 
 void Fabrik2D::Backward() {
-	int j = 0;
 	for (int i = 0; i < tree->root->child.size(); i++) {
-		int k = 1;
 		tree->Preorder(tree->root->child.at(i), [&](Node<Joint2D>* nodeJoint) {
-			std::cout << k+j << "B: " << nodeJoint->value.GetPosition() << std::endl;
-
 			Vector2 current_joint_vector = nodeJoint->value.PositionTmp;
 			Vector2 previous_joint_vector = nodeJoint->parent->value.PositionTmp;
 			Vector2 direction = (current_joint_vector - previous_joint_vector).Normalize();
@@ -254,64 +250,83 @@ void Fabrik2D::Backward() {
 				nodeJoint->value.constraint->Apply(nodeJoint);
 			}
 
-			vectorsTmp->at(j+k) = nodeJoint->value.PositionTmp;
-
-			j++;
+			FindJoint(nodeJoint->value.id)->PositionTmp = nodeJoint->value.PositionTmp;
 		});
-
-		k++;
 	}
 }
 
 void Fabrik2D::ShowcaseNextStep() {
-	if (forwardCounter != 0)
+	if (forwardCounter != forwardOrder.size() - 1)
 	{
-		if (forwardCounter == jointsTmp->size() - 1)
+		if (forwardCounter == 0)
 		{
 			Forward();
 		}
-		else
+
+		if (forwardCounter != forwardOrder.size() - 1)
 		{
-			jointsTmp->at(forwardCounter + 1)->SetDefaultColor();
+			if (forwardCounter > 0)
+			{
+				FindJoint(forwardOrder.at(forwardCounter - 1))->SetDefaultColor();
+			}
+
+			int currentJointId = forwardOrder.at(forwardCounter);
+			Joint2D* currentJoint = FindJoint(currentJointId);
+
+			currentJoint->SetColor({ 1.0f, 1.0f, 0.0f, 1.0f });
+
+			currentJoint->Translate(currentJoint->PositionTmp);
+
+			forwardCounter++;
 		}
-
-		std::cout << "    " << forwardCounter << "F: " << jointsTmp->at(forwardCounter)->GetPosition() << " TMP: " << vectorsTmp->at(forwardCounter) << std::endl;
-		jointsTmp->at(forwardCounter)->Translate(vectorsTmp->at(forwardCounter));
-		jointsTmp->at(forwardCounter)->SetColor(Color{ 0.0f, 0.0f, 1.0f, 1.0f });
-
-		forwardCounter--;
 	}
 	else
 	{
-		if (backwardCounter == 0)
+		if (backwardCounter != backwardOrder.size())
 		{
-			Backward();
-		}
-
-		if (backwardCounter != jointsTmp->size() - 1) {
-
-			if (backwardCounter > 0)
+			if (backwardCounter == 0)
 			{
-				jointsTmp->at(backwardCounter)->SetDefaultColor();
+				FindJoint(forwardOrder.at(forwardCounter - 1))->SetDefaultColor();
+				Backward();
 			}
 
-			std::cout << "    " << backwardCounter << "B: " << jointsTmp->at(backwardCounter)->GetPosition() << std::endl;
-			jointsTmp->at(backwardCounter + 1)->Translate(vectorsTmp->at(backwardCounter + 1));
-			jointsTmp->at(backwardCounter + 1)->SetColor(Color{ 1.0f, 0.0f, 1.0f, 1.0f });
+			if (backwardCounter != backwardOrder.size())
+			{
+				if (backwardCounter > 0)
+				{
+					FindJoint(backwardOrder.at(backwardCounter - 1))->SetDefaultColor();
+				}
 
-			backwardCounter++;
+				int currentJointId = backwardOrder.at(backwardCounter);
+				Joint2D* currentJoint = FindJoint(currentJointId);
+
+				currentJoint->SetColor({ 0.0f, 1.0f, 1.0f, 1.0f });
+
+				currentJoint->Translate(currentJoint->PositionTmp);
+
+				backwardCounter++;
+			}
 		}
 		else
 		{
 			UpdatePosition();
-			jointsTmp->at(backwardCounter)->SetDefaultColor();
-			forwardCounter = jointsTmp->size() - 1;
+			FindJoint(backwardOrder.at(backwardCounter - 1))->SetDefaultColor();
+			forwardCounter = 0;
 			backwardCounter = 0;
 		}
 	}
 }
 
-
+Joint2D* Fabrik2D::FindJoint(int id)
+{
+	for (int i = 0; i < jointsTmp->size(); i++)
+	{
+		if (id == jointsTmp->at(i)->id)
+		{
+			return jointsTmp->at(i);
+		}
+	}
+}
 
 
 

@@ -22,7 +22,8 @@ private:
 	int forwardCounter = 0;
 	int backwardCounter = 0;
 	std::vector<Joint2D*>* jointsTmp;
-	std::vector<Vector3>* vectorsTmp;
+	std::vector<int> forwardOrder;
+	std::vector<int> backwardOrder;
 
 	Tree<Joint2D>* tree;
 	std::vector<Target2D*>* targets;
@@ -31,6 +32,8 @@ private:
 	float DistanceBetweenJoints(Node<Joint2D>* nodeJoint);
 	void ConnectJoints(Node<Joint2D>* nodeJoint);
 	void UpdatePosition();
+
+	Joint2D* FindJoint(int id);
 };
 
 #endif // !FABRIK2D_H

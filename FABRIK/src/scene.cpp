@@ -578,6 +578,10 @@ Scene* Scene::BuildScene7() {
         if (action == GLFW_PRESS) {
             switch (key) {
             case GLFW_KEY_SPACE:
+                fabrik->Solve();
+                break;
+
+            case GLFW_KEY_S:
                 fabrik2d->ShowcaseNextStep();
                 break;
             }
@@ -650,6 +654,9 @@ Scene* Scene::BuildScene8() {
         if (action == GLFW_PRESS) {
             switch (key) {
             case GLFW_KEY_SPACE:
+                fabrik->Solve();
+                break;
+            case GLFW_KEY_S:
                 fabrik2d->ShowcaseNextStep();
                 break;
             }
