@@ -19,11 +19,7 @@ public:
 	void Backward();
 	void ShowcaseNextStep();
 private:
-	int forwardCounter = 0;
-	int backwardCounter = 0;
 	std::vector<Joint2D*>* jointsTmp;
-	std::vector<int> forwardOrder;
-	std::vector<int> backwardOrder;
 
 	Tree<Joint2D>* tree;
 	std::vector<Target2D*>* targets;

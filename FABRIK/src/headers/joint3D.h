@@ -17,6 +17,8 @@ public:
 	Constraint3D* constraint;
 
 	Joint3D(Vector3 position = Vector3::zero, Vector3 scale = Vector3::one / 2, Color defaultColor = { 1.0f, 0.0f, 0.0f, 1.0f }, Constraint3D* constraint = NULL);
+
+	int id = 0;
 };
 
 #endif // !JOINT2D_H

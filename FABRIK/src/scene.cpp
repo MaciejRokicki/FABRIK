@@ -83,6 +83,10 @@ Scene* Scene::BuildScene1() {
                 fabrik->Solve();
                 break;
             
+            case GLFW_KEY_F:
+                fabrik->ShowcaseNextStep();
+                break;
+
             case GLFW_KEY_R:
                 fabrik->RandomizeTargets(-7, 7);
                 break;
@@ -152,6 +156,10 @@ Scene* Scene::BuildScene2() {
             switch (key) {
                 case GLFW_KEY_SPACE:
                     fabrik->Solve();
+                    break;
+
+                case GLFW_KEY_F:
+                    fabrik->ShowcaseNextStep();
                     break;
             }
         }
@@ -352,6 +360,10 @@ Scene* Scene::BuildScene4() {
                 fabrik->Solve();
                 break;
 
+            case GLFW_KEY_F:
+                fabrik->ShowcaseNextStep();
+                break;
+
             case GLFW_KEY_R:
                 fabrik->RandomizeTargets(-10, 10);
                 break;
@@ -395,6 +407,10 @@ Scene* Scene::BuildScene5() {
 
             case GLFW_KEY_SPACE:
                 fabrik->Solve();
+                break;
+
+            case GLFW_KEY_F:
+                fabrik->ShowcaseNextStep();
                 break;
 
             case GLFW_KEY_R:
@@ -581,7 +597,7 @@ Scene* Scene::BuildScene7() {
                 fabrik->Solve();
                 break;
 
-            case GLFW_KEY_S:
+            case GLFW_KEY_F:
                 fabrik2d->ShowcaseNextStep();
                 break;
             }
@@ -648,16 +664,14 @@ Scene* Scene::BuildScene8() {
     targets->at(0)->Translate({ -1.0f, 4.0f });
     targets->at(1)->Translate({ 1.0f, 4.0f });
 
-    Fabrik2D* fabrik2d = static_cast<Fabrik2D*>(fabrik);
-
-    std::function<void(int, int)> keyEvent = [fabrik, fabrik2d](int key, int action) {
+    std::function<void(int, int)> keyEvent = [fabrik](int key, int action) {
         if (action == GLFW_PRESS) {
             switch (key) {
             case GLFW_KEY_SPACE:
                 fabrik->Solve();
                 break;
-            case GLFW_KEY_S:
-                fabrik2d->ShowcaseNextStep();
+            case GLFW_KEY_F:
+                fabrik->ShowcaseNextStep();
                 break;
             }
         }

@@ -13,8 +13,11 @@ public:
 	void Solve();
 	Target3D* SelectTargetByMouseButtonPressCallback(Vector3 space_pos);
 	void RandomizeTargets(int min, int max);
+	void ShowcaseNextStep();
 	void Unload();
 private:
+	std::vector<Joint3D*>* jointsTmp;
+
 	Tree<Joint3D>* tree;
 	std::vector<Target3D*>* targets;
 
@@ -24,6 +27,8 @@ private:
 	void UpdatePosition();
 	void Forward();
 	void Backward();
+
+	Joint3D* FindJoint(int id);
 };
 
 #endif // !FABRIK3D_H

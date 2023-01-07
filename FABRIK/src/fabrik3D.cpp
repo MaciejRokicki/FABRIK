@@ -2,12 +2,24 @@
 #include "tree.cpp"
 
 Fabrik3D::Fabrik3D(Tree<Joint3D>* tree) : Fabrik() {
+	this->jointsTmp = new std::vector<Joint3D*>();
+	this->forwardOrder = std::vector<int>();
+	this->backwardOrder = std::vector<int>();
+
 	this->tree = tree;
 	this->targets = new std::vector<Target3D*>();
 
 	srand((unsigned)time(NULL));
 
+	int i = 0;
+
 	tree->Preorder([&](Node<Joint3D>* nodeJoint) {
+		nodeJoint->value.id = i;
+		backwardOrder.push_back(nodeJoint->value.id);
+
+		jointsTmp->push_back(new Joint3D(nodeJoint->value.GetPosition(), Vector3{ 0.35f, 0.35f, 0.35f }, Color{ 1.0f, 1.0f, 1.0f, 1.0f }));
+		jointsTmp->at(jointsTmp->size() - 1)->id = nodeJoint->value.id;
+
 		if (nodeJoint->parent != NULL) {
 			nodeJoint->value.segment = new Segment3D();
 		}
@@ -22,6 +34,12 @@ Fabrik3D::Fabrik3D(Tree<Joint3D>* tree) : Fabrik() {
 
 			this->targets->push_back(target);
 		}
+
+		i++;
+	});
+
+	tree->Inorder([&](Node<Joint3D>* nodeJoint) {
+		forwardOrder.push_back(nodeJoint->value.id);
 	});
 }
 
@@ -30,6 +48,11 @@ Fabrik3D::Fabrik3D(Tree<Joint3D>* tree, std::vector<Target3D*>& targetsRef) : Fa
 }
 
 void Fabrik3D::Init() {
+	for (int i = 0; i < jointsTmp->size(); i++)
+	{
+		jointsTmp->at(i)->Init();
+	}
+
 	tree->Preorder([&](Node<Joint3D>* nodeJoint) {
 		if (nodeJoint->child.size() > 1) {
 			nodeJoint->value.IsSubBase = true;
@@ -50,6 +73,11 @@ void Fabrik3D::Init() {
 }
 
 void Fabrik3D::Draw(const Camera& camera) const {
+	for (int i = 0; i < jointsTmp->size(); i++)
+	{
+		jointsTmp->at(i)->Draw(camera);
+	}
+
 	tree->Preorder([&camera](Node<Joint3D>* nodeJoint) {
 		nodeJoint->value.Draw(camera);
 
@@ -186,6 +214,8 @@ void Fabrik3D::Forward() {
 
 	for (int i = 0; i < targets->size(); i++) {
 		targets->at(i)->endEffector->value.PositionTmp = targets->at(i)->GetPosition();
+
+		FindJoint(targets->at(i)->endEffector->value.id)->PositionTmp = targets->at(i)->GetPosition();
 	}
 
 	tree->Inorder([&](Node<Joint3D>* nodeJoint) {
@@ -207,6 +237,8 @@ void Fabrik3D::Forward() {
 			else {
 				nodeJoint->parent->value.PositionTmp = current_joint_vector + direction * joints_distance;
 			}
+
+			FindJoint(nodeJoint->parent->value.id)->PositionTmp = nodeJoint->parent->value.PositionTmp;
 		}
 	});
 }
@@ -225,6 +257,81 @@ void Fabrik3D::Backward() {
 			if (nodeJoint->value.constraint) {
 				nodeJoint->value.constraint->Apply(nodeJoint);
 			}
+
+			FindJoint(nodeJoint->value.id)->PositionTmp = nodeJoint->value.PositionTmp;
 		});
+	}
+}
+
+void Fabrik3D::ShowcaseNextStep() {
+	if (forwardCounter != forwardOrder.size() - 1)
+	{
+		if (forwardCounter == 0)
+		{
+			Forward();
+		}
+
+		if (forwardCounter != forwardOrder.size() - 1)
+		{
+			if (forwardCounter > 0)
+			{
+				FindJoint(forwardOrder.at(forwardCounter - 1))->SetDefaultColor();
+			}
+
+			int currentJointId = forwardOrder.at(forwardCounter);
+			Joint3D* currentJoint = FindJoint(currentJointId);
+
+			currentJoint->SetColor({ 1.0f, 1.0f, 0.0f, 1.0f });
+
+			currentJoint->Translate(currentJoint->PositionTmp);
+
+			forwardCounter++;
+		}
+	}
+	else
+	{
+		if (backwardCounter != backwardOrder.size())
+		{
+			if (backwardCounter == 0)
+			{
+				FindJoint(forwardOrder.at(forwardCounter - 1))->SetDefaultColor();
+				Backward();
+			}
+
+			if (backwardCounter != backwardOrder.size())
+			{
+				if (backwardCounter > 0)
+				{
+					FindJoint(backwardOrder.at(backwardCounter - 1))->SetDefaultColor();
+				}
+
+				int currentJointId = backwardOrder.at(backwardCounter);
+				Joint3D* currentJoint = FindJoint(currentJointId);
+
+				currentJoint->SetColor({ 0.0f, 1.0f, 1.0f, 1.0f });
+
+				currentJoint->Translate(currentJoint->PositionTmp);
+
+				backwardCounter++;
+			}
+		}
+		else
+		{
+			UpdatePosition();
+			FindJoint(backwardOrder.at(backwardCounter - 1))->SetDefaultColor();
+			forwardCounter = 0;
+			backwardCounter = 0;
+		}
+	}
+}
+
+Joint3D* Fabrik3D::FindJoint(int id)
+{
+	for (int i = 0; i < jointsTmp->size(); i++)
+	{
+		if (id == jointsTmp->at(i)->id)
+		{
+			return jointsTmp->at(i);
+		}
 	}
 }
