@@ -17,8 +17,10 @@ Fabrik3D::Fabrik3D(Tree<Joint3D>* tree) : Fabrik() {
 		nodeJoint->value.id = i;
 		backwardOrder.push_back(nodeJoint->value.id);
 
-		jointsTmp->push_back(new Joint3D(nodeJoint->value.GetPosition(), Vector3{ 0.35f, 0.35f, 0.35f }, Color{ 1.0f, 1.0f, 1.0f, 1.0f }));
-		jointsTmp->at(jointsTmp->size() - 1)->id = nodeJoint->value.id;
+		Joint3D* jointTmp = new Joint3D(nodeJoint->value.GetPosition(), Vector3{ 0.5f, 0.35f, 0.5f }, Color{ 1.0f, 1.0f, 1.0f, 1.0f });
+		jointTmp->id = nodeJoint->value.id;
+
+		jointsTmp->push_back(jointTmp);
 
 		if (nodeJoint->parent != NULL) {
 			nodeJoint->value.segment = new Segment3D();
@@ -219,10 +221,6 @@ void Fabrik3D::Forward() {
 	}
 
 	tree->Inorder([&](Node<Joint3D>* nodeJoint) {
-		if (nodeJoint == subbase) {
-			subbase->value.PositionTmp = subbase->value.PositionTmp / (float)subbase->child.size();
-		}
-
 		if (nodeJoint->parent != tree->root && nodeJoint != tree->root) {
 			Vector3 previous_joint_vector = nodeJoint->parent->value.PositionTmp;
 			Vector3 current_joint_vector = nodeJoint->value.PositionTmp;
@@ -231,8 +229,13 @@ void Fabrik3D::Forward() {
 			float joints_distance = DistanceBetweenJoints(nodeJoint);
 
 			if (nodeJoint->parent->value.IsSubBase) {
+				if (subbase != nodeJoint->parent)
+				{
+					nodeJoint->parent->value.PositionTmp = Vector3::zero;
+				}
+
 				subbase = nodeJoint->parent;
-				nodeJoint->parent->value.PositionTmp += (current_joint_vector + direction * joints_distance) / (float)subbase->child.size();
+				subbase->value.PositionTmp += (current_joint_vector + direction * joints_distance) / (float)subbase->child.size();
 			}
 			else {
 				nodeJoint->parent->value.PositionTmp = current_joint_vector + direction * joints_distance;
