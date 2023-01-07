@@ -215,6 +215,12 @@ void Fabrik2D::Forward() {
 	}
 
 	tree->Inorder([&](Node<Joint2D>* nodeJoint) {
+		if (nodeJoint == subbase) {
+			subbase->value.PositionTmp = subbase->value.PositionTmp / (float)subbase->child.size();
+
+			FindJoint(subbase->value.id)->PositionTmp = subbase->value.PositionTmp;
+		}
+
 		if (nodeJoint->parent != tree->root && nodeJoint != tree->root) {
 			Vector2 previous_joint_vector = nodeJoint->parent->value.PositionTmp;
 			Vector2 current_joint_vector = nodeJoint->value.PositionTmp;
@@ -224,7 +230,7 @@ void Fabrik2D::Forward() {
 
 			if (nodeJoint->parent->value.IsSubBase) {
 				subbase = nodeJoint->parent;
-				nodeJoint->parent->value.PositionTmp += (current_joint_vector + direction * joints_distance) / (float)subbase->child.size() / 10;
+				nodeJoint->parent->value.PositionTmp += (current_joint_vector + direction * joints_distance) / (float)subbase->child.size();
 			}
 			else {
 				nodeJoint->parent->value.PositionTmp = current_joint_vector + direction * joints_distance;
