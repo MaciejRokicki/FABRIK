@@ -189,10 +189,6 @@ void Fabrik3D::Forward() {
 	}
 
 	tree->Inorder([&](Node<Joint3D>* nodeJoint) {
-		if (nodeJoint == subbase) {
-			subbase->value.PositionTmp = subbase->value.PositionTmp / (float)subbase->child.size();
-		}
-
 		if (nodeJoint->parent != tree->root && nodeJoint != tree->root) {
 			Vector3 previous_joint_vector = nodeJoint->parent->value.PositionTmp;
 			Vector3 current_joint_vector = nodeJoint->value.PositionTmp;
@@ -201,8 +197,13 @@ void Fabrik3D::Forward() {
 			float joints_distance = DistanceBetweenJoints(nodeJoint);
 
 			if (nodeJoint->parent->value.IsSubBase) {
+				if (subbase != nodeJoint->parent)
+				{
+					nodeJoint->parent->value.PositionTmp = Vector3::zero;
+				}
+
 				subbase = nodeJoint->parent;
-				nodeJoint->parent->value.PositionTmp = nodeJoint->parent->value.PositionTmp + current_joint_vector + direction * joints_distance;
+				subbase->value.PositionTmp += (current_joint_vector + direction * joints_distance) / (float)subbase->child.size();
 			}
 			else {
 				nodeJoint->parent->value.PositionTmp = current_joint_vector + direction * joints_distance;
