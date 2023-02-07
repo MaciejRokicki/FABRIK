@@ -22,7 +22,7 @@ void Window::Init(int majorGlVersion, int minorGlVersion) {
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
 void Window::Resize(int newWidth, int newHeight) {
