@@ -17,7 +17,7 @@ Fabrik2D::Fabrik2D(Tree<Joint2D>* tree) : Fabrik() {
 		nodeJoint->value.id = i;
 		backwardOrder.push_back(nodeJoint->value.id);
 
-		Joint2D* jointTmp = new Joint2D(nodeJoint->value.GetPosition(), Vector2{ 0.35f, 0.35f}, Color{ 1.0f, 1.0f, 1.0f, 1.0f });
+		Joint2D* jointTmp = new Joint2D(nodeJoint->value.GetPosition(), Vector2{ 0.35f, 0.35f}, Color{ 1.0f, 0.5f, 1.0f, 1.0f });
 		jointTmp->id = nodeJoint->value.id;
 
 		jointsTmp->push_back(jointTmp);
@@ -280,7 +280,7 @@ void Fabrik2D::ShowcaseNextStep() {
 			int currentJointId = forwardOrder.at(forwardCounter);
 			Joint2D* currentJoint = FindJoint(currentJointId);
 
-			currentJoint->SetColor({ 1.0f, 1.0f, 0.0f, 1.0f });
+			currentJoint->SetColor({ 0.0f, 1.0f, 0.0f, 1.0f });
 
 			currentJoint->Translate(currentJoint->PositionTmp);
 
@@ -307,7 +307,7 @@ void Fabrik2D::ShowcaseNextStep() {
 				int currentJointId = backwardOrder.at(backwardCounter);
 				Joint2D* currentJoint = FindJoint(currentJointId);
 
-				currentJoint->SetColor({ 0.0f, 1.0f, 1.0f, 1.0f });
+				currentJoint->SetColor({ 0.0f, 0.0f, 1.0f, 1.0f });
 
 				currentJoint->Translate(currentJoint->PositionTmp);
 
