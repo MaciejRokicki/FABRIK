@@ -547,6 +547,77 @@ Scene* Scene::BuildScene6() {
     return scene;
 }
 
+Scene* Scene::BuildScene7() {
+    Camera* camera = new OrthographicCamera(70, 0, 0, 0.1f, 100.0f);
+
+    Node<Joint2D>* root = new Node<Joint2D>(Joint2D(Vector2::zero, { 0.5f, 0.5f }, { 0.5f, 0.0f, 1.0f, 1.0f }));
+
+    root->Next(Joint2D({ 0.0f,  1.0f }, { 0.35f, 0.35f }));
+    root->child[0]->Next(Joint2D({ 0.0f,  2.0f }, { 0.35f, 0.35f }));
+    root->child[0]->child[0]->Next(Joint2D({ 0.0f,  2.0f }, { 0.35f, 0.35f }));
+
+    root->child[0]->child[0]->child[0]->Next(Joint2D({ -0.5f,  2.5f }, { 0.35f, 0.35f }));
+    root->child[0]->child[0]->child[0]->child[0]->Next(Joint2D({ -0.5f,  3.5f }, { 0.35f, 0.35f }));
+    root->child[0]->child[0]->child[0]->child[0]->child[0]->Next(Joint2D({ -0.5f,  4.5f }, { 0.35f, 0.35f }));
+
+    root->child[0]->child[0]->child[0]->Next(Joint2D({ 0.5f,  2.5f }, { 0.35f, 0.35f }));
+    root->child[0]->child[0]->child[0]->child[1]->Next(Joint2D({ 0.5f,  3.5f }, { 0.35f, 0.35f }));
+    root->child[0]->child[0]->child[0]->child[1]->child[0]->Next(Joint2D({ 0.5f,  4.5f }, { 0.35f, 0.35f }));
+
+    std::vector<Target2D*>* targets = new std::vector<Target2D*>();
+    Tree<Joint2D>* tree = new Tree<Joint2D>(root);
+    Fabrik* fabrik = new Fabrik2D(tree, *targets);
+
+    Scene* scene = new Scene(camera, fabrik);
+
+    targets->at(0)->Translate({ 3.0f, 4.5f });
+    targets->at(1)->Translate({ 4.0f, 4.5f });
+
+    std::function<void(int, int)> keyEvent = [fabrik](int key, int action) {
+        if (action == GLFW_PRESS) {
+            switch (key) {
+            case GLFW_KEY_SPACE:
+                fabrik->Solve();
+                break;
+            }
+        }
+    };
+
+    std::function<void(int, int, Vector2)> mouseEvent = [fabrik, scene](
+        int button,
+        int action,
+        Vector2 space_pos) {
+            if (action == GLFW_PRESS) {
+                switch (button) {
+                case GLFW_MOUSE_BUTTON_1:
+                    scene->selectedObject = fabrik->SelectTargetByMouseButtonPressCallback(space_pos);
+
+                    if (scene->selectedObject != NULL) {
+                        scene->selectedObject->SetColor({ 0.0f, 1.0f, 0.0f });
+                    }
+
+                    break;
+                }
+            }
+            else if (action == GLFW_RELEASE) {
+                switch (button) {
+                case GLFW_MOUSE_BUTTON_1:
+                    if (scene->selectedObject != NULL) {
+                        scene->selectedObject->Translate({ space_pos.x, space_pos.y, 0.0f });
+                        scene->selectedObject->SetDefaultColor();
+                        scene->selectedObject = NULL;
+                    }
+                    break;
+                }
+            }
+    };
+
+    scene->KeyEvent = keyEvent;
+    scene->MouseButtonEvent = mouseEvent;
+
+    return scene;
+}
+
 void Scene::BuildScenes() {
     Scene::scenes->push_back(BuildScene1());
     Scene::scenes->push_back(BuildScene2());
@@ -554,4 +625,5 @@ void Scene::BuildScenes() {
     Scene::scenes->push_back(BuildScene4());
     Scene::scenes->push_back(BuildScene5());
     Scene::scenes->push_back(BuildScene6());
+    Scene::scenes->push_back(BuildScene7());
 }

@@ -33,6 +33,7 @@ private:
 	static Scene* BuildScene4();
 	static Scene* BuildScene5();
 	static Scene* BuildScene6();
+	static Scene* BuildScene7();
 };
 
 #endif // SCENE_H
