@@ -368,26 +368,21 @@ Scene* Scene::BuildScene5() {
     Camera* camera = new PerspectiveCamera(45, 0, 0, 0.1f, 1000.0f);
     camera->Translate(Vector3{ 0.0f, 0.0f, -10.0f });
 
-    std::vector<Object*>* objects = new std::vector<Object*>{
-        new Object3D(Vector3{ 0.0f,  0.0f, -10.0f }, Vector3{ 100.0f, 100.0f, 1.0f }, Color{ 0.3f, 0.3f, 0.3f }),
-        new Object3D(Vector3{ 0.0f,  0.0f, -10.0f }, Vector3{ 100.0f, 100.0f, 1.0f }, Color{ 0.4f, 0.4f, 0.4f }),
-        new Object3D(Vector3{ 0.0f, -5.0f, -10.0f }, Vector3{ 100.0f, 1.0f, 100.0f }, Color{ 0.5f, 0.5f, 0.5f }),
-    };
-
-    objects->at(0)->Rotate(Vector3{ 0.0f, 45.0f, 0.0f });
-    objects->at(1)->Rotate(Vector3{ 0.0f, -45.0f, 0.0f });
-
     Node<Joint3D>* root = new Node<Joint3D>(Joint3D(Vector3::zero, Vector3::one / 2, { 0.5f, 0.0f, 1.0f, 1.0f }));
 
-    root->Next(                               Joint3D(Vector3{ 0.50f, 1.50f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Twist3D(10.0f, 170.0f, 0.0f, 360.0f)));
-    root->child[0]->Next(                     Joint3D(Vector3{ 1.50f, 1.75f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::X, 190.0f, 0.0f)));
-    root->child[0]->child[0]->Next(           Joint3D(Vector3{ 2.00f, 1.50f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::Y, 190.0f, 0.0f)));
+    root->Next(                               Joint3D(Vector3{ 0.50f, 1.50f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Twist3D(45.0f, 45.0f, 45.0f, 45.0f)));
+    root->child[0]->Next(                     Joint3D(Vector3{ 1.50f, 1.75f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }));
+    root->child[0]->child[0]->Next(           Joint3D(Vector3{ 2.00f, 1.50f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }));
     root->child[0]->child[0]->child[0]->Next( Joint3D(Vector3{ 2.25f, 2.00f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }));
 
-    Tree<Joint3D>* tree = new Tree<Joint3D>(root);
-    Fabrik* fabrik = new Fabrik3D(tree);
+    std::vector<Target3D*>* targets = new std::vector<Target3D*>();
 
-    Scene* scene = new Scene(camera, fabrik, objects);
+    Tree<Joint3D>* tree = new Tree<Joint3D>(root);
+    Fabrik* fabrik = new Fabrik3D(tree, *targets);
+
+    targets->at(0)->Translate({ 2.0f, 2.0f, -2.0f });
+
+    Scene* scene = new Scene(camera, fabrik);
 
     std::function<void(int, int)> keyEvent = [camera, fabrik](int key, int action) {
         if (action == GLFW_PRESS) {
@@ -435,7 +430,7 @@ Scene* Scene::BuildScene6() {
 
     Node<Joint3D>* root = new Node<Joint3D>(Joint3D(Vector3{ 0.0f, -3.0f, 0.0f }, Vector3::one / 2, { 0.5f, 0.0f, 1.0f, 1.0f }));
 
-    root->Next(                                         Joint3D(Vector3{  0.000f, -2.00f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Twist3D(80.0f, 270.0f, 0.0f, 0.0f)));
+    root->Next(                                         Joint3D(Vector3{  0.000f, -2.00f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Twist3D(170.0f, 360.0f, 90.0f, 90.0f)));
 
     root->child[0]->Next(                               Joint3D(Vector3{ -1.000f,  0.00f, 0.0f }, Vector3::one / 3));
     root->child[0]->Next(                               Joint3D(Vector3{ -0.500f,  0.25f, 0.0f }, Vector3::one / 3));
@@ -455,10 +450,10 @@ Scene* Scene::BuildScene6() {
     root->child[0]->child[3]->child[0]->Next(           Joint3D(Vector3{  1.050f,  2.20f, 0.0f }, Vector3::one / 3));
     root->child[0]->child[4]->child[0]->Next(           Joint3D(Vector3{  2.050f,  0.10f, 0.0f }, Vector3::one / 3));
 
-    root->child[0]->child[0]->child[0]->child[0]->Next( Joint3D(Vector3{ -2.000f,  2.10f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::X, 270.0f, 0.0f)));
-    root->child[0]->child[1]->child[0]->child[0]->Next( Joint3D(Vector3{ -1.200f,  3.00f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::X, 270.0f, 0.0f)));
-    root->child[0]->child[2]->child[0]->child[0]->Next( Joint3D(Vector3{  0.000f,  3.30f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::X, 270.0f, 0.0f)));
-    root->child[0]->child[3]->child[0]->child[0]->Next( Joint3D(Vector3{  1.175f,  2.80f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::X, 270.0f, 0.0f)));
+    root->child[0]->child[0]->child[0]->child[0]->Next( Joint3D(Vector3{ -2.000f,  2.10f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::X, 360.0f, 90.0f)));
+    root->child[0]->child[1]->child[0]->child[0]->Next( Joint3D(Vector3{ -1.200f,  3.00f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::X, 360.0f, 90.0f)));
+    root->child[0]->child[2]->child[0]->child[0]->Next( Joint3D(Vector3{  0.000f,  3.30f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::X, 360.0f, 90.0f)));
+    root->child[0]->child[3]->child[0]->child[0]->Next( Joint3D(Vector3{  1.175f,  2.80f, 0.0f }, Vector3::one / 3, { 1.0f, 0.0f, 0.0f, 1.0f }, new Hinge3D(Axis::X, 360.0f, 90.0f)));
 
     Tree<Joint3D>* tree = new Tree<Joint3D>(root);
     std::vector<Target3D*>* targets = new std::vector<Target3D*>();

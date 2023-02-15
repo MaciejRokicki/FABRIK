@@ -9,8 +9,8 @@ Twist3D::Twist3D(float minAngle, float maxAngle) : Constraint3D(minAngle, maxAng
 
 //minAngle i maxAngle z Constraint3D dotyczy osi X
 Twist3D::Twist3D(float minAngleX, float maxAngleX, float minAngleY, float maxAngleY) : Constraint3D(minAngleX, maxAngleX) {
-	this->minAngleY = minAngleY;
-	this->maxAngleY = maxAngleY;
+	this->minAngleY = minAngleY - 90.0f;
+	this->maxAngleY = maxAngleY - 90.0f;
 }
 
 void Twist3D::Apply(Node<Joint3D>* nodeJoint) {

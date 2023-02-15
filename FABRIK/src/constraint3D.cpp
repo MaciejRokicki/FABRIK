@@ -2,8 +2,8 @@
 #include "headers/mathf.h"
 
 Constraint3D::Constraint3D(float minAngle, float maxAngle) {
-	this->minAngle = minAngle;
-	this->maxAngle = maxAngle;
+	this->minAngle = minAngle - 90.0f;
+	this->maxAngle = maxAngle - 90.0f;
 }
 
 Vector3 Constraint3D::GetXYAngleBetweenTwoVectors(Vector3 from, Vector3 to) {
