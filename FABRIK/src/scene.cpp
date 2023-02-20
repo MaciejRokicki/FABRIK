@@ -69,7 +69,6 @@ Scene* Scene::BuildScene1() {
     root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->Next(Joint2D({0.0f, 5.25f}, {0.35f, 0.35f}));
     root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->Next(Joint2D({0.0f, 6.0f}, {0.35f, 0.35f}));
     root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->Next(Joint2D({0.0f, 6.75f}, {0.35f, 0.35f}));
-    root->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->child[0]->Next(Joint2D({0.0f, 7.5f}, {0.35f, 0.35f}));
 
     Tree<Joint2D>* tree = new Tree<Joint2D>(root);
     Fabrik* fabrik = new Fabrik2D(tree);
@@ -573,4 +572,5 @@ void Scene::BuildScenes() {
     Scene::scenes->push_back(BuildScene5());
     Scene::scenes->push_back(BuildScene6());
     Scene::scenes->push_back(BuildScene7());
+    Scene::scenes->push_back(BuildScene8());
 }
