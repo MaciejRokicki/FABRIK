@@ -572,5 +572,4 @@ void Scene::BuildScenes() {
     Scene::scenes->push_back(BuildScene5());
     Scene::scenes->push_back(BuildScene6());
     Scene::scenes->push_back(BuildScene7());
-    Scene::scenes->push_back(BuildScene8());
 }
